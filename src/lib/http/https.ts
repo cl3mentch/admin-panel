@@ -1,6 +1,11 @@
 import Cookies from "js-cookie";
 import { APIMethod, APIOptions, APIResponse } from "../types/commonType";
 import { urls } from "./settings";
+import { useUserStore } from "../store/userDataStore";
+import { disconnect } from "@wagmi/core";
+import { config } from "../web3/wagmi/config";
+import { zeroAddress } from "viem";
+import { toast } from "sonner";
 
 class API {
   private sessionExpired = false; // Flag to track session expiration
@@ -30,6 +35,8 @@ class API {
         }
       }
 
+      console.log(urls);
+
       const response = await fetch(`${urls.apiBase}${resource}${queryString}`, {
         method,
         mode: "cors",
@@ -39,13 +46,13 @@ class API {
 
       const resp: APIResponse<T> = await response.json();
 
-      // if (resp.data === "901" && !this.sessionExpired) {
-      //   this.sessionExpired = true;
-      //   const user = useUserStore.getState();
-      //   disconnect(config);
-      //   user.setUser({ web3_address: zeroAddress });
-      //   toast.warning("Login Session Expired... Please login again");
-      // }
+      if (resp.data === "901" && !this.sessionExpired) {
+        this.sessionExpired = true;
+        const user = useUserStore.getState();
+        disconnect(config);
+        user.setUser({ web3_address: zeroAddress });
+        toast.warning("Login Session Expired... Please login again");
+      }
 
       return resp;
     } catch (err) {

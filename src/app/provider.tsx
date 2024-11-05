@@ -1,4 +1,9 @@
-import { ThemeProvider } from "@/components/theme-provider";
+"use client";
+
+import ContextProvider from "@/lib/provider/reown";
+import { ThemeProvider } from "@/lib/provider/theme";
+import { wagmiAdapter } from "@/lib/web3/wagmi/config";
+import { Config, cookieToInitialState } from "wagmi";
 
 interface Props {
   components: Array<
@@ -24,6 +29,8 @@ const Compose = (props: Props) => {
 
 // Combine all your providers here
 const AllProviders = ({ children }: { children: React.ReactNode }) => {
+  const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig as Config);
+
   return (
     <Compose
       components={[
@@ -36,6 +43,7 @@ const AllProviders = ({ children }: { children: React.ReactNode }) => {
             disableTransitionOnChange: true,
           },
         ],
+        [ContextProvider, { initialState: initialState }],
       ]}
     >
       {children}
