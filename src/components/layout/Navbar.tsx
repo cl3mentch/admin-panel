@@ -32,7 +32,7 @@ import { SidebarTrigger } from "../ui/sidebar";
 
 export default function Navbar() {
   return (
-    <nav className="w-full bg-card flex items-center justify-between px-3 py-2 gap-x-5 border-b border-border">
+    <nav className="w-full bg-card flex items-center justify-between px-3 py-2 gap-x-5 border-b border-l border-border">
       <div className="flex items-center gap-x-3">
         <SidebarTrigger className="text-black dark:text-white" />
         <BreadcrumbComponent />
@@ -90,7 +90,7 @@ function AvatarDropdown() {
           <AvatarComponent />
           <div>
             <p>Username</p>
-            <p className="text-sm text-white/50 font-normal">
+            <p className="text-sm text-black/50 dark:text-white/50 font-normal">
               {truncateString(zeroAddress, 5, 4)}
             </p>
           </div>
