@@ -11,7 +11,7 @@ export const directory: DirectoryItem[] = [
   {
     title: "Dashboard",
     icon: "cuida:dashboard-outline",
-    path: "/",
+    path: "/dashboard",
     isActive: false,
     children: [],
   },
@@ -24,13 +24,7 @@ export const directory: DirectoryItem[] = [
       {
         title: "List",
         icon: "mdi:format-list-bulleted",
-        path: "/dashboard",
-        children: [],
-      },
-      {
-        title: "List",
-        icon: "mdi:format-list-bulleted",
-        path: "/",
+        path: "/dashboard/user/list",
         children: [],
       },
     ],

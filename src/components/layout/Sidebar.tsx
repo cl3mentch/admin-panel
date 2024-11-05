@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React from "react";
 
 // Typing the props for CollapsibleComponent
 type CollapsibleProps = {
@@ -33,6 +34,7 @@ type CollapsibleProps = {
 
 export function AppSidebar() {
   const pathname = usePathname();
+  console.log(pathname);
   return (
     <Sidebar>
       <SidebarHeader>
@@ -41,38 +43,54 @@ export function AppSidebar() {
           <p className="font-semibold text-xl">Logo</p>
         </div>
       </SidebarHeader>
+
       <SidebarContent className=" h-full gap-y-1">
         <SidebarGroup>
           <SidebarGroupLabel className="ml-[1px] text-[12px]">
             Overview
           </SidebarGroupLabel>
+
           <SidebarMenu>
-            {directory.map((dir) =>
-              dir.children && dir.children.length > 0 ? (
-                <CollapsibleComponent dir={dir} pathname={pathname} />
+            {directory.map((dir) => {
+              const key = dir.title; // Or use another unique value (e.g., dir.path)
+
+              return dir.children && dir.children.length > 0 ? (
+                <CollapsibleComponent
+                  key={key} // Use key for the collapsible component
+                  dir={dir}
+                  pathname={pathname}
+                />
               ) : (
-                <NonColapsibleComp dir={dir} pathname={pathname} />
-              )
-            )}
+                <NonColapsibleComp
+                  key={key} // Use key for the non-collapsible component
+                  dir={dir}
+                  pathname={pathname}
+                />
+              );
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter />
     </Sidebar>
   );
 }
 
-function NonColapsibleComp({ dir, pathname }: CollapsibleProps) {
+export function NonColapsibleComp({ dir, pathname }: CollapsibleProps) {
+  const isActive = pathname === dir.path;
+
   return (
-    <SidebarMenuItem key={dir.title}>
-      <SidebarMenuButton
-        asChild
-        tooltip={dir.title}
-        isActive={pathname === dir.path}
-      >
+    <SidebarMenuItem>
+      <SidebarMenuButton asChild tooltip={dir.title} isActive={isActive}>
         <Link href={dir.path}>
-          <Icon icon={dir.icon ? dir.icon : "mdi:apple-keyboard-command"} />
-          <span>{dir.title}</span>
+          <Icon
+            icon={dir.icon ? dir.icon : "mdi:apple-keyboard-command"}
+            className={`${isActive ? "text-primary dark:text-white" : ""}`} // Apply color for active state
+          />
+          <span className={`${isActive ? "text-primary dark:text-white" : ""}`}>
+            {dir.title}
+          </span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -80,46 +98,64 @@ function NonColapsibleComp({ dir, pathname }: CollapsibleProps) {
 }
 
 export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
+  const isParentActive =
+    pathname === dir.path ||
+    dir.children.some((child) => pathname === child.path);
+
   return (
     <Collapsible
       key={dir.title}
       asChild
-      defaultOpen={dir.children.some((child) => child.path === pathname)}
+      defaultOpen={isParentActive}
       className="group/collapsible"
     >
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton
-            tooltip={dir.title}
-            isActive={pathname === dir.path}
-          >
+          <SidebarMenuButton tooltip={dir.title} isActive={isParentActive}>
             <Icon
               icon={dir.icon ? dir.icon : "mdi:apple-keyboard-command"}
-              className="w-10 h-10"
+              className={`${
+                isParentActive ? "text-primary dark:text-white" : ""
+              } w-10 h-10 `}
             />
-            <span>{dir.title}</span>
+            <span
+              className={`${
+                isParentActive ? "text-primary dark:text-white" : ""
+              }`}
+            >
+              {dir.title}
+            </span>
             <div className="ml-auto">
               <Icon
                 icon="mynaui:chevron-right"
-                className=" w-5 h-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                className={`${
+                  isParentActive ? "text-primary dark:text-white" : ""
+                } w-5 h-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90`}
               />
             </div>
           </SidebarMenuButton>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
-            {dir.children?.map((child) => (
-              <SidebarMenuSubItem key={child.title}>
-                <SidebarMenuSubButton
-                  asChild
-                  isActive={pathname === child.path}
-                >
-                  <Link href={child.path}>
-                    <span>{child.title}</span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
+            {dir.children?.map((child) => {
+              const isChildActive = pathname === child.path;
+              return (
+                <SidebarMenuSubItem key={child.title}>
+                  <SidebarMenuSubButton
+                    asChild
+                    isActive={isChildActive} // Mark child as active if the path matches
+                  >
+                    <Link href={child.path}>
+                      <span
+                        className={`${isChildActive ? "text-blue-500" : ""}`}
+                      >
+                        {child.title}
+                      </span>
+                    </Link>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              );
+            })}
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuItem>

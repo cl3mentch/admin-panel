@@ -6,6 +6,7 @@ import { useState } from "react";
 import AuthAPI from "@/lib/api/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/lib/store/userDataStore";
 
 // Define form fields with types
 interface FormData {
@@ -23,6 +24,7 @@ export function EmailLogin() {
   const [viewPassword, setViewPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { setUser } = useUserStore();
 
   // Watch password field to track if it's empty or not
   const passwordValue = watch("password");
@@ -37,6 +39,7 @@ export function EmailLogin() {
       const auth = await AuthAPI.email.login(data.email, data.password);
       if (auth) {
         toast.success("Login Successful");
+        setUser({ email: data.email });
         router.push("/dashboard");
       } else {
         setLoading(false);

@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen relative font-sans antialiased transition",
+          "min-h-screen relative font-sans antialiased transition bg-background",
           fontSans.variable
         )}
       >

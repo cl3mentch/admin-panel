@@ -5,6 +5,7 @@ import { persist } from "zustand/middleware"; // Import the persist middleware
 export type UserDataState = {
   user: {
     web3_address: Address;
+    email: string;
   };
 };
 
@@ -17,6 +18,7 @@ export type UserDataStore = UserDataState & UserDataAction;
 export const defaultInitState: UserDataState = {
   user: {
     web3_address: zeroAddress as Address,
+    email: "" as string,
   },
 };
 

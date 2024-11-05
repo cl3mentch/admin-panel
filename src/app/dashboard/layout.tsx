@@ -22,7 +22,7 @@ export default function RootLayout({
     <>
       <SidebarProvider>
         <AppSidebar />
-        <main className="w-full bg-background h-full">
+        <main className="w-full bg-transparent h-full">
           <Navbar />
           {children}
         </main>
