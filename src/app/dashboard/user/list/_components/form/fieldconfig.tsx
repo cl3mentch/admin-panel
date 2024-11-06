@@ -1,4 +1,6 @@
-export const fieldConfig = [
+import { TFieldConfig } from "@/lib/types/formType";
+
+export const fieldConfig: TFieldConfig[] = [
   {
     name: "name",
     label: "Name",
@@ -7,14 +9,14 @@ export const fieldConfig = [
     placeholder: "Enter your name",
     isRequired: true,
   },
-  // {
-  //   name: "Country",
-  //   label: "Country",
-  //   component: "select",
-  //   placeholder: "Select your country",
-  //   options: ["USA", "UK", "Canada", "Australia", "Germany", "France"],
-  //   isRequired: false,
-  // },
+  {
+    name: "country",
+    label: "Country",
+    component: "select",
+    placeholder: "Select your country",
+    options: ["USA", "UK", "Canada", "Australia", "Germany", "France"],
+    isRequired: false,
+  },
   {
     name: "email",
     label: "Email",
@@ -29,13 +31,6 @@ export const fieldConfig = [
     component: "input",
     type: "text",
     placeholder: "Enter your company",
-    isRequired: false,
-  },
-  {
-    name: "gender",
-    label: "Gender",
-    component: "radio",
-    options: ["male", "female", "other"],
     isRequired: false,
   },
 ];

@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -16,30 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { fieldConfig } from "./form/fieldconfig";
-import { defaultValues, formSchema } from "./form/schema";
-
-type TFormData = z.infer<typeof formSchema>;
+import { TFieldConfig } from "@/lib/types/formType";
+import { UseFormReturn } from "react-hook-form";
 
 interface FormProps {
   title: string;
-  schema: TFormData;
+  form: UseFormReturn | any;
+  fieldConfig: TFieldConfig[];
 }
 
-export default function EmployeeForm({ title }: any) {
-  const form = useForm<TFormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues,
-  });
-
-  function onSubmit(values: TFormData) {
+export default function FormComp({ title, form, fieldConfig }: FormProps) {
+  function onSubmit(values: any) {
     console.log(values);
   }
-
   return (
     <Card className="mx-auto w-full">
       <CardHeader>
@@ -56,7 +46,7 @@ export default function EmployeeForm({ title }: any) {
                       <FormField
                         key={i}
                         control={form.control}
-                        name={config.name as keyof TFormData}
+                        name={config.name}
                         render={({ field: inputField }) => (
                           <FormItem>
                             <FormLabel>{config.label}</FormLabel>
@@ -74,8 +64,9 @@ export default function EmployeeForm({ title }: any) {
                   case "select":
                     return (
                       <FormField
+                        key={i}
                         control={form.control}
-                        name={config.name as keyof TFormData}
+                        name={config.name}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>{config.name}</FormLabel>
