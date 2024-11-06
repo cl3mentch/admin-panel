@@ -34,9 +34,8 @@ type CollapsibleProps = {
 
 export function AppSidebar() {
   const pathname = usePathname();
-  console.log(pathname);
   return (
-    <Sidebar>
+    <Sidebar className="">
       <SidebarHeader>
         <div className="flex items-center gap-x-2 py-1 px-3">
           <Icon icon="tabler:brand-nextjs" className="text-[30px]" />

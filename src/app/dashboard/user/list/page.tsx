@@ -14,16 +14,14 @@ import UserAPI from "@/lib/api/user";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { columns, TUserList } from "./columns";
 import { DataTable } from "./data-table";
-import { useMediaQuery } from "react-responsive";
-import { toast } from "sonner";
 
 export default function Userlist() {
-  const isXl = useMediaQuery({ query: "(min-width: 1280px)" });
   const [pagination, setPagination] = useState({
     page: 1,
-    size: isXl ? 20 : 10,
+    size: 20,
   });
   const [pageData, setPageData] = useState<TUserList | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +47,7 @@ export default function Userlist() {
       initial={{ x: "-10vw", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ stiffness: 50, duration: 0.4 }}
-      className="w-full px-3 xl:px-5 mx-auto flex flex-col h-auto justify-between space-y-4 "
+      className="w-full px-3 xl:px-5 mx-auto flex flex-col h-full justify-between space-y-4 "
     >
       <div className="w-full pt-5 flex items-center justify-between">
         <p className="text-lg xl:text-2xl font-bold">

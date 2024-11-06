@@ -18,9 +18,9 @@ export default function RootLayout({
     <>
       <SidebarProvider>
         <AppSidebar />
-        <main className="w-full bg-card h-screen xl:overflow-hidden">
+        <main className="w-full bg-card min-h-screen overflow-hidden ">
           <Navbar />
-          <div className="">{children}</div>
+          <div className="xl:pb-0 pb-[80px]">{children}</div>
         </main>
       </SidebarProvider>
     </>
