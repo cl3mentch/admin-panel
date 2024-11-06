@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import AllProviders from "./provider";
+import NextTopLoader from 'nextjs-toploader';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -24,13 +25,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen relative font-sans antialiased transition bg-background",
+          " min-h-screen relative font-sans antialiased transition bg-background",
           fontSans.variable
         )}
       >
         <AllProviders>
           <Toaster />
-
+          <NextTopLoader />
           {children}
         </AllProviders>
       </body>

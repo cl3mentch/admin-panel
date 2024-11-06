@@ -1,11 +1,12 @@
-import Cookies from "js-cookie";
-import { APIMethod, APIOptions, APIResponse } from "../types/commonType";
-import { urls } from "./settings";
-import { useUserStore } from "../store/userDataStore";
+"use client";
 import { disconnect } from "@wagmi/core";
-import { config } from "../web3/wagmi/config";
-import { zeroAddress } from "viem";
+import Cookies from "js-cookie";
 import { toast } from "sonner";
+import { zeroAddress } from "viem";
+import { useUserStore } from "../store/userDataStore";
+import { APIMethod, APIOptions, APIResponse } from "../types/commonType";
+import { config } from "../web3/wagmi/config";
+import { urls } from "./settings";
 
 class API {
   private sessionExpired = false; // Flag to track session expiration
@@ -13,7 +14,7 @@ class API {
   private async request<T = any>(
     method: APIMethod,
     resource: string, //url endpoint
-    { data, useToken = false }: APIOptions = {}
+    { data, useToken = true }: APIOptions = {}
   ): Promise<APIResponse<T>> {
     try {
       const queryString =
@@ -35,8 +36,6 @@ class API {
         }
       }
 
-      console.log(urls);
-
       const response = await fetch(`${urls.apiBase}${resource}${queryString}`, {
         method,
         mode: "cors",
@@ -50,8 +49,15 @@ class API {
         this.sessionExpired = true;
         const user = useUserStore.getState();
         disconnect(config);
-        user.setUser({ web3_address: zeroAddress });
-        toast.warning("Login Session Expired... Please login again");
+        Cookies.remove("accessToken");
+        user.setUser({ web3_address: zeroAddress, email: "" });
+
+        toast.warning("Login Session Expired... Redirecting to Login");
+
+        // Delay the redirect to allow the toast to be visible
+        // setTimeout(() => {
+        //   window.location.href = "/";
+        // }, 3000); // Delay of 500ms (adjust as needed)
       }
 
       return resp;

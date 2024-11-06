@@ -7,9 +7,17 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,28 +33,15 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { disconnect } from "@wagmi/core";
 import Cookies from "js-cookie";
 import { redirect, usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { zeroAddress } from "viem";
 import { Language } from "../shared/Language";
 import { Theme } from "../shared/Theme";
 import { SidebarTrigger } from "../ui/sidebar";
-import { useEffect, useState } from "react";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 export default function Navbar() {
   return (
-    <nav className="w-full bg-card flex items-center justify-between px-3 py-2 gap-x-5 border-b border-l border-border">
+    <nav className="w-full bg-card flex items-center justify-between px-3 py-2 gap-x-5 border-b border-border">
       <div className="flex items-center gap-x-3">
         <SidebarTrigger className="text-black dark:text-white" />
         <BreadcrumbComponent />
@@ -112,6 +107,8 @@ function AvatarDropdown() {
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if (e.altKey && e.key === "q") {
+        console.log(true);
+
         setShowModal(true);
       }
 
@@ -212,7 +209,7 @@ export function LogoutPrompt({ showModal, setShowModal }: any) {
         <DialogFooter className="flex justify-between ">
           <Button
             variant="outline"
-            className="text-black border-black/20"
+            className="text-black dark:text-white border-black/20 dark:border-white/20"
             onClick={() => setShowModal(false)} // Close the modal without logging out
           >
             Cancel

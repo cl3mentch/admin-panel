@@ -1,10 +1,9 @@
 import { Config, disconnect, signMessage } from "@wagmi/core";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 import { type Address } from "viem";
 import { api } from "../http/https";
 import { config } from "../web3/wagmi/config";
-import { toast } from "sonner";
-import { onTranslateErrMsg } from "../helper";
 
 const AuthAPI = {
   web3: {

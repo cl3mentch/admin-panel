@@ -111,26 +111,16 @@ export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
     >
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton tooltip={dir.title} isActive={isParentActive}>
+          <SidebarMenuButton tooltip={dir.title}>
             <Icon
               icon={dir.icon ? dir.icon : "mdi:apple-keyboard-command"}
-              className={`${
-                isParentActive ? "text-primary dark:text-white" : ""
-              } w-10 h-10 `}
+              className={`w-10 h-10 `}
             />
-            <span
-              className={`${
-                isParentActive ? "text-primary dark:text-white" : ""
-              }`}
-            >
-              {dir.title}
-            </span>
+            <span>{dir.title}</span>
             <div className="ml-auto">
               <Icon
                 icon="mynaui:chevron-right"
-                className={`${
-                  isParentActive ? "text-primary dark:text-white" : ""
-                } w-5 h-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90`}
+                className={` w-5 h-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90`}
               />
             </div>
           </SidebarMenuButton>
@@ -147,7 +137,9 @@ export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
                   >
                     <Link href={child.path}>
                       <span
-                        className={`${isChildActive ? "text-blue-500" : ""}`}
+                        className={`${
+                          isChildActive ? "text-primary dark:text-white" : ""
+                        }`}
                       >
                         {child.title}
                       </span>

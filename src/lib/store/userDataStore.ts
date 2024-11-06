@@ -1,6 +1,6 @@
 import { Address, zeroAddress } from "viem";
 import { create } from "zustand";
-import { persist } from "zustand/middleware"; // Import the persist middleware
+import { persist, PersistStorage } from "zustand/middleware";
 
 export type UserDataState = {
   user: {
@@ -10,7 +10,7 @@ export type UserDataState = {
 };
 
 export type UserDataAction = {
-  setUser: (user: Partial<UserDataState["user"]>) => void; // Accept partial updates
+  setUser: (user: Partial<UserDataState["user"]>) => void;
 };
 
 export type UserDataStore = UserDataState & UserDataAction;
@@ -22,18 +22,32 @@ export const defaultInitState: UserDataState = {
   },
 };
 
+// Adapter to make localStorage compatible with PersistStorage
+const localStorageAdapter: PersistStorage<UserDataStore> = {
+  getItem: (name) => {
+    const item = localStorage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name, value) => {
+    localStorage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name) => {
+    localStorage.removeItem(name);
+  },
+};
+
 export const useUserStore = create<UserDataStore>()(
   persist(
     (set) => ({
       ...defaultInitState,
       setUser: (userUpdate: Partial<UserDataState["user"]>) =>
         set((state) => ({
-          user: { ...state.user, ...userUpdate }, // Merge the existing user state with the updates
+          user: { ...state.user, ...userUpdate },
         })),
     }),
     {
-      name: "storeUserInfo", // Name of the storage (localStorage key)
-      getStorage: () => localStorage, // You can customize this for other storage mechanisms
+      name: "storeUserInfo",
+      storage: localStorageAdapter, // Use the adapter here
     }
   )
 );

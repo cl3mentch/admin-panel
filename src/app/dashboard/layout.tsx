@@ -1,12 +1,8 @@
-import type { Metadata } from "next";
-import "../globals.css";
-import {
-  Sidebar,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
 import Navbar from "@/components/layout/Navbar";
 import { AppSidebar } from "@/components/layout/Sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import type { Metadata } from "next";
+import "../globals.css";
 
 export const metadata: Metadata = {
   title: "Dashboard: Overview",
@@ -22,9 +18,9 @@ export default function RootLayout({
     <>
       <SidebarProvider>
         <AppSidebar />
-        <main className="w-full bg-transparent h-full">
+        <main className="w-full bg-card h-screen overflow-hidden">
           <Navbar />
-          {children}
+          <div className="">{children}</div>
         </main>
       </SidebarProvider>
     </>
