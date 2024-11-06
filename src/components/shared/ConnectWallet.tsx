@@ -26,7 +26,7 @@ export function ConnectWallet() {
       const incomingAddress = data?.address as Address;
 
       // Early exit if a request is already in progress or if no valid address is provided
-      if (isRequestingRef.current || !incomingAddress) {
+      if (isRequestingRef.current || !incomingAddress || isCookie) {
         return;
       }
 
@@ -36,11 +36,6 @@ export function ConnectWallet() {
       try {
         // Handle logic for non-cookie and cookie-based authentication
         if (!isCookie || user?.web3_address !== incomingAddress) {
-          // Optionally clear the cookie if necessary
-          if (isCookie && user?.web3_address !== incomingAddress) {
-            Cookies.remove("accessToken");
-          }
-
           // Request authentication message
           const auth = await AuthAPI.web3.requestMessage(incomingAddress);
 

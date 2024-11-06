@@ -1,31 +1,7 @@
 import Actions, { TAction } from "@/components/shared/table/actions";
 import { ColumnDef } from "@tanstack/react-table";
 import { actionOptions } from "./user-action";
-
-export type TUserList = {
-  data: {
-    id: number;
-    user_id: string;
-    upline: string;
-    web3_address: string;
-    nickname: string;
-    tag: string;
-    authenticator: string;
-    referral_code: string;
-    status: string;
-    email: string;
-    password: string;
-    telegram: string;
-    game_participation: number;
-    playable: boolean;
-    playable_date: string;
-    remark: string;
-    created_at: string;
-    updated_at: string;
-  }[];
-  count: number;
-  last_page: number;
-};
+import { TUserList } from "@/lib/types/userType";
 
 export const columns: ColumnDef<TUserList["data"][0]>[] = [
   {
@@ -51,6 +27,10 @@ export const columns: ColumnDef<TUserList["data"][0]>[] = [
   {
     accessorKey: "status",
     header: "Status",
+  },
+  {
+    accessorKey: "game_participation",
+    header: "Played Times",
   },
   {
     accessorKey: "telegram",

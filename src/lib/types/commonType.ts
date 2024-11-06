@@ -13,8 +13,8 @@ export interface APIOptions {
 }
 
 export interface IPagination {
-  page?: number;
-  size?: number;
+  page: number;
+  size: number;
 }
 
 export interface IGetErrorType {

@@ -43,10 +43,7 @@ export default function Actions<TData extends Record<string, any>>({
         <DropdownMenuSeparator />
 
         {options.map((option, i) => (
-          <DropdownMenuItem
-            key={i}
-            className="sf-light-font text-sm font-bold py-[2px]"
-          >
+          <DropdownMenuItem key={i} className="sf-light-font text-sm  py-[2px]">
             {option.path !== "delete" ? (
               <Link
                 href={option.path}

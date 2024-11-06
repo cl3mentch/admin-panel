@@ -6,6 +6,9 @@ export type InputType =
   | "tel"
   | "url"; // Extend as needed
 
+/**
+ *  the @TFieldConfig name needs to be the same as the schema name or else it wont work
+ */
 export type TFieldConfig =
   | {
       name: string;

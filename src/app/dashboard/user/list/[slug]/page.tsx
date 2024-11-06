@@ -1,4 +1,4 @@
-import UserViewPage from "../_components/user-view";
+import UserFormPage from "../_components/user-form";
 
 export let metadata = {
   title: "Dashboard : Employee View",
@@ -6,5 +6,5 @@ export let metadata = {
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const slug = (await params).slug;
-  return <UserViewPage slug={slug} />;
+  return <UserFormPage slug={slug} />;
 }

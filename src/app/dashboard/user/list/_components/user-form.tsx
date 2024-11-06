@@ -1,118 +1,94 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import FormComp from "@/components/shared/form/FormComp";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
+  defaultValues,
+  userDetailFieldConfig,
+  userFormSchema,
+} from "./form/userSchema";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { fieldConfig } from "./form/fieldconfig";
-import { defaultValues, formSchema } from "./form/schema";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import EnumAPI from "@/lib/api/enum";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import UserAPI from "@/lib/api/user";
+import { motion } from "framer-motion";
 
-type TFormData = z.infer<typeof formSchema>;
+type TUserFormData = z.infer<typeof userFormSchema>;
 
-interface FormProps {
-  title: string;
-  schema: TFormData;
-}
+export default function UserFormPage({ slug }: any) {
+  const [, setForceUpdate] = useState(false);
 
-export default function EmployeeForm({ title }: any) {
-  const form = useForm<TFormData>({
-    resolver: zodResolver(formSchema),
+  const userForm = useForm<TUserFormData>({
+    resolver: zodResolver(userFormSchema),
     defaultValues,
+    mode: "onChange", // Validate on every change
   });
 
-  function onSubmit(values: TFormData) {
-    console.log(values);
-  }
+  const getAccountStatusEnum = async () => {
+    const result = await EnumAPI.listing("account_status");
+    if (result.success) {
+      userDetailFieldConfig.find((config) => {
+        if (config.name === "status" && config.component === "select") {
+          config.options = Object.values(result.data);
+          setForceUpdate(true);
+        }
+      });
+    } else {
+      toast.error("Failed to get account status enum");
+    }
+  };
+
+  const getWalletEnum = async () => {
+    const result = await EnumAPI.listing("wallet");
+    if (result.success) {
+      userDetailFieldConfig.find((config) => {
+        if (config.name === "wallet" && config.component === "select") {
+          config.options = Object.values(result.data);
+          setForceUpdate(true);
+        }
+      });
+    } else {
+      toast.error("Failed to get account status enum");
+    }
+  };
+
+  const handleFormSubmit = async (values: any) => {
+    const result = await UserAPI.create({ ...values });
+    if (result.success) {
+      toast.success("Created Successfuly");
+    } else {
+      result.data.forEach((data: any) => toast.error(data));
+    }
+  };
+
+  useEffect(() => {
+    getAccountStatusEnum();
+    getWalletEnum();
+  }, [slug]);
 
   return (
-    <Card className="mx-auto w-full">
-      <CardHeader>
-        <CardTitle className="text-left text-2xl font-bold">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {fieldConfig.map((config, i) => {
-                switch (config.component) {
-                  case "input":
-                    return (
-                      <FormField
-                        key={i}
-                        control={form.control}
-                        name={config.name as keyof TFormData}
-                        render={({ field: inputField }) => (
-                          <FormItem>
-                            <FormLabel>{config.label}</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter your name"
-                                {...inputField}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    );
-                  case "select":
-                    return (
-                      <FormField
-                        control={form.control}
-                        name={config.name as keyof TFormData}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{config.name}</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue
-                                    placeholder={config.placeholder}
-                                  />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {config?.options &&
-                                  config.options.map((option) => (
-                                    <SelectItem value={option}>
-                                      {option}
-                                    </SelectItem>
-                                  ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    );
-                  default:
-                    return null;
-                }
-              })}
-            </div>
-            <Button type="submit">Submit</Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <motion.div
+      initial={{ x: "-10vw", opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ stiffness: 10, duration: 0.5 }}
+      className="p-3"
+    >
+      <FormComp
+        onFormSubmit={handleFormSubmit}
+        form={userForm} // Pass the shape of the schema if needed, or any raw data
+        fieldConfig={userDetailFieldConfig}
+        title={
+          slug === "view"
+            ? "View User Information"
+            : slug === "edit"
+            ? "Edit User Information"
+            : slug === "new"
+            ? "Create User"
+            : ""
+        }
+      />
+    </motion.div>
   );
 }

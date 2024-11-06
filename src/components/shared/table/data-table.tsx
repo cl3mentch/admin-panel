@@ -68,7 +68,7 @@ export function DataTable<TData, TValue>({
                 const { column } = header;
                 return (
                   <TableHead
-                    className=""
+                    className="text-nowrap text-center"
                     key={header.id}
                     style={{ ...getCommonPinningStyles(column) }}
                   >
@@ -100,6 +100,7 @@ export function DataTable<TData, TValue>({
                   const { column } = cell;
                   return (
                     <TableCell
+                      className="text-nowrap text-center"
                       key={cell.id}
                       style={{ ...getCommonPinningStyles(column) }}
                     >

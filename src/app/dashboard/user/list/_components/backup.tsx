@@ -23,7 +23,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { fieldConfig } from "./form/fieldconfig";
-import { defaultValues, formSchema } from "./form/schema";
+import { defaultValues, formSchema } from "./form/userSchema";
 
 type TFormData = z.infer<typeof formSchema>;
 

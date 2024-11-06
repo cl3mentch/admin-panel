@@ -14,7 +14,7 @@ class API {
   private async request<T = any>(
     method: APIMethod,
     resource: string, //url endpoint
-    { data, useToken = true }: APIOptions = {}
+    { data, useToken }: APIOptions = {}
   ): Promise<APIResponse<T>> {
     try {
       const queryString =
@@ -101,5 +101,28 @@ class API {
     this.sessionExpired = false;
   }
 }
+
+export const handleApiError = (error: unknown): APIResponse<any> => {
+  const message = (error as Error).message || "Unknown error occurred";
+  return {
+    success: false,
+    data: {},
+    msg: message,
+  };
+};
+
+export const apiRequest = async <T>(
+  method: "get" | "post" | "put" | "delete",
+  url: string,
+  data?: object,
+  useToken = true
+): Promise<APIResponse<T>> => {
+  try {
+    const response = await api[method]<T>(url, { data, useToken });
+    return response;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 
 export const api = new API();
