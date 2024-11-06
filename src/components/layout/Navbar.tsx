@@ -38,15 +38,17 @@ import { zeroAddress } from "viem";
 import { Language } from "../shared/Language";
 import { Theme } from "../shared/Theme";
 import { SidebarTrigger } from "../ui/sidebar";
+import { useMediaQuery } from "react-responsive";
+import { LogoutPrompt } from "../shared/LogoutPrompt";
 
 export default function Navbar() {
   return (
     <nav className="w-full bg-card flex items-center justify-between px-3 py-2 gap-x-5 border-b border-border">
-      <div className="flex items-center gap-x-3">
+      <div className="flex items-center gap-x-1 xl:gap-x-3">
         <SidebarTrigger className="text-black dark:text-white" />
         <BreadcrumbComponent />
       </div>
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center gap-x-3 xl:gap-x-4">
         <Language />
         <Theme />
         <AvatarDropdown />
@@ -58,6 +60,7 @@ export default function Navbar() {
 function BreadcrumbComponent() {
   const pathname = usePathname();
   const [crumbs, setCrumbs] = useState<string[] | undefined>(undefined);
+  const isXl = useMediaQuery({ query: "(min-width: 1280px)" });
 
   useEffect(() => {
     if (pathname) {
@@ -70,28 +73,32 @@ function BreadcrumbComponent() {
       <BreadcrumbList>
         {crumbs?.map((crumb, i) => (
           <React.Fragment key={i}>
-            <BreadcrumbItem key={`breadcrumb-item-${i}`}>
-              {i === 1 || crumbs.length - 1 === i ? (
-                <p
-                  className={`${
-                    crumbs.length - 1 === i
-                      ? "dark:text-white text-black"
-                      : "dark:text-white/50 text-black/50"
-                  } cursor-default`}
-                >
-                  {crumb.charAt(0).toUpperCase() + crumb.slice(1)}
-                </p>
-              ) : (
-                <BreadcrumbLink
-                  className={`dark:text-white/50 text-black/50 dark:hover:text-white text-sm`}
-                  href={`/${crumb}`}
-                >
-                  {crumb.charAt(0).toUpperCase() + crumb.slice(1)}
-                </BreadcrumbLink>
-              )}
-            </BreadcrumbItem>
-            {crumbs.length === i + 1 || crumbs.length === 1 ? null : (
-              <BreadcrumbSeparator key={`separator-${i}`} />
+            {!isXl && i === 1 ? null : (
+              <>
+                <BreadcrumbItem key={`breadcrumb-item-${i}`}>
+                  {i === 1 || crumbs.length - 1 === i ? (
+                    <p
+                      className={`${
+                        crumbs.length - 1 === i
+                          ? "dark:text-white text-black"
+                          : "dark:text-white/50 text-black/50"
+                      } cursor-default`}
+                    >
+                      {crumb.charAt(0).toUpperCase() + crumb.slice(1)}
+                    </p>
+                  ) : (
+                    <BreadcrumbLink
+                      className={`dark:text-white/50 text-black/50 dark:hover:text-white text-sm`}
+                      href={`/${crumb}`}
+                    >
+                      {crumb.charAt(0).toUpperCase() + crumb.slice(1)}
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+                {crumbs.length === i + 1 || crumbs.length === 1 ? null : (
+                  <BreadcrumbSeparator key={`separator-${i}`} />
+                )}
+              </>
             )}
           </React.Fragment>
         ))}
@@ -135,14 +142,14 @@ function AvatarDropdown() {
             <AvatarComponent />
             <div className="flex flex-col flex-wrap w-full text-wrap">
               <p>Welcome Back !</p>
-              <p className="text-[12px] text-black/50 text-wrap dark:text-white/50 font-normal">
+              <p className="text-[12px] text-black text-wrap dark:text-white font-normal">
                 {user?.web3_address !== zeroAddress
                   ? truncateString(user?.web3_address, 7, 7)
                   : user?.email}
               </p>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuSeparator className="h-[2px]" />
+          <DropdownMenuSeparator />
 
           <DropdownMenuItem className="flex justify-between items-center py-2 px-3 cursor-pointer">
             <div className="flex items-center gap-x-2">
@@ -153,6 +160,7 @@ function AvatarDropdown() {
               Alt + L
             </div>
           </DropdownMenuItem>
+
           <DropdownMenuItem
             onClick={() => setShowModal(true)}
             className="flex justify-between items-center py-2 px-3 cursor-pointer"
@@ -175,53 +183,8 @@ function AvatarDropdown() {
 function AvatarComponent() {
   return (
     <Avatar className="w-8 h-8">
-      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+      <AvatarImage src="/img/profile.avif" alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>
-  );
-}
-export function LogoutPrompt({ showModal, setShowModal }: any) {
-  const { setUser } = useUserStore();
-
-  async function onLogout() {
-    closeModal();
-    // Disconnect from the application (assuming disconnect function exists)
-    disconnect(config); // Make sure `config` is available, or import it if necessary
-    Cookies.remove("accessToken"); // Remove the auth token from cookies
-    setUser({ web3_address: zeroAddress, email: "" }); // Reset the user state
-    redirect("/"); // Redirect to home or login page after logout
-  }
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
-  return (
-    <Dialog open={showModal} onOpenChange={closeModal}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader className="space-y-3">
-          <DialogTitle>Confirm Logout</DialogTitle>
-          <DialogDescription className="text-black/50 dark:text-white/50">
-            Are you sure you want to log out? You will be redirected to the
-            homepage.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter className="flex justify-between ">
-          <Button
-            variant="outline"
-            className="text-black dark:text-white border-black/20 dark:border-white/20"
-            onClick={() => setShowModal(false)} // Close the modal without logging out
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={onLogout} // Call the logout function
-            className="bg-red-500 text-white hover:bg-red-600"
-          >
-            Log Out
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   );
 }

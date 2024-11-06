@@ -3,11 +3,21 @@
 import { directory, DirectoryItem } from "@/constant/directory"; // Import type
 import { Icon } from "@iconify/react/dist/iconify.js";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -21,10 +31,22 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
+import {
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import { useUserStore } from "@/lib/store/userDataStore";
+import { zeroAddress } from "viem";
+import { truncateString } from "@/lib/helper";
+import { LogoutPrompt } from "../shared/LogoutPrompt";
+import { useState } from "react";
 
 // Typing the props for CollapsibleComponent
 type CollapsibleProps = {
@@ -34,16 +56,22 @@ type CollapsibleProps = {
 
 export function AppSidebar() {
   const pathname = usePathname();
+
   return (
-    <Sidebar className="">
+    <Sidebar collapsible="icon" className="overflow-hidden">
       <SidebarHeader>
-        <div className="flex items-center gap-x-2 py-1 px-3">
-          <Icon icon="tabler:brand-nextjs" className="text-[30px]" />
-          <p className="font-semibold text-xl">Logo</p>
+        <div className="flex gap-2 py-2 text-sidebar-accent-foreground ">
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+            <Icon icon="tabler:brand-nextjs" className="text-[30px]" />
+          </div>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-semibold">Admin Panel</span>
+            <span className="truncate text-xs">Skywalker Technology</span>
+          </div>
         </div>
       </SidebarHeader>
 
-      <SidebarContent className=" h-full gap-y-1">
+      <SidebarContent className="h-full gap-y-1">
         <SidebarGroup>
           <SidebarGroupLabel className="ml-[1px] text-[12px]">
             Overview
@@ -71,7 +99,11 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter />
+      <SidebarFooter>
+        <SidebarFooterContent />
+      </SidebarFooter>
+
+      <SidebarRail />
     </Sidebar>
   );
 }
@@ -151,5 +183,93 @@ export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
         </CollapsibleContent>
       </SidebarMenuItem>
     </Collapsible>
+  );
+}
+
+export function SidebarFooterContent() {
+  const { user } = useUserStore();
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage src={"/img/profile.avif"} alt={"profile"} />
+                  <AvatarFallback className="rounded-lg">{"AD"}</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">Admin</span>
+                  <span className="truncate text-xs">
+                    {user?.web3_address !== zeroAddress
+                      ? truncateString(user?.web3_address, 8, 8)
+                      : user?.email}
+                  </span>
+                </div>
+                <ChevronsUpDown className="ml-auto size-4" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg "
+              side="bottom"
+              align="end"
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={"/img/profile.avif"} alt={"profile"} />
+                    <AvatarFallback className="rounded-lg">
+                      {"CN"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">Admin</span>
+                    <span className="truncate text-xs">
+                      {user?.web3_address !== zeroAddress
+                        ? truncateString(user?.web3_address, 7, 7)
+                        : user?.email}
+                    </span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+
+              <DropdownMenuGroup>
+                <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
+                  <div className="flex items-center gap-x-2">
+                    <Icon icon="icon-park-outline:log" />
+                    Logbook
+                  </div>
+                  <div className="text-black/40 dark:text-white/50 text-[12px]">
+                    Alt + L
+                  </div>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => setShowModal(true)}
+                  className="justify-between"
+                >
+                  <div className="flex items-center gap-x-2">
+                    <LogOut />
+                    Log out
+                  </div>
+                  <div className="text-black/40 dark:text-white/50 text-[12px]">
+                    Alt + Q
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+      <LogoutPrompt showModal={showModal} setShowModal={setShowModal} />
+    </>
   );
 }
