@@ -14,12 +14,26 @@ export default function UserViewPage({ slug }: any) {
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  const handleFormSubmit = (values: any) => {
+    console.log("Received form data in parent:", values);
+  };
+
   return (
     <>
       <FormComp
+        onFormSubmit={handleFormSubmit}
         form={form} // Pass the shape of the schema if needed, or any raw data
         fieldConfig={fieldConfig}
-        title="View User Information"
+        title={
+          slug === "view"
+            ? "View User Information"
+            : slug === "edit"
+            ? "Edit User Information"
+            : slug === "new"
+            ? "Create User"
+            : ""
+        }
       />
     </>
   );

@@ -24,11 +24,17 @@ interface FormProps {
   title: string;
   form: UseFormReturn | any;
   fieldConfig: TFieldConfig[];
+  onFormSubmit: (values: any) => void;
 }
 
-export default function FormComp({ title, form, fieldConfig }: FormProps) {
+export default function FormComp({
+  title,
+  form,
+  fieldConfig,
+  onFormSubmit,
+}: FormProps) {
   function onSubmit(values: any) {
-    console.log(values);
+    onFormSubmit(values);
   }
   return (
     <Card className="mx-auto w-full">
