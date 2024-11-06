@@ -15,14 +15,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <SidebarProvider>
-        <AppSidebar />
-        <main className="w-full bg-card min-h-screen overflow-hidden ">
-          <Navbar />
-          <div className="xl:pb-0 pb-[80px]">{children}</div>
-        </main>
-      </SidebarProvider>
-    </>
+    <AppSidebar>
+      <main className="w-full bg-card min-h-screen overflow-hidden ">
+        <Navbar />
+        <div className="xl:pb-0 pb-[80px]">{children}</div>
+      </main>
+    </AppSidebar>
   );
 }

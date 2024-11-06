@@ -1,0 +1,41 @@
+export const fieldConfig = [
+  {
+    name: "name",
+    label: "Name",
+    component: "input",
+    type: "text",
+    placeholder: "Enter your name",
+    isRequired: true,
+  },
+  // {
+  //   name: "Country",
+  //   label: "Country",
+  //   component: "select",
+  //   placeholder: "Select your country",
+  //   options: ["USA", "UK", "Canada", "Australia", "Germany", "France"],
+  //   isRequired: false,
+  // },
+  {
+    name: "email",
+    label: "Email",
+    component: "input",
+    type: "email",
+    placeholder: "Enter your email",
+    isRequired: false,
+  },
+  {
+    name: "company",
+    label: "Company",
+    component: "input",
+    type: "text",
+    placeholder: "Enter your company",
+    isRequired: false,
+  },
+  {
+    name: "gender",
+    label: "Gender",
+    component: "radio",
+    options: ["male", "female", "other"],
+    isRequired: false,
+  },
+];

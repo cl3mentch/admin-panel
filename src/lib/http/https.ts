@@ -32,6 +32,7 @@ class API {
         if (tokenApi) {
           headers.Authorization = `Bearer ${tokenApi}`;
         } else {
+          window.location.href = "/";
           throw new Error("No access token available");
         }
       }
@@ -55,9 +56,9 @@ class API {
         toast.warning("Login Session Expired... Redirecting to Login");
 
         // Delay the redirect to allow the toast to be visible
-        // setTimeout(() => {
-        //   window.location.href = "/";
-        // }, 3000); // Delay of 500ms (adjust as needed)
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 3000); // Delay of 500ms (adjust as needed)
       }
 
       return resp;

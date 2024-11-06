@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { LeftSide } from "@/components/page/auth/LeftSide";
-import { RightSide } from "@/components/page/auth/RightSide";
 import Cookies from "js-cookie";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
+import { LeftSide } from "./_components/LeftSide";
+import { RightSide } from "./_components/RightSide";
 
 export default function Auth() {
   const token = Cookies.get("accessToken");

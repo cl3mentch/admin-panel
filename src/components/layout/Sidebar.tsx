@@ -31,6 +31,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarProvider,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import {
@@ -47,6 +48,8 @@ import { zeroAddress } from "viem";
 import { truncateString } from "@/lib/helper";
 import { LogoutPrompt } from "../shared/LogoutPrompt";
 import { useState } from "react";
+import { useMediaQuery } from "react-responsive";
+import { useSidebar } from "@/components/ui/sidebar";
 
 // Typing the props for CollapsibleComponent
 type CollapsibleProps = {
@@ -54,66 +57,75 @@ type CollapsibleProps = {
   pathname: string;
 };
 
-export function AppSidebar() {
+export function AppSidebar({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" className="overflow-hidden">
-      <SidebarHeader>
-        <div className="flex gap-2 py-2 text-sidebar-accent-foreground ">
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            <Icon icon="tabler:brand-nextjs" className="text-[30px]" />
+    <SidebarProvider>
+      <Sidebar collapsible="icon" className="overflow-hidden">
+        <SidebarHeader>
+          <div className="flex gap-2 py-2 text-sidebar-accent-foreground ">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <Icon icon="tabler:brand-nextjs" className="text-[30px]" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">Admin Panel</span>
+              <span className="truncate text-xs">Skywalker Technology</span>
+            </div>
           </div>
-          <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">Admin Panel</span>
-            <span className="truncate text-xs">Skywalker Technology</span>
-          </div>
-        </div>
-      </SidebarHeader>
+        </SidebarHeader>
 
-      <SidebarContent className="h-full gap-y-1">
-        <SidebarGroup>
-          <SidebarGroupLabel className="ml-[1px] text-[12px]">
-            Overview
-          </SidebarGroupLabel>
+        <SidebarContent className="h-full gap-y-1">
+          <SidebarGroup>
+            <SidebarGroupLabel className="ml-[1px] text-[12px]">
+              Overview
+            </SidebarGroupLabel>
 
-          <SidebarMenu>
-            {directory.map((dir) => {
-              const key = dir.title; // Or use another unique value (e.g., dir.path)
+            <SidebarMenu>
+              {directory.map((dir) => {
+                const key = dir.title; // Or use another unique value (e.g., dir.path)
 
-              return dir.children && dir.children.length > 0 ? (
-                <CollapsibleComponent
-                  key={key} // Use key for the collapsible component
-                  dir={dir}
-                  pathname={pathname}
-                />
-              ) : (
-                <NonColapsibleComp
-                  key={key} // Use key for the non-collapsible component
-                  dir={dir}
-                  pathname={pathname}
-                />
-              );
-            })}
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
+                return dir.children && dir.children.length > 0 ? (
+                  <CollapsibleComponent
+                    key={key} // Use key for the collapsible component
+                    dir={dir}
+                    pathname={pathname}
+                  />
+                ) : (
+                  <NonColapsibleComp
+                    key={key} // Use key for the non-collapsible component
+                    dir={dir}
+                    pathname={pathname}
+                  />
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarFooterContent />
-      </SidebarFooter>
+        <SidebarFooter>
+          <SidebarFooterContent />
+        </SidebarFooter>
 
-      <SidebarRail />
-    </Sidebar>
+        <SidebarRail />
+      </Sidebar>
+      {children}
+    </SidebarProvider>
   );
 }
 
 export function NonColapsibleComp({ dir, pathname }: CollapsibleProps) {
   const isActive = pathname === dir.path;
+  const { setOpenMobile } = useSidebar();
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild tooltip={dir.title} isActive={isActive}>
+      <SidebarMenuButton
+        asChild
+        tooltip={dir.title}
+        isActive={isActive}
+        onClick={() => setOpenMobile(false)}
+      >
         <Link href={dir.path}>
           <Icon
             icon={dir.icon ? dir.icon : "mdi:apple-keyboard-command"}
@@ -132,7 +144,7 @@ export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
   const isParentActive =
     pathname === dir.path ||
     dir.children.some((child) => pathname === child.path);
-
+  const { setOpenMobile } = useSidebar();
   return (
     <Collapsible
       key={dir.title}
@@ -164,6 +176,7 @@ export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
                 <SidebarMenuSubItem key={child.title}>
                   <SidebarMenuSubButton
                     asChild
+                    onClick={() => setOpenMobile(false)}
                     isActive={isChildActive} // Mark child as active if the path matches
                   >
                     <Link href={child.path}>

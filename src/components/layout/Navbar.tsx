@@ -9,15 +9,6 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,18 +19,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { truncateString } from "@/lib/helper";
 import { useUserStore } from "@/lib/store/userDataStore";
-import { config } from "@/lib/web3/wagmi/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { disconnect } from "@wagmi/core";
-import Cookies from "js-cookie";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
 import { zeroAddress } from "viem";
 import { Language } from "../shared/Language";
+import { LogoutPrompt } from "../shared/LogoutPrompt";
 import { Theme } from "../shared/Theme";
 import { SidebarTrigger } from "../ui/sidebar";
-import { useMediaQuery } from "react-responsive";
-import { LogoutPrompt } from "../shared/LogoutPrompt";
 
 export default function Navbar() {
   return (
@@ -71,37 +59,42 @@ function BreadcrumbComponent() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {crumbs?.map((crumb, i) => (
-          <React.Fragment key={i}>
-            {!isXl && i === 1 ? null : (
-              <>
-                <BreadcrumbItem key={`breadcrumb-item-${i}`}>
-                  {i === 1 || crumbs.length - 1 === i ? (
-                    <p
-                      className={`${
-                        crumbs.length - 1 === i
-                          ? "dark:text-white text-black"
-                          : "dark:text-white/50 text-black/50"
-                      } cursor-default`}
-                    >
-                      {crumb.charAt(0).toUpperCase() + crumb.slice(1)}
-                    </p>
-                  ) : (
-                    <BreadcrumbLink
-                      className={`dark:text-white/50 text-black/50 dark:hover:text-white text-sm`}
-                      href={`/${crumb}`}
-                    >
-                      {crumb.charAt(0).toUpperCase() + crumb.slice(1)}
-                    </BreadcrumbLink>
+        {crumbs?.map((crumb, i) => {
+          // Join the crumbs progressively
+          const linkPath = `/${crumbs?.slice(0, i + 1).join("/")}`;
+
+          return (
+            <React.Fragment key={i}>
+              {!isXl && i === 1 ? null : (
+                <>
+                  <BreadcrumbItem key={`breadcrumb-item-${i}`}>
+                    {i === 1 || crumbs.length - 1 === i ? (
+                      <p
+                        className={`${
+                          crumbs.length - 1 === i
+                            ? "dark:text-white text-black"
+                            : "dark:text-white/50 text-black/50"
+                        } cursor-default`}
+                      >
+                        {crumb.charAt(0).toUpperCase() + crumb.slice(1)}
+                      </p>
+                    ) : (
+                      <BreadcrumbLink
+                        className={`dark:text-white/50 text-black/50 dark:hover:text-white text-sm`}
+                        href={linkPath}
+                      >
+                        {crumb.charAt(0).toUpperCase() + crumb.slice(1)}
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                  {crumbs.length === i + 1 || crumbs.length === 1 ? null : (
+                    <BreadcrumbSeparator key={`separator-${i}`} />
                   )}
-                </BreadcrumbItem>
-                {crumbs.length === i + 1 || crumbs.length === 1 ? null : (
-                  <BreadcrumbSeparator key={`separator-${i}`} />
-                )}
-              </>
-            )}
-          </React.Fragment>
-        ))}
+                </>
+              )}
+            </React.Fragment>
+          );
+        })}
       </BreadcrumbList>
     </Breadcrumb>
   );
