@@ -36,7 +36,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <ScrollArea className="h-[calc(80vh-220px)] rounded-md border md:h-[calc(106dvh-240px)]">
+    <div className="h-[calc(100vh-220px)] overflow-x-auto rounded-md border w-full md:h-[calc(106dvh-240px)]">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -84,6 +84,6 @@ export function DataTable<TData, TValue>({
           </TableRow>
         )}
       </Table>
-    </ScrollArea>
+    </div>
   );
 }

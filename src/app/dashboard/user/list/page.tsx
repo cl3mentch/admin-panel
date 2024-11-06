@@ -49,12 +49,17 @@ export default function Userlist() {
       initial={{ x: "-10vw", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ stiffness: 50, duration: 0.4 }}
-      className="w-full px-3 xl:px-5 mx-auto flex flex-col h-auto justify-between space-y-4"
+      className="w-full px-3 xl:px-5 mx-auto flex flex-col h-auto justify-between space-y-4 "
     >
       <div className="w-full pt-5 flex items-center justify-between">
-        <p className="text-2xl font-bold">User ({pageData?.count || 0})</p>
-        <Button size={"sm"} className="text-sm flex gap-x-0 items-center">
-          <Icon icon="ic:round-plus" />
+        <p className="text-lg xl:text-2xl font-bold">
+          User ({pageData?.count || 0})
+        </p>
+        <Button
+          size={"sm"}
+          className="text-xs xl:text-sm flex gap-x-0 items-center"
+        >
+          <Icon icon="ic:round-plus" className="mb-[2px]" />
           Add Record
         </Button>
       </div>
@@ -74,7 +79,7 @@ export default function Userlist() {
       )}
       <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-2 sm:flex-row">
         <div className="flex w-full items-center justify-between">
-          <div className="flex-1 text-sm text-foreground">
+          <div className="flex-1 text-xs xl:text-sm text-foreground">
             {pageData && pageData?.count > 0 ? (
               <>
                 Showing{" "}
@@ -90,7 +95,7 @@ export default function Userlist() {
           </div>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
-              <p className="whitespace-nowrap text-sm font-medium">
+              <p className="whitespace-nowrap text-xs xl:text-sm font-medium">
                 Rows per page
               </p>
               <Select
@@ -99,14 +104,14 @@ export default function Userlist() {
                   setPagination({ ...pagination, size: Number(value) });
                 }}
               >
-                <SelectTrigger className="h-8 w-[70px] bg-accent border-border">
+                <SelectTrigger className="h-8 w-[70px] bg-accent border-border text-xs xl:text-sm">
                   <SelectValue placeholder={pagination.size} />
                 </SelectTrigger>
                 <SelectContent side="top">
                   {pageSizeOptions.map((pageSize) => (
                     <SelectItem
                       key={pageSize}
-                      className="dark:text-white text-black"
+                      className="dark:text-white text-black text-xs xl:text-sm"
                       value={`${pageSize}`}
                     >
                       {pageSize}
@@ -117,8 +122,8 @@ export default function Userlist() {
             </div>
           </div>
         </div>
-        <div className="flex w-full items-center justify-between gap-2 sm:justify-end">
-          <div className="flex w-[150px] items-center justify-center text-sm font-medium">
+        <div className="flex w-fit xl:w-full items-center justify-between gap-2 sm:justify-end">
+          <div className="flex w-[150px] items-center justify-center text-xs xl:text-sm font-medium">
             {pageData && pageData?.count > 0 ? (
               <>
                 Page {pagination.page} of {pageData?.last_page || 0}
@@ -131,7 +136,7 @@ export default function Userlist() {
             <Button
               aria-label="Go to first page"
               variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
+              className="h-8 w-8 p-0 flex"
               onClick={() =>
                 setPagination((prev) => ({ ...prev, page: (prev.page = 1) }))
               }
@@ -173,7 +178,7 @@ export default function Userlist() {
             <Button
               aria-label="Go to last page"
               variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
+              className="h-8 w-8 p-0 flex"
               onClick={() =>
                 setPagination((prev) => ({
                   ...prev,
