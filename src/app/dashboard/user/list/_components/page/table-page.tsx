@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { DataPagination } from "@/components/shared/table/data-pagination";
 import { DataTable } from "@/components/shared/table/data-table";
 import { Button } from "@/components/ui/button";
-import UserAPI from "@/lib/api/user";
+import { onTranslateBackendError } from "@/lib/helper";
 import useGetEnum from "@/lib/hooks/useGetEnum";
 import { useActionStore } from "@/lib/store/actionStore";
 import { TUserList } from "@/lib/types/userType";
@@ -15,7 +14,6 @@ import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
-import { toast } from "sonner";
 import { z } from "zod";
 import { Filter } from "../../../../../../components/shared/table/data-filter";
 import {
@@ -23,37 +21,37 @@ import {
   filterFieldConfig,
   filterFormSchema,
 } from "../config/filterSchema";
-import { columns } from "../config/page-table-columns";
 import { getRecord } from "../config/page-action";
+import { columns } from "../config/page-table-columns";
 
 export default function TablePage() {
   // setup the enum list for filter when mounted
   useGetEnum(filterFieldConfig);
 
   const { actions } = useActionStore();
-  const [pagination, setPagination] = useState({
-    page: 1,
-    size: 20,
-  });
-
+  const [pagination, setPagination] = useState({ page: 1, size: 20 });
+  const [filters, setFilters] = useState({});
   const [pageData, setPageData] = useState<TUserList | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Combined getData function that considers both pagination and filters
   async function getData() {
     setIsLoading(true);
-    const result = await getRecord("", { ...pagination });
+    const result = await getRecord("", {
+      ...pagination,
+      ...filters,
+    });
     if (result.success) {
-      setPageData(result.data); // This is now of type TUserList
+      setPageData(result.data);
     } else {
-      toast.error(`Failed to fetch data`);
-      setPageData(undefined); // Or handle error state appropriately
+      onTranslateBackendError(result.data);
     }
     setIsLoading(false);
   }
 
   useEffect(() => {
     getData();
-  }, [pagination, actions]);
+  }, [pagination, actions, filters]);
 
   return (
     <motion.div
@@ -67,7 +65,7 @@ export default function TablePage() {
           User ({pageData?.count || 0})
         </p>
         <div className="flex items-center gap-x-2">
-          <FilterData />
+          <FilterData setFilters={setFilters} setPagination={setPagination} />
           <AddRecordButton />
         </div>
       </div>
@@ -85,7 +83,6 @@ export default function TablePage() {
           />
         </div>
       )}
-
       <DataPagination
         pageData={pageData}
         pagination={pagination}
@@ -95,13 +92,14 @@ export default function TablePage() {
   );
 }
 
+// Updated AddRecordButton Component
 export function AddRecordButton() {
   const router = useRouter();
   const isXl = useMediaQuery({ query: "(min-width: 1280px)" });
 
   return (
     <Button
-      size={"sm"}
+      size="sm"
       onClick={() => router.push("/dashboard/user/list/create")}
       className="text-xs xl:text-sm flex gap-x-0 items-center"
     >
@@ -111,17 +109,25 @@ export function AddRecordButton() {
   );
 }
 
-export function FilterData() {
+interface FilterDataProps {
+  setFilters: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  setPagination: React.Dispatch<
+    React.SetStateAction<{ page: number; size: number }>
+  >;
+}
+
+export function FilterData({ setFilters, setPagination }: FilterDataProps) {
   type TFilterFormSchema = z.infer<typeof filterFormSchema>;
 
   const filterForm = useForm<TFilterFormSchema>({
     resolver: zodResolver(filterFormSchema),
     defaultValues: filterDefaultState,
-    mode: "onChange", // Validate on every change
+    mode: "onChange",
   });
 
-  const onFormSubmit = (value: any) => {
-    console.log(true);
+  const onFormSubmit = (value: TFilterFormSchema) => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+    setFilters(value);
   };
 
   return (

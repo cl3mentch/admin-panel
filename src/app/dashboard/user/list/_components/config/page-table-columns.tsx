@@ -3,6 +3,10 @@ import { TUserList } from "@/lib/types/userType";
 import { ColumnDef } from "@tanstack/react-table";
 import { pageActionOptions } from "./page-action";
 
+/**
+ * These represents the column of the table and will be pass as a prop to table component @Tablepage
+ * */
+
 export const columns: ColumnDef<TUserList["data"][0]>[] = [
   {
     accessorKey: "id",

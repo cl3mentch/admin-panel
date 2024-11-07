@@ -21,7 +21,7 @@ export const pageActionOptions: TAction = [
 })) as TAction;
 
 // Adjust ur api here
-export const getRecord = async (userId: string, pagination?: IPagination) => {
+export const getRecord = async (userId?: string, pagination?: IPagination) => {
   return await UserAPI.read(userId, {
     ...pagination,
   });
