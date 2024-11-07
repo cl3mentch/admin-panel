@@ -7,21 +7,14 @@ import { onTranslateBackendError } from "@/lib/helper";
 import useGetEnum from "@/lib/hooks/useGetEnum";
 import { useActionStore } from "@/lib/store/actionStore";
 import { TUserList } from "@/lib/types/userType";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
-import { z } from "zod";
-import { Filter } from "../../../../../../components/shared/table/data-filter";
-import {
-  filterDefaultState,
-  filterFieldConfig,
-  filterFormSchema,
-} from "../config/filterSchema";
+import { filterFieldConfig } from "../config/filterSchema";
 import { getRecord } from "../config/page-action";
+import { PageFilter } from "../config/page-filter";
 import { columns } from "../config/page-table-columns";
 
 export default function TablePage() {
@@ -51,7 +44,7 @@ export default function TablePage() {
 
   useEffect(() => {
     getData();
-  }, [pagination, actions, filters]);
+  }, [pagination, actions]);
 
   return (
     <motion.div
@@ -65,7 +58,7 @@ export default function TablePage() {
           User ({pageData?.count || 0})
         </p>
         <div className="flex items-center gap-x-2">
-          <FilterData setFilters={setFilters} setPagination={setPagination} />
+          <PageFilter setFilters={setFilters} setPagination={setPagination} />
           <AddRecordButton />
         </div>
       </div>
@@ -106,35 +99,5 @@ export function AddRecordButton() {
       <Icon icon="ic:round-plus" className="mb-[2px]" />
       {isXl ? "Add Record" : null}
     </Button>
-  );
-}
-
-interface FilterDataProps {
-  setFilters: React.Dispatch<React.SetStateAction<Record<string, any>>>;
-  setPagination: React.Dispatch<
-    React.SetStateAction<{ page: number; size: number }>
-  >;
-}
-
-export function FilterData({ setFilters, setPagination }: FilterDataProps) {
-  type TFilterFormSchema = z.infer<typeof filterFormSchema>;
-
-  const filterForm = useForm<TFilterFormSchema>({
-    resolver: zodResolver(filterFormSchema),
-    defaultValues: filterDefaultState,
-    mode: "onChange",
-  });
-
-  const onFormSubmit = (value: TFilterFormSchema) => {
-    setPagination((prev) => ({ ...prev, page: 1 }));
-    setFilters(value);
-  };
-
-  return (
-    <Filter
-      fieldConfig={filterFieldConfig}
-      form={filterForm}
-      onFormSubmit={onFormSubmit}
-    />
   );
 }

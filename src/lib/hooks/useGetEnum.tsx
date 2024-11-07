@@ -37,7 +37,7 @@ function useGetEnum(fieldConfig: TFieldConfig[]) {
   useEffect(() => {
     getAccountStatusEnum();
     getWalletEnum();
-  });
+  }, []);
 
   return { getAccountStatusEnum, getWalletEnum };
 }

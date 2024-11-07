@@ -72,7 +72,7 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
       <SheetContent className="xl:max-w-[50vw] w-full">
         <SheetHeader>
           <SheetTitle className="text-left">Add Your Filter</SheetTitle>
-          <SheetDescription className="text-left">
+          <SheetDescription className="text-left text-black/50 dark:text-white/50">
             Make changes to your filter here. Click search when you're done.
           </SheetDescription>
         </SheetHeader>
@@ -123,7 +123,10 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
                               >
                                 <FormControl>
                                   <SelectTrigger
-                                    className="text-foreground border-border "
+                                    className={`${
+                                      !field.value &&
+                                      "text-black/50 dark:text-white/50 border-border"
+                                    }`}
                                     disabled={config.options.length === 0}
                                   >
                                     <SelectValue
@@ -165,9 +168,9 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
                                   <Button
                                     variant={"outline"}
                                     className={cn(
-                                      "w-full pl-3 text-left font-normal ",
+                                      "w-full pl-3 text-left font-normal text-foreground ",
                                       !field.value &&
-                                        "text-muted-foreground hover:text-foreground"
+                                        "text-black/50 dark:text-white/50"
                                     )}
                                   >
                                     {field.value ? (
@@ -187,6 +190,7 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
                                   mode="single"
                                   selected={field.value}
                                   onSelect={field.onChange}
+                                  className=""
                                   disabled={(date) =>
                                     date < new Date("1900-01-01")
                                   }
@@ -205,12 +209,18 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
               })}
             </div>
             <SheetFooter>
+              <Button
+                type="reset"
+                variant={"outline"}
+                className="w-full text-foreground"
+                onClick={() => form.reset()}
+              >
+                <Icon icon="ri:reset-left-fill" />
+                Reset
+              </Button>
               <SheetClose asChild>
-                <Button
-                  className="w-full"
-                  disabled={isAllValuesEmpty}
-                  type="submit"
-                >
+                <Button className="w-full" type="submit">
+                  <Icon icon="material-symbols:search" />
                   Search
                 </Button>
               </SheetClose>

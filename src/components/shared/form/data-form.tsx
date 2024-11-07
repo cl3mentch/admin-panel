@@ -1,6 +1,7 @@
 "use client";
 import { pageActionOptions } from "@/app/dashboard/user/list/_components/config/page-action";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -13,6 +14,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -20,6 +26,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TFieldConfig } from "@/lib/types/formType";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import DataAction, { TActionOptions } from "../table/data-actions";
@@ -88,7 +97,7 @@ export default function DataForm({
                         render={({ field: inputField }) => (
                           <FormItem>
                             <FormLabel className="text-foreground">
-                              {config.label}
+                              {config.label}{" "}
                               {slug !== "view" ? (
                                 config.isRequired ? (
                                   <span className="text-red-500">*</span>
@@ -120,11 +129,6 @@ export default function DataForm({
                         control={form.control}
                         name={config.name}
                         render={({ field }) => {
-                          console.log(
-                            "Field value for",
-                            config.name,
-                            field.value
-                          ); // Check the value here
                           return (
                             <FormItem>
                               <FormLabel className="text-foreground">
@@ -145,7 +149,10 @@ export default function DataForm({
                               >
                                 <FormControl>
                                   <SelectTrigger
-                                    className="text-foreground border-border "
+                                    className={`${
+                                      !field.value &&
+                                      "text-black/50 dark:text-white/50 border-border"
+                                    }`}
                                     disabled={
                                       config.options.length === 0 ||
                                       slug === "view"
@@ -173,6 +180,68 @@ export default function DataForm({
                             </FormItem>
                           );
                         }}
+                      />
+                    );
+
+                  case "date":
+                    return (
+                      <FormField
+                        key={i}
+                        control={form.control}
+                        name={config.name}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>
+                              {config.label}{" "}
+                              {slug !== "view" ? (
+                                config.isRequired ? (
+                                  <span className="text-red-500">*</span>
+                                ) : (
+                                  <span className="text-black/50 dark:text-white/50 text-xs">
+                                    (Optional)
+                                  </span>
+                                )
+                              ) : null}
+                            </FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full pl-3 text-left font-normal text-foreground ",
+                                      !field.value &&
+                                        "text-black/50 dark:text-white/50"
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "PPP")
+                                    ) : (
+                                      <span>{config.placeholder}</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  className=""
+                                  disabled={(date) =>
+                                    date < new Date("1900-01-01")
+                                  }
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     );
                   default:
