@@ -162,7 +162,7 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
                             <FormLabel>{config.label}</FormLabel>
-                            <Popover>
+                            <Popover modal={true}>
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Button
