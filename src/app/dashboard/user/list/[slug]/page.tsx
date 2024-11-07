@@ -1,5 +1,5 @@
 import { TActionOptions } from "@/components/shared/table/data-actions";
-import UserFormPage from "../_components/page-form";
+import FormPage from "../_components/page/form-page";
 
 export async function generateMetadata({
   searchParams,
@@ -22,5 +22,5 @@ export default async function SlugPage({
   const userId = (await searchParams).userid;
   const slug = (await params).slug;
 
-  return <UserFormPage slug={slug} userId={userId} />;
+  return <FormPage slug={slug} userId={userId} />;
 }

@@ -1,9 +1,9 @@
-import UserlistPage from "./_components/page-table";
+import TablePage from "./_components/page/table-page";
 
 export const metadata = {
   title: "Dashboard: User List",
 };
 
 export default function Userlist() {
-  return <UserlistPage />;
+  return <TablePage />;
 }

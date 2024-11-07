@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <AppSidebar>
-      <main className="w-full bg-card min-h-screen overflow-hidden ">
+      <main className="w-full bg-card min-h-screen overflow-hidden relative">
         <Navbar />
         <div className="xl:pb-0 pb-[80px]">{children}</div>
       </main>

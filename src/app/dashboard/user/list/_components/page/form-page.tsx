@@ -15,19 +15,19 @@ import {
   defaultValues,
   userDetailFieldConfig,
   userFormSchema,
-} from "./config/userSchema";
+} from "../config/userSchema";
 import { onTranslateBackendError } from "@/lib/helper";
 
-type TUserFormData = z.infer<typeof userFormSchema>;
+type TUserFormSchema = z.infer<typeof userFormSchema>;
 
 interface UserFormPageProps {
   slug: TActionOptions;
   userId?: string;
 }
 
-export default function UserFormPage({ slug, userId }: UserFormPageProps) {
+export default function FormPage({ slug, userId }: UserFormPageProps) {
   useGetEnum(userDetailFieldConfig);
-  const userForm = useForm<TUserFormData>({
+  const userForm = useForm<TUserFormSchema>({
     resolver: zodResolver(userFormSchema),
     defaultValues,
     mode: "onChange", // Validate on every change
@@ -65,14 +65,14 @@ export default function UserFormPage({ slug, userId }: UserFormPageProps) {
           acc[key] = result.data[key] ?? "";
           return acc;
         },
-        {} as Partial<TUserFormData>
+        {} as Partial<TUserFormSchema>
       );
 
       // Update form values dynamically after fetching the data
       Object.keys(populatedData).forEach((key) => {
         userForm.setValue(
-          key as keyof TUserFormData,
-          populatedData[key as keyof TUserFormData]
+          key as keyof TUserFormSchema,
+          populatedData[key as keyof TUserFormSchema]
         );
       });
     } else {

@@ -26,4 +26,11 @@ export type TFieldConfig =
       options: string[];
       isRequired: boolean;
       type?: never;
+    }
+  | {
+      name: string;
+      label: string;
+      component: "date";
+      placeholder: string;
+      isRequired: boolean;
     };
