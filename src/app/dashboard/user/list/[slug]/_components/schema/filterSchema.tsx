@@ -13,7 +13,7 @@ export const filterFormSchema = z.object({
   tag: z.string().optional(),
   nickname: z.string().optional(),
   telegram: z.string().optional(),
-  created_at_start: z.union([z.date(), z.string().optional()]).optional(),
+  created_at_start: z.date().optional(),
 });
 
 /**
@@ -26,7 +26,6 @@ export const filterDefaultState = {
   tag: "",
   nickname: "",
   telegram: "",
-  created_at_start: "" as any,
 };
 
 /**

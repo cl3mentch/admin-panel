@@ -36,7 +36,7 @@ export default function Navbar() {
         <SidebarTrigger className="text-black dark:text-white" />
         <BreadcrumbComponent />
       </div>
-      <div className="flex items-center gap-x-3 xl:gap-x-4">
+      <div className="flex items-center gap-x-1">
         <Language />
         <Theme />
         <AvatarDropdown />

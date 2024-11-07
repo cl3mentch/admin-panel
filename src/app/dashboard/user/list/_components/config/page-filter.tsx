@@ -4,7 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Filter } from "../../../../../../components/shared/table/data-filter";
-import { filterDefaultState, filterFieldConfig, filterFormSchema } from "../../[slug]/_components/schema/filterSchema";
+import {
+  filterDefaultState,
+  filterFieldConfig,
+  filterFormSchema,
+} from "../../[slug]/_components/schema/filterSchema";
 
 interface FilterDataProps {
   setFilters: React.Dispatch<React.SetStateAction<Record<string, any>>>;
@@ -24,7 +28,25 @@ export function PageFilter({ setFilters, setPagination }: FilterDataProps) {
 
   const onFormSubmit = (value: TFilterFormSchema) => {
     setPagination((prev) => ({ ...prev, page: 1 }));
-    setFilters(value);
+
+    // Iterate over each value to check if it's a Date and format it
+    const formattedValue = Object.entries(value).reduce((acc, [key, val]) => {
+      if (val instanceof Date) {
+        const formattedDate = `${val.getDate().toString().padStart(2, "0")}/${(
+          val.getMonth() + 1
+        )
+          .toString()
+          .padStart(2, "0")}/${val.getFullYear()}`;
+        // @ts-ignore
+        acc[key as keyof TFilterFormSchema] = formattedDate; // Cast key to keyof TFilterFormSchema
+      } else {
+        // @ts-ignore
+        acc[key as keyof TFilterFormSchema] = val;
+      }
+      return acc;
+    }, {} as TFilterFormSchema); // Use the same type for the resulting object
+
+    setFilters(formattedValue);
   };
 
   return (

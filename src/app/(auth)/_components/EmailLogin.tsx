@@ -2,16 +2,19 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuthAPI from "@/lib/api/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/lib/store/userDataStore";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 // Define form fields with types
 interface FormData {
   email: string;
   password: string;
+  rememberMe: boolean;
 }
 
 export function EmailLogin() {
@@ -20,6 +23,7 @@ export function EmailLogin() {
     handleSubmit,
     formState: { errors },
     watch, // Watch input fields
+    setValue, // For setting initial values
   } = useForm<FormData>(); // Provide FormData type here
   const [viewPassword, setViewPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
@@ -29,10 +33,21 @@ export function EmailLogin() {
   // Watch password field to track if it's empty or not
   const passwordValue = watch("password");
 
-  const onSubmit: SubmitHandler<FormData> = async (data, event) => {
-    // Explicitly prevent the form refresh (not usually necessary with handleSubmit)
-    event?.preventDefault(); // Ensure form doesn't reload the page
+  // Load saved credentials if "Remember Me" is enabled
+  useEffect(() => {
+    const savedData = localStorage.getItem("loginData");
+    if (savedData) {
+      const { email, password, rememberMe } = JSON.parse(savedData);
+      if (rememberMe) {
+        setValue("email", email);
+        setValue("password", password);
+        setValue("rememberMe", rememberMe);
+      }
+    }
+  }, [setValue]);
 
+  const onSubmit: SubmitHandler<FormData> = async (data, event) => {
+    event?.preventDefault();
     setLoading(true);
 
     try {
@@ -41,6 +56,17 @@ export function EmailLogin() {
         toast.success("Login Successful");
         setUser({ email: data.email });
         router.push("/dashboard");
+
+        if (data.rememberMe) {
+          const loginData = JSON.stringify({
+            email: data.email,
+            password: data.password,
+            rememberMe: data.rememberMe,
+          });
+          localStorage.setItem("loginData", loginData);
+        } else {
+          localStorage.removeItem("loginData");
+        }
       } else {
         setLoading(false);
       }
@@ -100,6 +126,19 @@ export function EmailLogin() {
         {errors.password && (
           <p className="text-red-500 text-sm">{errors.password.message}</p>
         )}
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          {...register("rememberMe")}
+          id="rememberMe"
+          className="cursor-pointer checked:bg-primary checked:text-white"
+        />
+
+        <Label htmlFor="rememberMe" className="text-sm cursor-pointer">
+          Remember Me
+        </Label>
       </div>
 
       <Button disabled={loading} type="submit" className="w-full">
