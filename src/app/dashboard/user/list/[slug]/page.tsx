@@ -6,7 +6,7 @@ export async function generateMetadata({
 }: {
   searchParams: { userid?: string };
 }) {
-  const userId = (await searchParams).userid;
+  const userId = (await searchParams)?.userid;
   return {
     title: `Dashboard : User${userId ? ` (${userId})` : ""}`,
   };
@@ -17,9 +17,9 @@ export default async function SlugPage({
   searchParams,
 }: {
   params: { slug: TActionOptions };
-  searchParams: Promise<{ userid?: string }>;
+  searchParams: { userid?: string };
 }) {
-  const userId = (await searchParams).userid;
+  const userId = (await searchParams)?.userid;
   const slug = (await params).slug;
 
   return <FormPage slug={slug} userId={userId} />;
