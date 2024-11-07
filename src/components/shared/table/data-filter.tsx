@@ -78,7 +78,7 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
         </SheetHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-2 gap-4 gap-y-6 xl:gap-6 md:grid-cols-2 py-5">
+            <div className="grid grid-cols-2 gap-4 gap-y-6 xl:gap-6 md:grid-cols-2 py-5 h-full">
               {fieldConfig.map((config, i) => {
                 switch (config.component) {
                   case "input":
@@ -208,7 +208,7 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
                 }
               })}
             </div>
-            <SheetFooter>
+            <SheetFooter className="flex flex-col xl:flex-row gap-3">
               <Button
                 type="reset"
                 variant={"outline"}

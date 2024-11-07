@@ -2,6 +2,7 @@ import DataAction from "@/components/shared/table/data-actions";
 import { TUserList } from "@/lib/types/userType";
 import { ColumnDef } from "@tanstack/react-table";
 import { pageActionOptions } from "./page-action";
+import { Checkbox } from "@/components/ui/checkbox";
 
 /**
  * These represents the column of the table and will be pass as a prop to table component @Tablepage
