@@ -20,6 +20,7 @@ export type TAction = {
   path: string;
   icon: string;
   param: string;
+  deleteFunction: (id: string) => void;
 }[];
 
 interface ActionProps<TData extends Record<string, any>> {
@@ -77,6 +78,7 @@ export default function DataAction<TData extends Record<string, any>>({
         id={data.id}
         showModal={showModal}
         setShowModal={setShowModal}
+        options={options}
       />
     </>
   );

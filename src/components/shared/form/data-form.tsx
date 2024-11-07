@@ -1,5 +1,5 @@
 "use client";
-import { pageActionOptions } from "@/app/dashboard/user/list/_components/table/page-action";
+import { pageActionOptions } from "@/app/dashboard/user/list/_components/config/page-action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -42,8 +42,6 @@ export default function DataForm({
   fieldConfig,
   onFormSubmit,
 }: FormProps) {
-  const router = useRouter();
-
   const [isChecked, setIsChecked] = useState(false);
 
   async function validateForm() {
@@ -58,15 +56,9 @@ export default function DataForm({
     }
   }
 
-  async function switchAction(actionName: TActionOptions) {
-    const currentHref = window.location.href;
-    if (currentHref.includes(slug)) {
-      router.push(currentHref.replace(slug, actionName));
-    }
-  }
-
   function onSubmit(values: any) {
     onFormSubmit(values);
+    setIsChecked(false);
   }
 
   return (
@@ -97,14 +89,16 @@ export default function DataForm({
                         render={({ field: inputField }) => (
                           <FormItem>
                             <FormLabel className="text-foreground">
-                              {config.label}{" "}
-                              {config.isRequired ? (
-                                <span className="text-red-500">*</span>
-                              ) : (
-                                <span className="text-black/50 dark:text-white/50 text-xs">
-                                  (Optional)
-                                </span>
-                              )}
+                              {config.label}
+                              {slug !== "view" ? (
+                                config.isRequired ? (
+                                  <span className="text-red-500">*</span>
+                                ) : (
+                                  <span className="text-black/50 dark:text-white/50 text-xs">
+                                    (Optional)
+                                  </span>
+                                )
+                              ) : null}
                             </FormLabel>
 
                             <FormControl>
@@ -136,13 +130,15 @@ export default function DataForm({
                             <FormItem>
                               <FormLabel className="text-foreground">
                                 {config.label}{" "}
-                                {config.isRequired ? (
-                                  <span className="text-red-500">*</span>
-                                ) : (
-                                  <span className="text-black/50 dark:text-white/50 text-xs">
-                                    (Optional)
-                                  </span>
-                                )}
+                                {slug !== "view" ? (
+                                  config.isRequired ? (
+                                    <span className="text-red-500">*</span>
+                                  ) : (
+                                    <span className="text-black/50 dark:text-white/50 text-xs">
+                                      (Optional)
+                                    </span>
+                                  )
+                                ) : null}
                               </FormLabel>
                               <Select
                                 onValueChange={field.onChange}

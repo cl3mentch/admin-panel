@@ -10,18 +10,29 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { TAction } from "./data-actions";
+import { deleteRecord } from "@/app/dashboard/user/list/_components/config/page-action";
+import { useActionStore } from "@/lib/store/actionStore";
 
 interface IDeletePrompProps {
   id: string;
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
+  options: Partial<TAction>;
 }
 
 export function DeletePromp({
+  id,
   showModal,
   setShowModal,
-  id,
 }: IDeletePrompProps) {
+  const { setAction } = useActionStore();
+
+  const onHandleDelete = async () => {
+    deleteRecord(id);
+    setAction({ delete: true });
+  };
+
   return (
     <Dialog open={showModal} onOpenChange={() => setShowModal(false)}>
       <DialogContent className="sm:max-w-[425px]">
@@ -39,7 +50,10 @@ export function DeletePromp({
           >
             Cancel
           </Button>
-          <Button className="bg-red-500 text-white hover:bg-red-600">
+          <Button
+            onClick={onHandleDelete}
+            className="bg-red-500 text-white hover:bg-red-600"
+          >
             Delete
           </Button>
         </DialogFooter>

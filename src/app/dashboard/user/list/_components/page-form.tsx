@@ -15,7 +15,8 @@ import {
   defaultValues,
   userDetailFieldConfig,
   userFormSchema,
-} from "./form/userSchema";
+} from "./config/userSchema";
+import { onTranslateBackendError } from "@/lib/helper";
 
 type TUserFormData = z.infer<typeof userFormSchema>;
 
@@ -33,13 +34,25 @@ export default function UserFormPage({ slug, userId }: UserFormPageProps) {
   });
 
   const handleFormSubmit = async (values: any) => {
-    if (slug === "create") {
-      const result = await UserAPI.create({ ...values });
-      if (result.success) {
-        toast.success("Created Successfully");
-      } else {
-        result.data.forEach((data: any) => toast.error(data));
+    try {
+      let result;
+      if (slug === "create") {
+        result = await UserAPI.create({ ...values });
+      } else if (slug === "edit" && userId) {
+        result = await UserAPI.update(userId, { ...values });
       }
+
+      if (result && result.success) {
+        const successMessage =
+          slug === "create" ? "Created Successfully" : "Updated Successfully";
+        getViewFormDetails();
+        toast.success(successMessage);
+      } else {
+        onTranslateBackendError(result!.data);
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      toast.error("An error occurred, please try again.");
     }
   };
 

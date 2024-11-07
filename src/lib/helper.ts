@@ -50,3 +50,9 @@ export const onTranslateErrMsg = async (e: unknown | any) => {
     toast.error(error.shortMessage);
   }
 };
+
+export const onTranslateBackendError = async (e: unknown | any) => {
+  for (let index = 0; index < e.length; index++) {
+    toast.error(e);
+  }
+};

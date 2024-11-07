@@ -11,10 +11,12 @@ import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { columns } from "./table/page-columns";
+import { columns } from "./config/page-columns";
+import { useActionStore } from "@/lib/store/actionStore";
 
 export default function UserlistPage() {
   const router = useRouter();
+  const { actions } = useActionStore();
   const [pagination, setPagination] = useState({
     page: 1,
     size: 20,
@@ -38,7 +40,7 @@ export default function UserlistPage() {
 
   useEffect(() => {
     getData();
-  }, [pagination]);
+  }, [pagination, actions]);
 
   return (
     <motion.div
