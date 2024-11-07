@@ -47,3 +47,23 @@ export const deleteRecord = async (id: string) => {
     onTranslateBackendError(result.data);
   }
 };
+
+export const getBalance = async (userId: string) => {
+  return await UserAPI.balance.view(userId);
+};
+
+export const addBalance = async (
+  userId: string,
+  wallet: number,
+  amount: number
+) => {
+  return await UserAPI.balance.add(userId, wallet, amount);
+};
+
+export const deductBalance = async (
+  userId: string,
+  wallet: number,
+  amount: number
+) => {
+  return await UserAPI.balance.deduct(userId, wallet, amount);
+};

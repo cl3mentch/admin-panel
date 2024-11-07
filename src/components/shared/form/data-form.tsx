@@ -29,12 +29,11 @@ import { TFieldConfig } from "@/lib/types/formType";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import DataAction, { TActionOptions } from "../table/data-actions";
 
 interface FormProps {
-  id: string | undefined;
+  id?: string | undefined;
   slug: TActionOptions;
   title: string;
   form: UseFormReturn | any;
@@ -50,23 +49,18 @@ export default function DataForm({
   fieldConfig,
   onFormSubmit,
 }: FormProps) {
-  const [isChecked, setIsChecked] = useState(false);
-
-  async function validateForm() {
-    return await form.trigger();
-  }
-
-  async function handleCheckboxChange() {
-    const isValid = await validateForm();
-    // Trigger validation on the entire form
-    if (isValid) {
-      setIsChecked(!isChecked);
-    }
-  }
+  const checkboxValue = form.watch("check"); // Watch the checkbox value
 
   function onSubmit(values: any) {
     onFormSubmit(values);
-    setIsChecked(false);
+    uncheck();
+  }
+
+  function uncheck() {
+    form.reset({
+      ...form.getValues(), // Preserve the other values if needed
+      check: false, // Reset the checkbox to false
+    });
   }
 
   return (
@@ -76,7 +70,7 @@ export default function DataForm({
           <div className="flex justify-between items-center">
             {title}
 
-            {slug === "view" ? (
+            {slug === "view" && id ? (
               <DataAction options={pageActionOptions} data={{ id }} />
             ) : null}
           </div>
@@ -111,10 +105,11 @@ export default function DataForm({
 
                             <FormControl>
                               <Input
+                                {...inputField}
                                 readOnly={slug === "view"}
                                 className="text-foreground"
                                 placeholder={config.placeholder}
-                                {...inputField}
+                                type={config.type}
                               />
                             </FormControl>
                             <FormMessage />
@@ -251,23 +246,34 @@ export default function DataForm({
             </div>
             {slug !== "view" ? (
               <>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    checked={isChecked}
-                    id="terms"
-                    onCheckedChange={handleCheckboxChange}
-                    className="text-foreground"
-                  />
-
-                  <label
-                    htmlFor="terms"
-                    className="text-sm sf-light-font leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground"
-                  >
-                    I agree that the information filled above is correct
-                  </label>
-                </div>
+                {fieldConfig.map((config, i) => {
+                  switch (config.component) {
+                    case "checkbox":
+                      return (
+                        <FormField
+                          key={i}
+                          control={form.control}
+                          name={config.name}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 ">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                  required={config.isRequired}
+                                />
+                              </FormControl>
+                              <FormLabel>{config.label}</FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      );
+                    default:
+                      return null;
+                  }
+                })}
                 <Button
-                  disabled={!isChecked}
+                  disabled={!checkboxValue}
                   type="submit"
                   className="w-full xl:w-fit"
                 >

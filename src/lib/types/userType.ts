@@ -46,3 +46,15 @@ export interface IReadUserParams
   updated_at_start?: string;
   updated_at_end?: string;
 }
+
+export type TWalletBalance = {
+  code:
+    | "usdt"
+    | "peic"
+    | "point"
+    | "locked_peic"
+    | "party_ticket"
+    | "nft"
+    | "beic";
+  amount: number;
+}[];

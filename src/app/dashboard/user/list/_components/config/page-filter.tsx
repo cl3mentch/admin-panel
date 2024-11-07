@@ -4,11 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Filter } from "../../../../../../components/shared/table/data-filter";
-import {
-  filterDefaultState,
-  filterFieldConfig,
-  filterFormSchema,
-} from "../config/filterSchema";
+import { filterDefaultState, filterFieldConfig, filterFormSchema } from "../../[slug]/_components/schema/filterSchema";
 
 interface FilterDataProps {
   setFilters: React.Dispatch<React.SetStateAction<Record<string, any>>>;

@@ -4,6 +4,7 @@ import {
   ICreateUserParams,
   IReadUserParams,
   TUserList,
+  TWalletBalance,
 } from "../types/userType";
 
 const UserAPI = {
@@ -30,7 +31,7 @@ const UserAPI = {
     return apiRequest("delete", `/admin/account/user/${user_id}`);
   },
   balance: {
-    view: async (user_id: string) => {
+    view: async (user_id: string): Promise<APIResponse<TWalletBalance>> => {
       return apiRequest("get", `/admin/account/user/balance/view/${user_id}`);
     },
     add: async (user_id: string, wallet: number, amount: number) => {

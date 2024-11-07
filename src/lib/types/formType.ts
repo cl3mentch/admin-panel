@@ -33,4 +33,10 @@ export type TFieldConfig =
       component: "date";
       placeholder: string;
       isRequired: boolean;
+    }
+  | {
+      name: string;
+      label: string;
+      component: "checkbox";
+      isRequired: boolean;
     };

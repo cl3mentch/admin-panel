@@ -1,5 +1,5 @@
 import { TActionOptions } from "@/components/shared/table/data-actions";
-import FormPage from "../_components/page/form-page";
+import FormPage from "./_components/form-page";
 
 export async function generateMetadata({
   searchParams,

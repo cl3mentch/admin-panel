@@ -19,10 +19,10 @@ import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
-import { filterFieldConfig } from "../config/filterSchema";
-import { getRecord } from "../config/page-action";
-import { PageFilter } from "../config/page-filter";
-import { columns } from "../config/page-table-columns";
+import { PageFilter } from "./config/page-filter";
+import { columns } from "./config/page-table-columns";
+import { getRecord } from "./config/page-action";
+import { filterFieldConfig } from "../[slug]/_components/schema/filterSchema";
 
 export default function TablePage() {
   // setup the enum list for filter when mounted
@@ -51,6 +51,7 @@ export default function TablePage() {
     });
     if (result.success) {
       setPageData(result.data);
+      console.log(filters);
     } else {
       onTranslateBackendError(result.data);
     }
@@ -59,23 +60,25 @@ export default function TablePage() {
 
   useEffect(() => {
     getData();
-  }, [pagination, actions]);
+  }, [pagination, actions, filters]);
 
   return (
     <motion.div
       initial={{ x: "-10vw", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ stiffness: 10, duration: 0.5 }}
-      className="w-full px-3 xl:px-5 mx-auto flex flex-col h-full justify-between space-y-4 "
+      className="w-full px-3 xl:px-5 mx-auto flex flex-col h-full justify-between space-y-4"
     >
-      <div className="w-full pt-5 flex items-center justify-between">
-        <p className="text-lg xl:text-2xl font-bold">
-          User ({pageData?.count || 0})
-        </p>
-        <div className="flex items-center gap-x-2">
-          <EditColumn table={table as ReturnType<typeof useReactTable>} />
-          <PageFilter setFilters={setFilters} setPagination={setPagination} />
-          <AddRecordButton />
+      <div className="space-y-2">
+        <div className="w-full pt-5 flex items-center justify-between">
+          <p className="text-lg xl:text-2xl font-bold">
+            User ({pageData?.count || 0})
+          </p>
+          <div className="flex items-center gap-x-2">
+            <EditColumn table={table as ReturnType<typeof useReactTable>} />
+            <PageFilter setFilters={setFilters} setPagination={setPagination} />
+            <AddRecordButton />
+          </div>
         </div>
       </div>
       {pageData ? (
@@ -152,7 +155,8 @@ export function EditColumn({ table }: EditColumnProps) {
               checked={column.getIsVisible()}
               onCheckedChange={(value) => column.toggleVisibility(!!value)}
             >
-              {column.id}
+              {/* @ts-ignore */}
+              {column.columnDef.header}
             </DropdownMenuCheckboxItem>
           ))}
       </DropdownMenuContent>

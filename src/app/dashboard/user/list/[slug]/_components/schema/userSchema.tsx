@@ -13,7 +13,7 @@ export const userFormSchema = z.object({
     .refine((value) => isAddress(value), {
       message: "Wallet Address Wrong Format",
     }),
-  status: z.string().min(1, { message: "Status is required" }),
+  status: z.string().optional(),
   upline: z
     .string()
     .optional()
@@ -24,6 +24,7 @@ export const userFormSchema = z.object({
   nickname: z.string().optional(),
   telegram: z.string().optional(),
   remark: z.string().optional(),
+  check: z.boolean().default(false),
 });
 
 /**
@@ -37,6 +38,7 @@ export const defaultValues = {
   nickname: "",
   telegram: "",
   remark: "",
+  check: false,
 };
 
 /**
@@ -57,7 +59,7 @@ export let userDetailFieldConfig: TFieldConfig[] = [
     component: "select",
     placeholder: "Select account status",
     options: [],
-    isRequired: true,
+    isRequired: false,
   },
   {
     name: "upline",
@@ -98,5 +100,11 @@ export let userDetailFieldConfig: TFieldConfig[] = [
     type: "text",
     placeholder: "Enter your remark",
     isRequired: false,
+  },
+  {
+    name: "check",
+    label: "I agree that the information above is correct",
+    component: "checkbox",
+    isRequired: true,
   },
 ];
