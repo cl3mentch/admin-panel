@@ -10,15 +10,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
+import { useAccount } from "wagmi";
 import { Button } from "../ui/button";
 
 export function ConnectWallet() {
+  const account = useAccount();
   const router = useRouter();
   const { open } = useAppKit();
   const isCookie = Cookies.get("accessToken");
   const { setUser, user } = useUserStore();
-
-  // Use useRef to track isRequesting without causing re-renders
   const isRequestingRef = useRef(false);
 
   const unwatch = watchAccount(config, {
@@ -26,13 +26,13 @@ export function ConnectWallet() {
       const incomingAddress = data?.address as Address;
 
       // Early exit if a request is already in progress or if no valid address is provided
-      if (isRequestingRef.current || !incomingAddress || isCookie) {
+      if (isRequestingRef.current || !incomingAddress) {
         return;
       }
 
       // Set the flag using the ref
       isRequestingRef.current = true;
-
+      console.log(incomingAddress);
       try {
         // Handle logic for non-cookie and cookie-based authentication
         if (!isCookie || user?.web3_address !== incomingAddress) {
@@ -69,8 +69,18 @@ export function ConnectWallet() {
   }, [user, isCookie]);
 
   return (
-    <Button onClick={() => open()} className="w-full z-10">
-      <Icon icon="logos:metamask-icon" /> Connect Wallet
+    <Button
+      disabled={isRequestingRef.current || (account?.address && !isCookie)}
+      onClick={() => open()}
+      className="w-full z-10"
+    >
+      {isRequestingRef.current ? (
+        <Icon icon="eos-icons:bubble-loading" />
+      ) : (
+        <p className="flex items-center gap-x-2">
+          <Icon icon="logos:metamask-icon" /> Connect Wallet
+        </p>
+      )}
     </Button>
   );
 }

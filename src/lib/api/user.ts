@@ -1,34 +1,45 @@
 import { apiRequest } from "../http/https";
 import { APIResponse } from "../types/commonType";
-import { ICreateUserParams, TUserList } from "../types/userType";
+import {
+  ICreateUserParams,
+  IReadUserParams,
+  TUserList,
+} from "../types/userType";
 
 const UserAPI = {
-  read: async (page: number, size: number): Promise<APIResponse<TUserList>> => {
-    return apiRequest<TUserList>("get", "/admin/account/user", { page, size });
+  read: async (
+    user_id?: string,
+    param?: IReadUserParams
+  ): Promise<APIResponse<TUserList>> => {
+    return apiRequest<TUserList>(
+      "get",
+      `/admin/account/user${user_id ? `/${user_id}` : ""}`,
+      { ...param }
+    );
   },
   create: async (data: ICreateUserParams): Promise<APIResponse<any>> => {
     return apiRequest("post", "/admin/account/user", data);
   },
   update: async (
-    user_id: number,
+    user_id: string,
     data: ICreateUserParams
   ): Promise<APIResponse<any>> => {
     return apiRequest("put", `/admin/account/user/${user_id}`, data);
   },
-  delete: async (user_id: number): Promise<APIResponse<any>> => {
+  delete: async (user_id: string): Promise<APIResponse<any>> => {
     return apiRequest("delete", `/admin/account/user/${user_id}`);
   },
   balance: {
-    view: async (user_id: number) => {
+    view: async (user_id: string) => {
       return apiRequest("get", `/admin/account/user/balance/view/${user_id}`);
     },
-    add: async (user_id: number, wallet: number, amount: number) => {
+    add: async (user_id: string, wallet: number, amount: number) => {
       return (
         apiRequest("put", `/admin/account/user/balance/add/${user_id}`),
         { data: { wallet, amount } }
       );
     },
-    deduct: async (user_id: number, wallet: number, amount: number) => {
+    deduct: async (user_id: string, wallet: number, amount: number) => {
       return (
         apiRequest("put", `/admin/account/user/balance/deduct/${user_id}`),
         { data: { wallet, amount } }

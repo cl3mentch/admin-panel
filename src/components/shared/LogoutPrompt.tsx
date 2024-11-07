@@ -3,12 +3,12 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { useUserStore } from "@/lib/store/userDataStore";
 import { config } from "@/lib/web3/wagmi/config";
@@ -40,7 +40,7 @@ export function LogoutPrompt({ showModal, setShowModal }: any) {
           <DialogTitle>Confirm Logout</DialogTitle>
           <DialogDescription className="text-black/50 dark:text-white/50">
             Are you sure you want to log out? You will be redirected to the
-            homepage.
+            login.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex justify-between ">

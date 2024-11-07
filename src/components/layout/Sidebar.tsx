@@ -33,23 +33,19 @@ import {
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import { truncateString } from "@/lib/helper";
+import { useUserStore } from "@/lib/store/userDataStore";
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
-  LogOut,
+  LogOut
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUserStore } from "@/lib/store/userDataStore";
-import { zeroAddress } from "viem";
-import { truncateString } from "@/lib/helper";
-import { LogoutPrompt } from "../shared/LogoutPrompt";
 import { useState } from "react";
-import { useMediaQuery } from "react-responsive";
-import { useSidebar } from "@/components/ui/sidebar";
+import { zeroAddress } from "viem";
+import { LogoutPrompt } from "../shared/LogoutPrompt";
 
 // Typing the props for CollapsibleComponent
 type CollapsibleProps = {

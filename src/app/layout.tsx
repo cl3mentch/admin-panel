@@ -30,8 +30,8 @@ export default function RootLayout({
         )}
       >
         <AllProviders>
-          <Toaster />
           <NextTopLoader />
+          <Toaster />
           {children}
         </AllProviders>
       </body>

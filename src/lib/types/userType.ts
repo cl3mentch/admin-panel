@@ -1,4 +1,5 @@
 import { Address } from "viem";
+import { IPagination } from "./commonType";
 
 export type TUserList = {
   data: {
@@ -35,4 +36,13 @@ export interface ICreateUserParams {
   password: string;
   telegram: string;
   remark: string;
+}
+
+export interface IReadUserParams
+  extends Partial<ICreateUserParams>,
+    Partial<IPagination> {
+  created_at_start?: string;
+  created_at_end?: string;
+  updated_at_start?: string;
+  updated_at_end?: string;
 }

@@ -6,7 +6,7 @@ export function LeftSide() {
     <div className="relative w-[65%] min-h-screen flex-col items-center justify-center p-5 hidden xl:flex">
       <div className="absolute top-4 left-4 flex items-center gap-x-2">
         <Icon icon="tabler:brand-nextjs" className=" text-[40px]" />
-        <p className="font-semibold text-2xl">Logo</p>
+        <p className="font-semibold text-2xl">Admin Panel</p>
       </div>
 
       <div className="flex flex-col items-center justify-center relative w-full h-full">

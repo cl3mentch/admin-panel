@@ -1,6 +1,6 @@
-import * as z from "zod";
 import { TFieldConfig } from "@/lib/types/formType";
 import { Address, isAddress } from "viem";
+import * as z from "zod";
 /**
  *  the @userDetailFieldConfig name key's value needs to be the same as the @userFormSchema keys or else it wont work
  */

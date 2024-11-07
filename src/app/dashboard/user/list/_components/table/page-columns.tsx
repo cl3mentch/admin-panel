@@ -1,7 +1,7 @@
-import Actions, { TAction } from "@/components/shared/table/actions";
-import { ColumnDef } from "@tanstack/react-table";
-import { actionOptions } from "./user-action";
+import DataAction from "@/components/shared/table/data-actions";
 import { TUserList } from "@/lib/types/userType";
+import { ColumnDef } from "@tanstack/react-table";
+import { pageActionOptions } from "./page-action";
 
 export const columns: ColumnDef<TUserList["data"][0]>[] = [
   {
@@ -46,7 +46,7 @@ export const columns: ColumnDef<TUserList["data"][0]>[] = [
     cell: ({ row }) => {
       const user = row.original;
 
-      return <Actions data={user} options={actionOptions} />;
+      return <DataAction data={user} options={pageActionOptions} />;
     },
   },
 ];

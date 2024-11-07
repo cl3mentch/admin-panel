@@ -53,12 +53,11 @@ class API {
         Cookies.remove("accessToken");
         user.setUser({ web3_address: zeroAddress, email: "" });
 
-        toast.warning("Login Session Expired... Redirecting to Login");
+        toast.warning("Login Session Expired... Redirecting to Login Page");
 
-        // Delay the redirect to allow the toast to be visible
         setTimeout(() => {
           window.location.href = "/";
-        }, 3000); // Delay of 500ms (adjust as needed)
+        }, 3000);
       }
 
       return resp;

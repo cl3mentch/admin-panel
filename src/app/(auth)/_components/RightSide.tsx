@@ -10,7 +10,6 @@ export function RightSide() {
       <div className="flex justify-between w-full xl:justify-end">
         <div className="flex xl:hidden items-center gap-x-2 ">
           <Icon icon="tabler:brand-nextjs" className=" text-4xl" />
-          <p className="font-semibold text-xl">Logo</p>
         </div>
 
         <div className="bg-accent rounded-full px-5 py-3 flex gap-x-3">
