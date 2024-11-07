@@ -24,6 +24,7 @@ import {
   filterFormSchema,
 } from "../config/filterSchema";
 import { columns } from "../config/page-table-columns";
+import { getRecord } from "../config/page-action";
 
 export default function TablePage() {
   // setup the enum list for filter when mounted
@@ -40,9 +41,7 @@ export default function TablePage() {
 
   async function getData() {
     setIsLoading(true);
-    const result = await UserAPI.read("", {
-      ...pagination,
-    });
+    const result = await getRecord("", { ...pagination });
     if (result.success) {
       setPageData(result.data); // This is now of type TUserList
     } else {
@@ -124,7 +123,7 @@ export function FilterData() {
   const onFormSubmit = (value: any) => {
     console.log(true);
   };
-  
+
   return (
     <Filter
       fieldConfig={filterFieldConfig}

@@ -16,8 +16,8 @@ export const userFormSchema = z.object({
   status: z.string().min(1, { message: "Status is required" }),
   upline: z
     .string()
-    .min(1, { message: "Wallet Address is required" })
-    .refine((value) => isAddress(value), {
+    .optional()
+    .refine((value) => !value || isAddress(value), {
       message: "Wallet Address Wrong Format",
     }),
   tag: z.string().optional(),
@@ -65,7 +65,7 @@ export let userDetailFieldConfig: TFieldConfig[] = [
     component: "input",
     type: "text",
     placeholder: "Enter your upline",
-    isRequired: true,
+    isRequired: false,
   },
   {
     name: "nickname",

@@ -13,6 +13,8 @@ import {
 import { TAction } from "./data-actions";
 import { deleteRecord } from "@/app/dashboard/user/list/_components/config/page-action";
 import { useActionStore } from "@/lib/store/actionStore";
+import { useRouter } from "nextjs-toploader/app";
+import { usePathname } from "next/navigation";
 
 interface IDeletePrompProps {
   id: string;
@@ -27,10 +29,25 @@ export function DeletePromp({
   setShowModal,
 }: IDeletePrompProps) {
   const { setAction } = useActionStore();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const onHandleDelete = async () => {
     deleteRecord(id);
-    setAction({ delete: true });
+    setShowModal(false);
+    setTimeout(() => {
+      setAction({ delete: true });
+
+      // if im inside a slug then redirect back
+      if (
+        pathname.includes("/view") ||
+        pathname.includes("/create") ||
+        pathname.includes("/edit")
+      ) {
+        const cleanedPathname = pathname.replace(/\/(view|create|edit)$/, "");
+        router.push(cleanedPathname);
+      }
+    }, 1000);
   };
 
   return (

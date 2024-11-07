@@ -4,6 +4,7 @@
 import DataForm from "@/components/shared/form/data-form";
 import { TActionOptions } from "@/components/shared/table/data-actions";
 import UserAPI from "@/lib/api/user";
+import { onTranslateBackendError } from "@/lib/helper";
 import useGetEnum from "@/lib/hooks/useGetEnum";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
@@ -11,12 +12,12 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { createRecord, getRecord, updateRecord } from "../config/page-action";
 import {
   defaultValues,
   userDetailFieldConfig,
   userFormSchema,
 } from "../config/userSchema";
-import { onTranslateBackendError } from "@/lib/helper";
 
 type TUserFormSchema = z.infer<typeof userFormSchema>;
 
@@ -30,22 +31,25 @@ export default function FormPage({ slug, userId }: UserFormPageProps) {
   const userForm = useForm<TUserFormSchema>({
     resolver: zodResolver(userFormSchema),
     defaultValues,
-    mode: "onChange", // Validate on every change
+    mode: "onChange",
   });
 
   const handleFormSubmit = async (values: any) => {
     try {
       let result;
       if (slug === "create") {
-        result = await UserAPI.create({ ...values });
+        result = await createRecord({ ...values });
       } else if (slug === "edit" && userId) {
-        result = await UserAPI.update(userId, { ...values });
+        result = await updateRecord(userId, { ...values });
       }
 
       if (result && result.success) {
         const successMessage =
           slug === "create" ? "Created Successfully" : "Updated Successfully";
-        getViewFormDetails();
+
+        // Reset the form
+        slug === "create" ? userForm.reset() : null;
+
         toast.success(successMessage);
       } else {
         onTranslateBackendError(result!.data);
@@ -57,7 +61,7 @@ export default function FormPage({ slug, userId }: UserFormPageProps) {
   };
 
   const getViewFormDetails = async () => {
-    const result = await UserAPI.read(userId);
+    const result = await getRecord(userId!);
     if (result.success) {
       const populatedData = Object.keys(userForm.getValues()).reduce(
         (acc, key) => {
