@@ -12,7 +12,7 @@ export function RightSide() {
           <Icon icon="tabler:brand-nextjs" className=" text-4xl" />
         </div>
 
-        <div className="bg-accent rounded-full px-5 py-3 flex gap-x-3">
+        <div className="bg-accent rounded-full px-2 py-1 flex gap-x-3">
           <Language />
           <Theme />
         </div>

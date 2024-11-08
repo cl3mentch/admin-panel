@@ -35,15 +35,19 @@ const UserAPI = {
       return apiRequest("get", `/admin/account/user/balance/view/${user_id}`);
     },
     add: async (user_id: string, wallet: number, amount: number) => {
-      return (
-        apiRequest("put", `/admin/account/user/balance/add/${user_id}`),
-        { data: { wallet, amount } }
-      );
+      return apiRequest("put", `/admin/account/user/balance/add/${user_id}`, {
+        wallet,
+        amount,
+      });
     },
     deduct: async (user_id: string, wallet: number, amount: number) => {
-      return (
-        apiRequest("put", `/admin/account/user/balance/deduct/${user_id}`),
-        { data: { wallet, amount } }
+      return apiRequest(
+        "put",
+        `/admin/account/user/balance/deduct/${user_id}`,
+        {
+          wallet,
+          amount,
+        }
       );
     },
   },

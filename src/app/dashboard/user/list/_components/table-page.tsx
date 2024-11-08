@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { DataPagination } from "@/components/shared/table/data-pagination";
@@ -10,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { onTranslateBackendError } from "@/lib/helper";
-import useGetEnum from "@/lib/hooks/useGetEnum";
 import { useActionStore } from "@/lib/store/actionStore";
 import { TUserList } from "@/lib/types/userType";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -22,12 +22,8 @@ import { useMediaQuery } from "react-responsive";
 import { PageFilter } from "./config/page-filter";
 import { columns } from "./config/page-table-columns";
 import { getRecord } from "./config/page-action";
-import { filterFieldConfig } from "../[slug]/_components/schema/filterSchema";
 
 export default function TablePage() {
-  // setup the enum list for filter when mounted
-  useGetEnum(filterFieldConfig);
-
   const { actions } = useActionStore();
   const [pagination, setPagination] = useState({ page: 1, size: 20 });
   const [filters, setFilters] = useState({});

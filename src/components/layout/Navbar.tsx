@@ -124,7 +124,7 @@ function AvatarDropdown() {
     };
   }, []);
   return (
-    <>
+    <div>
       <DropdownMenu>
         <DropdownMenuTrigger className="outline-none">
           <AvatarComponent />
@@ -169,7 +169,7 @@ function AvatarDropdown() {
         </DropdownMenuContent>
       </DropdownMenu>
       <LogoutPrompt showModal={showModal} setShowModal={setShowModal} />
-    </>
+    </div>
   );
 }
 

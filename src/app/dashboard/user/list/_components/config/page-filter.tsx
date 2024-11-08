@@ -32,11 +32,10 @@ export function PageFilter({ setFilters, setPagination }: FilterDataProps) {
     // Iterate over each value to check if it's a Date and format it
     const formattedValue = Object.entries(value).reduce((acc, [key, val]) => {
       if (val instanceof Date) {
-        const formattedDate = `${val.getDate().toString().padStart(2, "0")}/${(
-          val.getMonth() + 1
-        )
+        // YYYY-MM-DD
+        const formattedDate = `${val.getFullYear()}/${(val.getMonth() + 1)
           .toString()
-          .padStart(2, "0")}/${val.getFullYear()}`;
+          .padStart(2, "0")}/${val.getDate().toString().padStart(2, "0")}`;
         // @ts-ignore
         acc[key as keyof TFilterFormSchema] = formattedDate; // Cast key to keyof TFilterFormSchema
       } else {
