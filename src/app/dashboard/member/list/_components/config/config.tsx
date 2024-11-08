@@ -1,8 +1,10 @@
 "use client";
 import DataAction, { TAction } from "@/components/shared/table/data-actions";
+import { Button } from "@/components/ui/button";
 import { TPageConfig } from "@/lib/types/commonType";
 import { TUserList } from "@/lib/types/userType";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 // Base URL and param configuration
 const baseUrl = "/dashboard/user/list/";
@@ -26,23 +28,29 @@ const actions: TAction = [
 const columns: ColumnDef<TUserList["data"][0]>[] = [
   {
     accessorKey: "id",
-    header: "UID",
+    header: ({ column }) => <DataTableHeader column={column} title={"ID"} />,
   },
   {
     accessorKey: "user_id",
-    header: "User SN",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"User_id"} />
+    ),
   },
   {
     accessorKey: "upline",
-    header: "Upline",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Upline"} />
+    ),
   },
   {
     accessorKey: "authenticator",
-    header: "Authenticator",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Authenticator"} />
+    ),
   },
   {
     accessorKey: "web3_address",
-    header: "Address",
+    header: "Web3_address",
   },
   {
     accessorKey: "status",
@@ -50,7 +58,9 @@ const columns: ColumnDef<TUserList["data"][0]>[] = [
   },
   {
     accessorKey: "game_participation",
-    header: "Played Times",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Game_participation"} />
+    ),
   },
   {
     accessorKey: "telegram",
@@ -58,7 +68,9 @@ const columns: ColumnDef<TUserList["data"][0]>[] = [
   },
   {
     accessorKey: "created_at",
-    header: "Created At",
+    header: ({ column }) => {
+      return <DataTableHeader column={column} title={"Created_at"} />;
+    },
   },
   {
     id: "actions",
@@ -75,3 +87,17 @@ export const pageConfig: TPageConfig<TUserList["data"][0]> = {
   columns,
   actions,
 };
+
+function DataTableHeader({ title, column }: any) {
+  return (
+    <Button
+      variant="ghost"
+      size={"sm"}
+      className="p-0 h-fit text-xs font-semibold text-foreground hover:bg-transparent"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    >
+      {title}
+      <ArrowUpDown className="h-3 w-3" />
+    </Button>
+  );
+}

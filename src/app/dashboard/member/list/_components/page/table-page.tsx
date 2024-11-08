@@ -15,7 +15,12 @@ import { useActionStore } from "@/lib/store/actionStore";
 import { TUserList } from "@/lib/types/userType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
@@ -30,16 +35,22 @@ import { filterFormConfig } from "../schema/filter";
 
 export default function TablePage() {
   const { actions } = useActionStore();
-  const [pagination, setPagination] = useState({ page: 1, size: 50 });
+  const [pagination, setPagination] = useState({ page: 1, size: 30 });
   const [filters, setFilters] = useState({});
   const [pageData, setPageData] = useState<TUserList | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: pageData?.data || [],
     columns: pageConfig.columns,
     enableColumnPinning: true,
     initialState: { columnPinning: { right: ["actions"] } },
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -51,7 +62,6 @@ export default function TablePage() {
     });
     if (result.success) {
       setPageData(result.data);
-      console.log(filters);
     } else {
       onTranslateBackendError(result.data);
     }
@@ -67,7 +77,7 @@ export default function TablePage() {
       initial={{ x: "-10vw", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ stiffness: 10, duration: 0.5 }}
-      className="w-full px-3 xl:px-5 mx-auto flex flex-col h-full justify-between space-y-4"
+      className="w-full  px-3 xl:px-5 mx-auto flex flex-col h-full justify-between space-y-4 xl:space-y-0"
     >
       <div className="space-y-2">
         <div className="w-full pt-5 flex items-center justify-between">
@@ -159,7 +169,7 @@ export function EditColumn({ table }: EditColumnProps) {
               onCheckedChange={(value) => column.toggleVisibility(!!value)}
             >
               {/* @ts-ignore */}
-              {column.columnDef.header}
+              {column?.id}
             </DropdownMenuCheckboxItem>
           ))}
       </DropdownMenuContent>

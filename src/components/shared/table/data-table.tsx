@@ -13,7 +13,7 @@ import {
   Column,
   ColumnDef,
   flexRender,
-  useReactTable
+  useReactTable,
 } from "@tanstack/react-table";
 import { CSSProperties } from "react";
 
@@ -51,71 +51,68 @@ export function DataTable<TData, TValue>({
   table,
 }: DataTableProps<TData, TValue>) {
   return (
-    <>
-      <div className="h-[calc(100vh-220px)] overflow-x-auto rounded-md border w-full md:h-[calc(106dvh-240px)]">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const { column } = header;
+    <div className="h-[calc(100vh-200px)] overflow-x-auto rounded-md border w-full md:h-[calc(100dvh-230px)]">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                const { column } = header;
+                return (
+                  <TableHead
+                    className="text-nowrap text-center bg-sidebar-accent "
+                    key={header.id}
+                    style={{ ...getCommonPinningStyles(column) }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+
+        {isLoading ? (
+          <Icon
+            icon="eos-icons:bubble-loading"
+            className="text-[30px] xl:text-[70px] m-auto text-black/50 dark:text-white/50 absolute left-[50%] translate-x-[-50%]  translate-y-[calc(50dvh-170px)]"
+          />
+        ) : table.getRowModel().rows?.length ? (
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => {
+                  const { column } = cell;
                   return (
-                    <TableHead
+                    <TableCell
                       className="text-nowrap text-center"
-                      key={header.id}
+                      key={cell.id}
                       style={{ ...getCommonPinningStyles(column) }}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
                   );
                 })}
               </TableRow>
             ))}
-          </TableHeader>
-          {isLoading ? (
-            <Icon
-              icon="eos-icons:bubble-loading"
-              className="text-[70px] m-auto text-black/50 dark:text-white/50 absolute left-[50%] translate-x-[-50%] translate-y-[25vh] "
-            />
-          ) : table.getRowModel().rows?.length ? (
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => {
-                    const { column } = cell;
-                    return (
-                      <TableCell
-                        className="text-nowrap text-center"
-                        key={cell.id}
-                        style={{ ...getCommonPinningStyles(column) }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </Table>
-      </div>
-    </>
+          </TableBody>
+        ) : (
+          <p className="text-sm xl:text-xl m-auto text-black/50 dark:text-white/50 absolute left-[50%] translate-x-[-50%]  translate-y-[calc(50dvh-170px)]">
+            No results.
+          </p>
+        )}
+      </Table>
+    </div>
   );
 }

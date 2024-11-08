@@ -68,7 +68,7 @@ export default function DataForm<TColumn>({
   }
 
   return (
-    <Card className="mx-auto h-full w-full ">
+    <Card className="mx-auto h-full w-full">
       <CardHeader className="p-3 xl:p-6 xl:pb-4">
         <CardTitle className="text-left text-2xl font-bold text-foreground">
           <div className="flex justify-between items-center">
@@ -216,9 +216,8 @@ function LocalSelect({ config, form, slug }: LocalSelectProps) {
             <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
                 <SelectTrigger
-                  className={`text-foreground ${
-                    !field.value &&
-                    "text-black/50 dark:text-white/50 border-border"
+                  className={`text-foreground  ${
+                    !field.value && "text-black/50 dark:text-white/50"
                   }`}
                   disabled={config.options.length === 0 || slug === "view"}
                 >

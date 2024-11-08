@@ -24,7 +24,7 @@ export const directory: DirectoryItem[] = [
       {
         title: "List",
         icon: "mdi:format-list-bulleted",
-        path: "/dashboard/user/list",
+        path: "/dashboard/member/list",
         children: [],
       },
     ],

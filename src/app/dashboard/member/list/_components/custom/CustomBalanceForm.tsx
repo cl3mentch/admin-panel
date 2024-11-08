@@ -106,15 +106,17 @@ export default function CustomBalanceForm<TColumn>({
               </div>
             </form>
           </Form>
-          <div className="flex items-center gap-x-2 mt-5">
-            <Button onClick={() => onSelectAction("add")}>Add</Button>
-            <Button
-              onClick={() => onSelectAction("deduct")}
-              className="bg-red-500 hover:bg-red-500/90"
-            >
-              Deduct
-            </Button>
-          </div>
+          {slug !== "view" ? (
+            <div className="flex items-center gap-x-2 mt-5">
+              <Button onClick={() => onSelectAction("add")}>Add</Button>
+              <Button
+                onClick={() => onSelectAction("deduct")}
+                className="bg-red-500 hover:bg-red-500/90"
+              >
+                Deduct
+              </Button>
+            </div>
+          ) : null}
           <BalancePrompt
             id={id}
             showModal={showModal}

@@ -11,10 +11,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { TAction } from "./data-actions";
-import { deleteRecord } from "@/app/dashboard/user/list/_components/config/service";
 import { useActionStore } from "@/lib/store/actionStore";
 import { useRouter } from "nextjs-toploader/app";
 import { usePathname } from "next/navigation";
+import { deleteRecord } from "@/app/dashboard/member/list/_components/config/service";
 
 interface IDeletePrompProps {
   id: string;
@@ -44,6 +44,7 @@ export function DeletePromp({
         pathname.includes("/create") ||
         pathname.includes("/edit")
       ) {
+        // remove the slug from the url
         const cleanedPathname = pathname.replace(/\/(view|create|edit)$/, "");
         router.push(cleanedPathname);
       }

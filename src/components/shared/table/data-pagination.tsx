@@ -29,7 +29,7 @@ export function DataPagination<TPageData extends PaginationData>({
   setPagination,
 }: PaginationProps<TPageData>) {
   return (
-    <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-2 sm:flex-row">
+    <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-2 sm:flex-row space-y-4 xl:space-y-0">
       <div className="flex w-full items-center justify-between">
         <div className="flex-1 text-xs xl:text-sm text-foreground">
           {pageData && pageData?.count > 0 ? (
@@ -72,7 +72,7 @@ export function DataPagination<TPageData extends PaginationData>({
         </div>
       </div>
       <div className="flex w-fit xl:w-full items-center justify-between gap-2 sm:justify-end">
-        <div className="flex w-[150px] items-center justify-center text-xs xl:text-sm font-medium">
+        <div className="xl:flex w-[150px] items-center justify-center text-xs xl:text-sm font-medium hidden">
           {pageData && pageData?.count > 0 ? (
             <>
               Page {pagination.page} of {pageData?.last_page || 0}
@@ -116,6 +116,15 @@ export function DataPagination<TPageData extends PaginationData>({
               className="h-4 w-4 text-black dark:text-white"
             />
           </Button>
+          <div className="flex w-[100px] items-center justify-center text-xs xl:text-sm font-medium xl:hidden">
+            {pageData && pageData?.count > 0 ? (
+              <>
+                Page {pagination.page} of {pageData?.last_page || 0}
+              </>
+            ) : (
+              "No pages"
+            )}
+          </div>
           <Button
             aria-label="Go to next page"
             variant="outline"
