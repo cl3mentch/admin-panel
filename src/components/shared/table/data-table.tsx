@@ -17,8 +17,7 @@ import {
 } from "@tanstack/react-table";
 import { CSSProperties } from "react";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData> {
   data: TData[];
   table: ReturnType<typeof useReactTable>;
   isLoading: boolean;
@@ -45,11 +44,7 @@ const getCommonPinningStyles = (column: Column<any>): CSSProperties => {
   };
 };
 
-export function DataTable<TData, TValue>({
-  columns,
-  isLoading,
-  table,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData>({ isLoading, table }: DataTableProps<TData>) {
   return (
     <div className="h-[calc(100vh-200px)] overflow-x-auto rounded-md border w-full md:h-[calc(100dvh-230px)]">
       <Table>

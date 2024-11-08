@@ -36,6 +36,7 @@ export function DeletePromp({
     deleteRecord(id);
     setShowModal(false);
     setTimeout(() => {
+      // updates the action state to inform other component it has been updated
       setAction({ delete: true });
 
       // if im inside a slug then redirect back

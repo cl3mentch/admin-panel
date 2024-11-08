@@ -23,7 +23,7 @@ const actions: TAction = [
 /**
  * Columns configuration
  *
- * These represents the column of the table and will be pass as a prop to table component @Tablepage
+ * These represents the column of the table and will be pass to useReactTable in @table_page
  * */
 const columns: ColumnDef<TUserList["data"][0]>[] = [
   {

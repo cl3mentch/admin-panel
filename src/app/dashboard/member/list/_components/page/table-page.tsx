@@ -32,9 +32,6 @@ import { z } from "zod";
 import { pageConfig } from "../config/config";
 import { getRecord } from "../config/service";
 import { filterFormConfig } from "../schema/filter";
-import EnumAPI from "@/lib/api/enum";
-import { userFormConfig } from "../schema/user";
-import { toast } from "sonner";
 
 export default function TablePage() {
   const { actions } = useActionStore();
@@ -97,7 +94,6 @@ export default function TablePage() {
       {pageData ? (
         <DataTable
           table={table as ReturnType<typeof useReactTable>}
-          columns={pageConfig.columns}
           data={pageData?.data || []} // Ensure you are passing valid data
           isLoading={isLoading}
         />
