@@ -1,7 +1,7 @@
 import TablePage from "./_components/page/table-page";
 
 export const metadata = {
-  title: "Dashboard: User List",
+  title: "Dashboard: Member List",
 };
 
 export default function Userlist() {

@@ -16,7 +16,7 @@ export const directory: DirectoryItem[] = [
     children: [],
   },
   {
-    title: "User",
+    title: "Member",
     icon: "mdi:account",
     path: "/",
     isActive: false,

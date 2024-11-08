@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide the nextjs error toast */
+nextjs-portal {
+  display: none;
+}
+
 @layer base {
   :root {
     --font-black: black;

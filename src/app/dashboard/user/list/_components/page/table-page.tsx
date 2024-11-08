@@ -72,7 +72,7 @@ export default function TablePage() {
       <div className="space-y-2">
         <div className="w-full pt-5 flex items-center justify-between">
           <p className="text-lg xl:text-2xl font-bold">
-            User ({pageData?.count || 0})
+            Member ({pageData?.count || 0})
           </p>
           <div className="flex items-center gap-x-2">
             <EditColumn table={table as ReturnType<typeof useReactTable>} />

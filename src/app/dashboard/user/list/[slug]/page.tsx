@@ -3,7 +3,7 @@ import FormPage from "../_components/page/form-page";
 export async function generateMetadata({ searchParams }: any) {
   const userId = (await searchParams).userid;
   return {
-    title: `Dashboard : User${userId ? ` (${userId})` : ""}`,
+    title: `Dashboard : Member ${userId ? ` (${userId})` : ""}`,
   };
 }
 

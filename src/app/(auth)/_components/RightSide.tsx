@@ -6,7 +6,7 @@ import { EmailLogin } from "./EmailLogin";
 
 export function RightSide() {
   return (
-    <div className="z-10 bg-card w-full xl:w-[35%] min-h-screen flex flex-col px-5 xl:px-10 py-5 ">
+    <div className="z-10 bg-card w-full xl:w-[35%] min-h-screen flex flex-col px-5 xl:px-10 py-5 shadow-lg">
       <div className="flex justify-between w-full xl:justify-end">
         <div className="flex xl:hidden items-center gap-x-2 ">
           <Icon icon="tabler:brand-nextjs" className=" text-4xl" />
