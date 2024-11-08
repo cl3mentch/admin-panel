@@ -1,4 +1,4 @@
-import FormPage from "./_components/form-page";
+import FormPage from "../_components/page/form-page";
 
 export async function generateMetadata({ searchParams }: any) {
   const userId = (await searchParams).userid;

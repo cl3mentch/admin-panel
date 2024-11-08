@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { TAction } from "./data-actions";
-import { deleteRecord } from "@/app/dashboard/user/list/_components/config/page-action";
+import { deleteRecord } from "@/app/dashboard/user/list/_components/config/service";
 import { useActionStore } from "@/lib/store/actionStore";
 import { useRouter } from "nextjs-toploader/app";
 import { usePathname } from "next/navigation";
@@ -20,7 +20,7 @@ interface IDeletePrompProps {
   id: string;
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
-  options: Partial<TAction>;
+  actions: Partial<TAction>;
 }
 
 export function DeletePromp({

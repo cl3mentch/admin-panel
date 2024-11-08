@@ -1,5 +1,4 @@
 "use client";
-import { pageActionOptions } from "@/app/dashboard/user/list/_components/config/page-action";
 import DataAction, {
   TActionOptions,
 } from "@/components/shared/table/data-actions";
@@ -34,30 +33,33 @@ import {
 } from "@/components/ui/select";
 import UserAPI from "@/lib/api/user";
 import { onTranslateBackendError } from "@/lib/helper";
+import { TPageConfig } from "@/lib/types/commonType";
 import { TFieldConfig } from "@/lib/types/formType";
 import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
-interface FormProps {
+interface FormProps<TColumn> {
   id?: string | undefined;
   slug: TActionOptions;
   title: string;
   form: UseFormReturn | any;
-  fieldConfig: TFieldConfig[];
+  field: TFieldConfig[];
   walletEnumList: Array<TWalletEnum[keyof TWalletEnum]> | undefined;
+  pageConfig: TPageConfig<TColumn>;
   setUpdate: (update: boolean) => void;
 }
 
-export default function CustomBalanceForm({
+export default function CustomBalanceForm<TColumn>({
   id,
   slug,
   title,
   form,
-  fieldConfig,
+  field,
   walletEnumList,
+  pageConfig,
   setUpdate,
-}: FormProps) {
+}: FormProps<TColumn>) {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState<"add" | "deduct" | undefined>(undefined);
 
@@ -80,7 +82,7 @@ export default function CustomBalanceForm({
               {title}
 
               {slug === "view" && id ? (
-                <DataAction options={pageActionOptions} data={{ id }} />
+                <DataAction actions={pageConfig.actions} data={{ id }} />
               ) : null}
             </div>
           </CardTitle>
@@ -89,7 +91,7 @@ export default function CustomBalanceForm({
           <Form {...form}>
             <form className="space-y-8">
               <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-                {fieldConfig.map((config, i) => {
+                {field.map((config, i) => {
                   switch (config.component) {
                     case "input":
                       return (
@@ -131,7 +133,7 @@ export default function CustomBalanceForm({
  * INPUT COMPONENT
  * */
 type InputFieldConfig = Extract<TFieldConfig, { component: "input" }>;
-interface LocalInputProps extends Partial<FormProps> {
+interface LocalInputProps extends Partial<FormProps<any>> {
   config: InputFieldConfig;
 }
 
@@ -160,7 +162,7 @@ function LocalInput({ config, form }: LocalInputProps) {
   );
 }
 
-interface BalancePrompProps extends Partial<FormProps> {
+interface BalancePrompProps extends Partial<FormProps<any>> {
   id?: string;
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;

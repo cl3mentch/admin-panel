@@ -1,3 +1,6 @@
+import { TAction } from "@/components/shared/table/data-actions";
+import { ColumnDef } from "@tanstack/react-table";
+
 export type APIResponse<T = any> = {
   success: boolean;
   data: T;
@@ -22,5 +25,7 @@ export interface IGetErrorType {
   shortMessage: string;
 }
 
-// history list
-export type THistoryType = "transaction" | "game" | "chosenOne";
+export type TPageConfig<TColumn> = {
+  columns: ColumnDef<TColumn>[];
+  actions: TAction;
+};

@@ -1,44 +1,60 @@
 import { TFieldConfig } from "@/lib/types/formType";
-import { Address } from "viem";
+import { Address, isAddress } from "viem";
 import * as z from "zod";
 
 /**
- *  the @fieldConfig name key's value needs to be the same as the @formSchema keys or else it wont work
- *  Eg : @fieldConfig @name  == @formSchema @key
+ * Schema config
+ * - This is bone structure of your form and it is use to validate form input like create or update
+ *
+ *  the @userDetailFieldConfig name key's value needs to be the same as the @userFormSchema keys or else it wont work
+ *  Eg : @userDetailFieldConfig @name  == @userFormSchema @key
  */
-export const filterFormSchema = z.object({
-  web3_address: z.string().optional(),
+const userFormSchema = z.object({
+  web3_address: z
+    .string()
+    .min(1, { message: "Wallet Address is required" })
+    .refine((value) => isAddress(value), {
+      message: "Wallet Address Wrong Format",
+    }),
   status: z.string().optional(),
-  upline: z.string().optional(),
+  upline: z
+    .string()
+    .optional()
+    .refine((value) => !value || isAddress(value), {
+      message: "Wallet Address Wrong Format",
+    }),
   tag: z.string().optional(),
   nickname: z.string().optional(),
   telegram: z.string().optional(),
-  created_at_start: z.date().optional(),
+  remark: z.string().optional(),
+  check: z.boolean().default(false),
 });
 
 /**
  * Initial values of the zod input value
  * */
-export const filterDefaultState = {
+const defaultValues = {
   web3_address: "" as Address,
   status: "",
   upline: "" as Address,
   tag: "",
   nickname: "",
   telegram: "",
+  remark: "",
+  check: false,
 };
 
 /**
  * This is to setup ui input field
  * */
-export let filterFieldConfig: TFieldConfig[] = [
+let userDetailFieldConfig: TFieldConfig[] = [
   {
     name: "web3_address",
     label: "Wallet Address",
     component: "input",
     type: "text",
     placeholder: "Enter your wallet address",
-    isRequired: false,
+    isRequired: true,
   },
   {
     name: "status",
@@ -81,10 +97,23 @@ export let filterFieldConfig: TFieldConfig[] = [
     isRequired: false,
   },
   {
-    name: "created_at_start",
-    label: "Created Date",
-    component: "date",
-    placeholder: "Enter your date",
+    name: "remark",
+    label: "Remark",
+    component: "input",
+    type: "text",
+    placeholder: "Enter your remark",
     isRequired: false,
   },
+  {
+    name: "check",
+    label: "I agree that the information above is correct",
+    component: "checkbox",
+    isRequired: true,
+  },
 ];
+
+export let userFormConfig = {
+  schema: userFormSchema,
+  defaultValues,
+  field: userDetailFieldConfig,
+};

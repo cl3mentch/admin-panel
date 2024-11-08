@@ -43,11 +43,11 @@ import { useMediaQuery } from "react-responsive";
 
 interface FilterProps {
   form: UseFormReturn | any;
-  fieldConfig: TFieldConfig[];
+  field: TFieldConfig[];
   onFormSubmit: (values: any) => void;
 }
 
-export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
+export function Filter({ form, field, onFormSubmit }: FilterProps) {
   const isXl = useMediaQuery({ query: "(min-width: 1280px)" });
 
   // Watch for changes in all form values
@@ -79,7 +79,7 @@ export function Filter({ form, fieldConfig, onFormSubmit }: FilterProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-4 gap-y-6 xl:gap-6 md:grid-cols-2 py-5 h-full">
-              {fieldConfig.map((config, i) => {
+              {field.map((config, i) => {
                 switch (config.component) {
                   case "input":
                     return (

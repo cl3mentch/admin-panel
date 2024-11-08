@@ -1,4 +1,4 @@
-import TablePage from "./_components/table-page";
+import TablePage from "./_components/page/table-page";
 
 export const metadata = {
   title: "Dashboard: User List",

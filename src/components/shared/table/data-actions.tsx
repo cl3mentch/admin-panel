@@ -25,12 +25,12 @@ export type TAction = {
 
 interface ActionProps<TData extends Record<string, any>> {
   data: TData;
-  options: TAction;
+  actions: TAction;
 }
 
 export default function DataAction<TData extends Record<string, any>>({
   data,
-  options,
+  actions,
 }: ActionProps<TData>) {
   const [showModal, setShowModal] = useState(false);
 
@@ -49,7 +49,7 @@ export default function DataAction<TData extends Record<string, any>>({
 
           <DropdownMenuSeparator />
 
-          {options.map((option, i) => (
+          {actions.map((option, i) => (
             <DropdownMenuItem key={i} className=" py-[2px]">
               {option.name !== "delete" ? (
                 <Link
@@ -78,7 +78,7 @@ export default function DataAction<TData extends Record<string, any>>({
         id={data.id}
         showModal={showModal}
         setShowModal={setShowModal}
-        options={options}
+        actions={actions}
       />
     </>
   );

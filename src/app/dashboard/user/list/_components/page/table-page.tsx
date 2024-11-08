@@ -13,32 +13,36 @@ import {
 import { onTranslateBackendError } from "@/lib/helper";
 import { useActionStore } from "@/lib/store/actionStore";
 import { TUserList } from "@/lib/types/userType";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
-import { PageFilter } from "./config/page-filter";
-import { columns } from "./config/page-table-columns";
-import { getRecord } from "./config/page-action";
+import { z } from "zod";
+import { getRecord } from "../config/service";
+import { Filter } from "@/components/shared/table/data-filter";
+import { usePathname } from "next/navigation";
+import { pageConfig } from "../config/config";
+import { filterFormConfig } from "../schema/filter";
 
 export default function TablePage() {
   const { actions } = useActionStore();
-  const [pagination, setPagination] = useState({ page: 1, size: 20 });
+  const [pagination, setPagination] = useState({ page: 1, size: 50 });
   const [filters, setFilters] = useState({});
   const [pageData, setPageData] = useState<TUserList | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
 
   const table = useReactTable({
     data: pageData?.data || [],
-    columns,
+    columns: pageConfig.columns,
     enableColumnPinning: true,
     initialState: { columnPinning: { right: ["actions"] } },
     getCoreRowModel: getCoreRowModel(),
   });
 
-  // Combined getData function that considers both pagination and filters
   async function getData() {
     setIsLoading(true);
     const result = await getRecord("", {
@@ -80,7 +84,7 @@ export default function TablePage() {
       {pageData ? (
         <DataTable
           table={table as ReturnType<typeof useReactTable>}
-          columns={columns}
+          columns={pageConfig.columns}
           data={pageData?.data || []} // Ensure you are passing valid data
           isLoading={isLoading}
         />
@@ -101,15 +105,18 @@ export default function TablePage() {
   );
 }
 
-// Updated AddRecordButton Component
+/**
+ * CREATE RECORD BUTTON
+ */
 export function AddRecordButton() {
   const router = useRouter();
   const isXl = useMediaQuery({ query: "(min-width: 1280px)" });
+  const pathname = usePathname();
 
   return (
     <Button
       size="sm"
-      onClick={() => router.push("/dashboard/user/list/create")}
+      onClick={() => router.push(pathname + "/create")}
       className="text-xs xl:text-sm flex gap-x-0 items-center"
     >
       <Icon icon="ic:round-plus" className="mb-[2px]" />
@@ -157,5 +164,55 @@ export function EditColumn({ table }: EditColumnProps) {
           ))}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+/**
+ * FILTER COMPONENT
+ */
+interface FilterDataProps {
+  setFilters: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  setPagination: React.Dispatch<
+    React.SetStateAction<{ page: number; size: number }>
+  >;
+}
+
+export function PageFilter({ setFilters, setPagination }: FilterDataProps) {
+  type TFilterFormSchema = z.infer<typeof filterFormConfig.schema>;
+
+  const filterForm = useForm<TFilterFormSchema>({
+    resolver: zodResolver(filterFormConfig.schema),
+    defaultValues: filterFormConfig.defaultValues,
+    mode: "onChange",
+  });
+
+  const onFormSubmit = (value: TFilterFormSchema) => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+
+    // Iterate over each value to check if it's a Date and format it
+    const formattedValue = Object.entries(value).reduce((acc, [key, val]) => {
+      if (val instanceof Date) {
+        // YYYY-MM-DD
+        const formattedDate = `${val.getFullYear()}/${(val.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}/${val.getDate().toString().padStart(2, "0")}`;
+        // @ts-ignore
+        acc[key as keyof TFilterFormSchema] = formattedDate; // Cast key to keyof TFilterFormSchema
+      } else {
+        // @ts-ignore
+        acc[key as keyof TFilterFormSchema] = val;
+      }
+      return acc;
+    }, {} as TFilterFormSchema); // Use the same type for the resulting object
+
+    setFilters(formattedValue);
+  };
+
+  return (
+    <Filter
+      field={filterFormConfig.field}
+      form={filterForm}
+      onFormSubmit={onFormSubmit}
+    />
   );
 }

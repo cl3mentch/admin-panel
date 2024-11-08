@@ -5,7 +5,7 @@ import DataForm from "@/components/shared/form/data-form";
 import { TActionOptions } from "@/components/shared/table/data-actions";
 import EnumAPI from "@/lib/api/enum";
 import { onTranslateBackendError } from "@/lib/helper";
-import { TWalletBalance } from "@/lib/types/userType";
+import { TUserList, TWalletBalance } from "@/lib/types/userType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -17,18 +17,12 @@ import {
   getBalance,
   getRecord,
   updateRecord,
-} from "../../_components/config/page-action";
-import CustomBalanceForm from "./custom-form/CustomBalanceForm";
-import {
-  balanceDefaultValues,
-  balanceFieldConfig,
-  balanceFormSchema,
-} from "./schema/balanceSchema";
-import {
-  defaultValues,
-  userDetailFieldConfig,
-  userFormSchema,
-} from "./schema/userSchema";
+} from "../../_components/config/service";
+
+import CustomBalanceForm from "../custom/CustomBalanceForm";
+import { balanceFormConfig } from "../schema/balance";
+import { pageConfig } from "../config/config";
+import { userFormConfig } from "../schema/user";
 
 interface FormPageProps {
   slug: TActionOptions;
@@ -43,29 +37,35 @@ export default function FormPage({ slug, userId }: FormPageProps) {
       transition={{ stiffness: 10, duration: 0.5 }}
       className="p-3 space-y-3"
     >
-      <UserForm slug={slug} userId={userId} />
+      {/* The default form in the page */}
+      <Form slug={slug} userId={userId} />
+
+      {/* Custom Form */}
       {slug !== "create" ? <BalanceForm slug={slug} userId={userId} /> : null}
     </motion.div>
   );
 }
 
-export function UserForm({ slug, userId }: FormPageProps) {
-  type TUserFormSchema = z.infer<typeof userFormSchema>;
+export function Form({ slug, userId }: FormPageProps) {
+  // Rerender is used to rerender when i get account status enum
+  const [rerender, setRerender] = useState(false);
+  type TUserFormSchema = z.infer<typeof userFormConfig.schema>;
 
   const userForm = useForm<TUserFormSchema>({
-    resolver: zodResolver(userFormSchema),
-    defaultValues,
+    resolver: zodResolver(userFormConfig.schema),
+    defaultValues: userFormConfig.defaultValues,
     mode: "onChange",
   });
 
   const getAccountStatusEnum = async () => {
     const result = await EnumAPI.listing<TAccountStatusEnum>("account_status");
     if (result.success) {
-      userDetailFieldConfig.find((config) => {
+      userFormConfig.field.find((config) => {
         if (config.name === "status" && config.component === "select") {
           config.options = Object.values(result.data);
         }
       });
+      setRerender(true);
     } else {
       toast.error("Failed to get account status enum");
     }
@@ -124,16 +124,19 @@ export function UserForm({ slug, userId }: FormPageProps) {
   useEffect(() => {
     if ((slug === "view" || slug === "edit") && userId) {
       getViewFormDetails();
-      getAccountStatusEnum();
     }
-  }, [slug]);
+
+    getAccountStatusEnum();
+  }, [slug, userId, rerender]);
+
   return (
-    <DataForm
+    <DataForm<TUserList["data"][0]>
       id={userId}
       slug={slug}
       onFormSubmit={handleFormSubmit}
       form={userForm}
-      fieldConfig={userDetailFieldConfig}
+      field={userFormConfig.field}
+      pageConfig={pageConfig}
       title={
         slug === "view"
           ? "View User Information"
@@ -147,16 +150,20 @@ export function UserForm({ slug, userId }: FormPageProps) {
   );
 }
 
+/**
+ * Custom Form
+ * You may import or write your custom form here
+ * */
 export function BalanceForm({ slug, userId }: FormPageProps) {
   type TWalletEnumArray = Array<TWalletEnum[keyof TWalletEnum]>;
-  type TBalanceFormSchema = z.infer<typeof balanceFormSchema>;
+  type TBalanceFormSchema = z.infer<typeof balanceFormConfig.schema>;
 
   const [walletEnumList, setWalletEnumList] = useState<TWalletEnumArray>();
   const [update, setUpdate] = useState(false);
 
   const balanceForm = useForm<TBalanceFormSchema>({
-    resolver: zodResolver(balanceFormSchema),
-    defaultValues: balanceDefaultValues,
+    resolver: zodResolver(balanceFormConfig.schema),
+    defaultValues: balanceFormConfig.defaultValues,
   });
 
   const getWalletEnum = async () => {
@@ -205,8 +212,9 @@ export function BalanceForm({ slug, userId }: FormPageProps) {
       id={userId}
       slug={slug}
       form={balanceForm}
-      fieldConfig={balanceFieldConfig}
+      field={balanceFormConfig.field}
       walletEnumList={walletEnumList}
+      pageConfig={pageConfig}
       setUpdate={setUpdate}
       title={
         slug === "view"

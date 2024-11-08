@@ -1,57 +1,47 @@
 import { TFieldConfig } from "@/lib/types/formType";
-import { Address, isAddress } from "viem";
+import { Address } from "viem";
 import * as z from "zod";
 
 /**
+ * Schema config
+ * - This is bone structure of your form and it is use to validate form input like create or update
+ *
  *  the @userDetailFieldConfig name key's value needs to be the same as the @userFormSchema keys or else it wont work
  *  Eg : @userDetailFieldConfig @name  == @userFormSchema @key
  */
-export const userFormSchema = z.object({
-  web3_address: z
-    .string()
-    .min(1, { message: "Wallet Address is required" })
-    .refine((value) => isAddress(value), {
-      message: "Wallet Address Wrong Format",
-    }),
+const filterFormSchema = z.object({
+  web3_address: z.string().optional(),
   status: z.string().optional(),
-  upline: z
-    .string()
-    .optional()
-    .refine((value) => !value || isAddress(value), {
-      message: "Wallet Address Wrong Format",
-    }),
+  upline: z.string().optional(),
   tag: z.string().optional(),
   nickname: z.string().optional(),
   telegram: z.string().optional(),
-  remark: z.string().optional(),
-  check: z.boolean().default(false),
+  created_at_start: z.date().optional(),
 });
 
 /**
  * Initial values of the zod input value
  * */
-export const defaultValues = {
+const filterDefaultState = {
   web3_address: "" as Address,
   status: "",
   upline: "" as Address,
   tag: "",
   nickname: "",
   telegram: "",
-  remark: "",
-  check: false,
 };
 
 /**
  * This is to setup ui input field
  * */
-export let userDetailFieldConfig: TFieldConfig[] = [
+let filterFieldConfig: TFieldConfig[] = [
   {
     name: "web3_address",
     label: "Wallet Address",
     component: "input",
     type: "text",
     placeholder: "Enter your wallet address",
-    isRequired: true,
+    isRequired: false,
   },
   {
     name: "status",
@@ -94,17 +84,16 @@ export let userDetailFieldConfig: TFieldConfig[] = [
     isRequired: false,
   },
   {
-    name: "remark",
-    label: "Remark",
-    component: "input",
-    type: "text",
-    placeholder: "Enter your remark",
+    name: "created_at_start",
+    label: "Created Date",
+    component: "date",
+    placeholder: "Enter your date",
     isRequired: false,
   },
-  {
-    name: "check",
-    label: "I agree that the information above is correct",
-    component: "checkbox",
-    isRequired: true,
-  },
 ];
+
+export let filterFormConfig = {
+  schema: filterFormSchema,
+  defaultValues: filterDefaultState,
+  field: filterFieldConfig,
+};

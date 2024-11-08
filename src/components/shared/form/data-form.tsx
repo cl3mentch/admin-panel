@@ -1,5 +1,5 @@
 "use client";
-import { pageActionOptions } from "@/app/dashboard/user/list/_components/config/page-action";
+
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,24 +32,27 @@ import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import DataAction, { TActionOptions } from "../table/data-actions";
 import React from "react";
+import { TPageConfig } from "@/lib/types/commonType";
 
-interface FormProps {
+interface FormProps<TColumn> {
   id?: string | undefined;
   slug: TActionOptions;
   title: string;
   form: UseFormReturn | any;
-  fieldConfig: TFieldConfig[];
+  field: TFieldConfig[];
+  pageConfig: TPageConfig<TColumn>;
   onFormSubmit: (values: any) => void;
 }
 
-export default function DataForm({
+export default function DataForm<TColumn>({
   id,
   slug,
   title,
   form,
-  fieldConfig,
+  field,
+  pageConfig,
   onFormSubmit,
-}: FormProps) {
+}: FormProps<TColumn>) {
   const checkboxValue = form.watch("check"); // Watch the checkbox value
 
   function onSubmit(values: any) {
@@ -72,7 +75,7 @@ export default function DataForm({
             {title}
 
             {slug === "view" && id ? (
-              <DataAction options={pageActionOptions} data={{ id }} />
+              <DataAction actions={pageConfig.actions} data={{ id }} />
             ) : null}
           </div>
         </CardTitle>
@@ -81,7 +84,7 @@ export default function DataForm({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              {fieldConfig.map((config, i) => {
+              {field.map((config, i) => {
                 switch (config.component) {
                   case "input":
                     return (
@@ -109,15 +112,12 @@ export default function DataForm({
             </div>
             {slug !== "view" ? (
               <>
-                {fieldConfig.map((config, i) => {
+                {field.map((config, i) => {
                   switch (config.component) {
                     case "checkbox":
                       return (
                         <React.Fragment key={i}>
-                          <LocalCheckBox
-                            fieldConfig={fieldConfig}
-                            form={form}
-                          />
+                          <LocalCheckBox field={field} form={form} />
                         </React.Fragment>
                       );
                     default:
@@ -144,7 +144,7 @@ export default function DataForm({
  * INPUT COMPONENT
  * */
 type InputFieldConfig = Extract<TFieldConfig, { component: "input" }>;
-interface LocalInputProps extends Partial<FormProps> {
+interface LocalInputProps extends Partial<FormProps<any>> {
   config: InputFieldConfig;
 }
 
@@ -188,7 +188,7 @@ function LocalInput({ config, form, slug }: LocalInputProps) {
  * SELECT COMPONENT
  **/
 type SelectFieldConfig = Extract<TFieldConfig, { component: "select" }>;
-interface LocalSelectProps extends Partial<FormProps> {
+interface LocalSelectProps extends Partial<FormProps<any>> {
   config: SelectFieldConfig;
 }
 
@@ -250,7 +250,7 @@ function LocalSelect({ config, form, slug }: LocalSelectProps) {
  * SELECT COMPONENT
  **/
 type DateFieldConfig = Extract<TFieldConfig, { component: "date" }>;
-interface LocalDateProps extends Partial<FormProps> {
+interface LocalDateProps extends Partial<FormProps<any>> {
   config: DateFieldConfig;
 }
 
@@ -314,10 +314,10 @@ function LocalDate({ config, form, slug }: LocalDateProps) {
 /**
  * CHECKBOX COMPONENT
  **/
-function LocalCheckBox({ fieldConfig, form }: Partial<FormProps>) {
+function LocalCheckBox({ field, form }: Partial<FormProps<any>>) {
   return (
     <>
-      {fieldConfig?.map((config, i) => {
+      {field?.map((config, i) => {
         switch (config.component) {
           case "checkbox":
             return (

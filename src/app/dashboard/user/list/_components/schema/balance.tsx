@@ -2,10 +2,13 @@ import { TFieldConfig } from "@/lib/types/formType";
 import * as z from "zod";
 
 /**
+ * Schema config
+ * - This is bone structure of your form and it is use to validate form input like create or update
+ *
  *  the @userDetailFieldConfig name key's value needs to be the same as the @userFormSchema keys or else it wont work
  *  Eg : @userDetailFieldConfig @name  == @userFormSchema @key
  */
-export const balanceFormSchema = z.object({
+const balanceFormSchema = z.object({
   usdt: z.coerce.number().min(1, { message: "USDT Amount is required" }),
   peic: z.coerce.number().min(1, { message: "pEIC Amount is required" }),
   point: z.coerce.number().min(1, { message: "Point Amount is required" }),
@@ -23,7 +26,7 @@ export const balanceFormSchema = z.object({
 /**
  * Initial values of the zod input value
  * */
-export const balanceDefaultValues = {
+const balanceDefaultValues = {
   usdt: 0,
   peic: 0,
   point: 0,
@@ -35,9 +38,9 @@ export const balanceDefaultValues = {
 };
 
 /**
- * This is to setup ui input field
+ * This needs to be defined in order for the ui to show the input component
  * */
-export let balanceFieldConfig: TFieldConfig[] = [
+let balanceFieldConfig: TFieldConfig[] = [
   {
     name: "usdt",
     label: "USDT Balance",
@@ -101,3 +104,9 @@ export let balanceFieldConfig: TFieldConfig[] = [
     isRequired: true,
   },
 ];
+
+export let balanceFormConfig = {
+  schema: balanceFormSchema,
+  defaultValues: balanceDefaultValues,
+  field: balanceFieldConfig,
+};
