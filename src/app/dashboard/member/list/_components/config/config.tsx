@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 // Base URL and param configuration
-const baseUrl = "/dashboard/user/list/";
+const baseUrl = "/dashboard/member/list/";
 const param = "?userid=";
 
 // Action configuration

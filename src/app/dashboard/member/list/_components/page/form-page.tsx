@@ -23,6 +23,7 @@ import CustomBalanceForm from "../custom/CustomBalanceForm";
 import { balanceFormConfig } from "../schema/balance";
 import { pageConfig } from "../config/config";
 import { userFormConfig } from "../schema/user";
+import { getWalletEnum } from "@/lib/service/getEnum";
 
 interface FormPageProps {
   slug: TActionOptions;
@@ -46,9 +47,8 @@ export default function FormPage({ slug, userId }: FormPageProps) {
 }
 
 export function Form({ slug, userId }: FormPageProps) {
-  // Rerender is used to rerender when i get account status enum
-  const [rerender, setRerender] = useState(false);
   type TUserFormSchema = z.infer<typeof userFormConfig.schema>;
+  const [, setRerender] = useState(false);
 
   const userForm = useForm<TUserFormSchema>({
     resolver: zodResolver(userFormConfig.schema),
@@ -56,35 +56,29 @@ export function Form({ slug, userId }: FormPageProps) {
     mode: "onChange",
   });
 
-  const getAccountStatusEnum = async () => {
-    const result = await EnumAPI.listing<TAccountStatusEnum>("account_status");
-    if (result.success) {
-      userFormConfig.field.find((config) => {
-        if (config.name === "status" && config.component === "select") {
-          config.options = Object.values(result.data);
-        }
-      });
-      setRerender(true);
-    } else {
-      toast.error("Failed to get account status enum");
-    }
-  };
-
   const handleFormSubmit = async (values: any) => {
     try {
       let result;
+
       if (slug === "create") {
         result = await createRecord({ ...values });
       } else if (slug === "edit" && userId) {
         result = await updateRecord(userId, { ...values });
       }
 
-      if (result && result.success) {
+      if (result?.success) {
         const successMessage =
           slug === "create" ? "Created Successfully" : "Updated Successfully";
 
         // Reset the form
-        slug === "create" ? userForm.reset() : null;
+        if (slug == "create") {
+          Object.keys(userFormConfig.defaultValues).forEach((key) => {
+            userForm.setValue(
+              key as keyof TUserFormSchema,
+              userFormConfig.defaultValues[key as keyof TUserFormSchema]
+            );
+          });
+        }
 
         toast.success(successMessage);
       } else {
@@ -124,9 +118,7 @@ export function Form({ slug, userId }: FormPageProps) {
     if ((slug === "view" || slug === "edit") && userId) {
       getViewFormDetails();
     }
-
-    getAccountStatusEnum();
-  }, [slug, userId, rerender]);
+  }, [slug, userId]);
 
   return (
     <DataForm<TUserList["data"][0]>
@@ -165,17 +157,6 @@ export function BalanceForm({ slug, userId }: FormPageProps) {
     defaultValues: balanceFormConfig.defaultValues,
   });
 
-  const getWalletEnum = async () => {
-    const result = await EnumAPI.listing<TWalletEnum>("wallet");
-    if (result.success) {
-      // Convert into an array
-      const walletEnumArray = Object.values(result.data);
-      setWalletEnumList(walletEnumArray);
-    } else {
-      toast.error("Failed to get account status enum");
-    }
-  };
-
   const getViewFormDetails = async () => {
     const result = await getBalance(userId!);
     if (result.success) {
@@ -203,7 +184,7 @@ export function BalanceForm({ slug, userId }: FormPageProps) {
   useEffect(() => {
     if ((slug === "view" || slug === "edit") && userId) {
       getViewFormDetails();
-      getWalletEnum();
+      (async () => setWalletEnumList(await getWalletEnum()))();
     }
   }, [slug, update]);
   return (

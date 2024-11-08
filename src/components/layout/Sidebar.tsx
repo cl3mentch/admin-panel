@@ -37,10 +37,7 @@ import {
 } from "@/components/ui/sidebar";
 import { truncateString } from "@/lib/helper";
 import { useUserStore } from "@/lib/store/userDataStore";
-import {
-  ChevronsUpDown,
-  LogOut
-} from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -121,6 +118,7 @@ export function NonColapsibleComp({ dir, pathname }: CollapsibleProps) {
         tooltip={dir.title}
         isActive={isActive}
         onClick={() => setOpenMobile(false)}
+        className="py-5"
       >
         <Link href={dir.path}>
           <Icon
@@ -150,7 +148,7 @@ export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
     >
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton tooltip={dir.title}>
+          <SidebarMenuButton tooltip={dir.title} className="py-5">
             <Icon
               icon={dir.icon ? dir.icon : "mdi:apple-keyboard-command"}
               className={`w-10 h-10 `}
@@ -174,13 +172,22 @@ export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
                     asChild
                     onClick={() => setOpenMobile(false)}
                     isActive={isChildActive} // Mark child as active if the path matches
+                    className="py-4"
                   >
                     <Link href={child.path}>
                       <span
-                        className={`${
+                        className={`flex items-center gap-x-2 ${
                           isChildActive ? "text-primary dark:text-white" : ""
                         }`}
                       >
+                        <Icon
+                          icon={
+                            child.icon
+                              ? child.icon
+                              : "mdi:apple-keyboard-command"
+                          }
+                          className="w-4 h-4 -mt-[1px]"
+                        />
                         {child.title}
                       </span>
                     </Link>

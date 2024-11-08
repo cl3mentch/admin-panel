@@ -1,3 +1,4 @@
+import { getAccountStatusEnum } from "@/lib/service/getEnum";
 import { TFieldConfig } from "@/lib/types/formType";
 import { Address, isAddress } from "viem";
 import * as z from "zod";
@@ -16,7 +17,7 @@ const userFormSchema = z.object({
     .refine((value) => isAddress(value), {
       message: "Wallet Address Wrong Format",
     }),
-  status: z.string().optional(),
+  status: z.string().min(1, { message: "Status is required" }),
   upline: z
     .string()
     .optional()
@@ -61,8 +62,8 @@ let userDetailFieldConfig: TFieldConfig[] = [
     label: "Status",
     component: "select",
     placeholder: "Select account status",
-    options: [],
-    isRequired: false,
+    options: (await getAccountStatusEnum()) as any,
+    isRequired: true,
   },
   {
     name: "upline",

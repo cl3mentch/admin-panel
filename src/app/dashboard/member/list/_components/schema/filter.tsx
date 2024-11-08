@@ -1,3 +1,4 @@
+import { getAccountStatusEnum } from "@/lib/service/getEnum";
 import { TFieldConfig } from "@/lib/types/formType";
 import { Address } from "viem";
 import * as z from "zod";
@@ -48,7 +49,7 @@ let filterFieldConfig: TFieldConfig[] = [
     label: "Status",
     component: "select",
     placeholder: "Select account status",
-    options: [],
+    options: (await getAccountStatusEnum()) as string[],
     isRequired: false,
   },
   {

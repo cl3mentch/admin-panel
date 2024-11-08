@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
+import { Filter } from "@/components/shared/table/data-filter";
 import { DataPagination } from "@/components/shared/table/data-pagination";
 import { DataTable } from "@/components/shared/table/data-table";
 import { Button } from "@/components/ui/button";
@@ -22,16 +23,18 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
-import { getRecord } from "../config/service";
-import { Filter } from "@/components/shared/table/data-filter";
-import { usePathname } from "next/navigation";
 import { pageConfig } from "../config/config";
+import { getRecord } from "../config/service";
 import { filterFormConfig } from "../schema/filter";
+import EnumAPI from "@/lib/api/enum";
+import { userFormConfig } from "../schema/user";
+import { toast } from "sonner";
 
 export default function TablePage() {
   const { actions } = useActionStore();

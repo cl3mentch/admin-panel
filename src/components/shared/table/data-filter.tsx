@@ -50,10 +50,6 @@ interface FilterProps {
 export function Filter({ form, field, onFormSubmit }: FilterProps) {
   const isXl = useMediaQuery({ query: "(min-width: 1280px)" });
 
-  // Watch for changes in all form values
-  const formValues = form.watch(); // Get all form values
-  const isAllValuesEmpty = Object.values(formValues).every((value) => !value);
-
   function onSubmit(values: any) {
     onFormSubmit(values);
   }
@@ -69,7 +65,7 @@ export function Filter({ form, field, onFormSubmit }: FilterProps) {
           {isXl ? "Add Filter" : null}
         </Button>
       </SheetTrigger>
-      <SheetContent className="xl:max-w-[50vw] w-full">
+      <SheetContent className="xl:max-w-[50vw] w-full bg-card">
         <SheetHeader>
           <SheetTitle className="text-left">Add Your Filter</SheetTitle>
           <SheetDescription className="text-left text-black/50 dark:text-white/50">
