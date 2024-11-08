@@ -48,7 +48,6 @@ export default function FormPage({ slug, userId }: FormPageProps) {
 
 export function Form({ slug, userId }: FormPageProps) {
   type TUserFormSchema = z.infer<typeof userFormConfig.schema>;
-  const [, setRerender] = useState(false);
 
   const userForm = useForm<TUserFormSchema>({
     resolver: zodResolver(userFormConfig.schema),
