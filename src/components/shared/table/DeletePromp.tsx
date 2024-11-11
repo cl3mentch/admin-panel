@@ -14,12 +14,12 @@ import { TAction } from "./data-actions";
 import { useActionStore } from "@/lib/store/actionStore";
 import { useRouter } from "nextjs-toploader/app";
 import { usePathname } from "next/navigation";
-import { deleteRecord } from "@/app/dashboard/member/list/_components/config/service";
 
 interface IDeletePrompProps {
   id: string;
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
+  deleteRecord: (id: string) => void;
   actions: Partial<TAction>;
 }
 
@@ -27,6 +27,7 @@ export function DeletePromp({
   id,
   showModal,
   setShowModal,
+  deleteRecord,
 }: IDeletePrompProps) {
   const { setAction } = useActionStore();
   const router = useRouter();

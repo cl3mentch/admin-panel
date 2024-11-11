@@ -133,13 +133,13 @@ function AvatarDropdown() {
         <DropdownMenuContent className="mt-2 mr-2 w-[260px]">
           <DropdownMenuLabel className="flex items-center gap-x-3">
             <AvatarComponent />
-            <div className="flex flex-col flex-wrap w-full text-wrap">
+            <div className="flex flex-col flex-wrap w-full truncate">
               <p>Welcome Back !</p>
-              <p className="text-[12px] text-black text-wrap dark:text-white font-normal">
+              <span className="w-full text-[12px] text-black dark:text-white font-normal text-ellipsis overflow-hidden ">
                 {user?.web3_address !== zeroAddress
                   ? truncateString(user?.web3_address, 7, 7)
                   : user?.email}
-              </p>
+              </span>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />

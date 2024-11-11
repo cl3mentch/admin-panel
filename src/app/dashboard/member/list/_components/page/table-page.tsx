@@ -30,8 +30,8 @@ import { useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
 import { pageConfig } from "../config/config";
-import { getRecord } from "../config/service";
 import { filterFormConfig } from "../schema/filter";
+import { pageTitle } from "../config/setting";
 
 export default function TablePage() {
   const { actions } = useActionStore();
@@ -56,7 +56,7 @@ export default function TablePage() {
 
   async function getData() {
     setIsLoading(true);
-    const result = await getRecord("", {
+    const result = await pageConfig.method.getRecord("", {
       ...pagination,
       ...filters,
     });
@@ -82,7 +82,7 @@ export default function TablePage() {
       <div className="space-y-2">
         <div className="w-full pt-5 flex items-center justify-between">
           <p className="text-lg xl:text-2xl font-bold">
-            Member ({pageData?.count || 0})
+            {pageTitle} ({pageData?.count || 0})
           </p>
           <div className="flex items-center gap-x-2">
             <EditColumn table={table as ReturnType<typeof useReactTable>} />

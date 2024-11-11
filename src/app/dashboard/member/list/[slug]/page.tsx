@@ -1,15 +1,16 @@
+import { pageTitle, param } from "../_components/config/setting";
 import FormPage from "../_components/page/form-page";
 
 export async function generateMetadata({ searchParams }: any) {
   const userId = (await searchParams).userid;
   return {
-    title: `Dashboard : Member ${userId ? ` (${userId})` : ""}`,
+    title: `Dashboard : ${pageTitle} ${userId ? ` (${userId})` : ""}`,
   };
 }
 
 export default async function Page({ params, searchParams }: any) {
-  const userId = (await searchParams).userid;
+  const recordId = await searchParams;
   const slug = (await params).slug;
 
-  return <FormPage slug={slug} userId={userId} />;
+  return <FormPage slug={slug} recordId={recordId[param]} />;
 }

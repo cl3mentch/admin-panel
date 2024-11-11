@@ -28,4 +28,6 @@ export interface IGetErrorType {
 export type TPageConfig<TColumn> = {
   columns: ColumnDef<TColumn>[];
   actions: TAction;
+  method: any;
+  customMethod: any;
 };

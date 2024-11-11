@@ -26,11 +26,13 @@ export type TAction = {
 interface ActionProps<TData extends Record<string, any>> {
   data: TData;
   actions: TAction;
+  deleteRecord: (id: string) => void;
 }
 
 export default function DataAction<TData extends Record<string, any>>({
   data,
   actions,
+  deleteRecord,
 }: ActionProps<TData>) {
   const [showModal, setShowModal] = useState(false);
 
@@ -53,11 +55,11 @@ export default function DataAction<TData extends Record<string, any>>({
             <DropdownMenuItem key={i} className=" py-[2px]">
               {option.name !== "delete" ? (
                 <Link
-                  href={option.path + `?userid=${data.id}`}
-                  className="flex items-center gap-x-2 w-full"
+                  href={option.path + `?${option.param}=${data.id}`}
+                  className="flex items-center gap-x-2 w-full capitalize"
                 >
                   <Icon icon={option.icon} />
-                  {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
+                  {option.name}
                 </Link>
               ) : (
                 <>
@@ -78,6 +80,7 @@ export default function DataAction<TData extends Record<string, any>>({
         id={data.id}
         showModal={showModal}
         setShowModal={setShowModal}
+        deleteRecord={deleteRecord}
         actions={actions}
       />
     </>

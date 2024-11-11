@@ -82,7 +82,11 @@ export default function CustomBalanceForm<TColumn>({
               {title}
 
               {slug === "view" && id ? (
-                <DataAction actions={pageConfig.actions} data={{ id }} />
+                <DataAction
+                  actions={pageConfig.actions}
+                  data={{ id }}
+                  deleteRecord={pageConfig.method.deleteRecord}
+                />
               ) : null}
             </div>
           </CardTitle>

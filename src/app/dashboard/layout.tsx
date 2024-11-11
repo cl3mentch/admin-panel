@@ -1,7 +1,7 @@
 import Navbar from "@/components/layout/Navbar";
-import { AppSidebar } from "@/components/layout/Sidebar";
 import type { Metadata } from "next";
 import "../globals.css";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 
 export const metadata: Metadata = {
   title: "Dashboard: Overview",

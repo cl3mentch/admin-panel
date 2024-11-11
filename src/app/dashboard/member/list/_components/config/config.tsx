@@ -1,14 +1,14 @@
 "use client";
 import DataAction, { TAction } from "@/components/shared/table/data-actions";
 import { Button } from "@/components/ui/button";
-import { TPageConfig } from "@/lib/types/commonType";
-import { TUserList } from "@/lib/types/userType";
+import { IPagination, TPageConfig } from "@/lib/types/commonType";
+import { ICreateUserParams, TUserList } from "@/lib/types/userType";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-
-// Base URL and param configuration
-const baseUrl = "/dashboard/member/list/";
-const param = "?userid=";
+import { param } from "./setting";
+import UserAPI from "@/lib/api/user";
+import { toast } from "sonner";
+import { onTranslateBackendError } from "@/lib/helper";
 
 // Action configuration
 const actions: TAction = [
@@ -17,7 +17,7 @@ const actions: TAction = [
   { name: "delete", icon: "material-symbols:delete-outline", param },
 ].map((action) => ({
   ...action,
-  path: `${baseUrl}${action.name}`,
+  path: `${window.location.pathname}/${action.name}`,
 })) as TAction;
 
 /**
@@ -50,11 +50,15 @@ const columns: ColumnDef<TUserList["data"][0]>[] = [
   },
   {
     accessorKey: "web3_address",
-    header: "Web3_address",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"web3_address"} />
+    ),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"status"} />
+    ),
   },
   {
     accessorKey: "game_participation",
@@ -64,20 +68,28 @@ const columns: ColumnDef<TUserList["data"][0]>[] = [
   },
   {
     accessorKey: "telegram",
-    header: "Telegram",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"telegram"} />
+    ),
   },
   {
     accessorKey: "created_at",
-    header: ({ column }) => {
-      return <DataTableHeader column={column} title={"Created_at"} />;
-    },
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Created_at"} />
+    ),
   },
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
       const user = row.original;
-      return <DataAction data={user} actions={actions} />;
+      return (
+        <DataAction
+          data={user}
+          actions={actions}
+          deleteRecord={pageConfig.method.deleteRecord}
+        />
+      );
     },
   },
 ];
@@ -86,6 +98,46 @@ const columns: ColumnDef<TUserList["data"][0]>[] = [
 export const pageConfig: TPageConfig<TUserList["data"][0]> = {
   columns,
   actions,
+  /**
+   * Just adjust the api that is scoped inside of the crud method, it will auto fill up the rest of the function
+   * */
+  method: {
+    getRecord: async (userId?: string, pagination?: IPagination) => {
+      return await UserAPI.read(userId, {
+        ...pagination,
+      });
+    },
+    createRecord: async (values: ICreateUserParams) => {
+      return await UserAPI.create({ ...values });
+    },
+    updateRecord: async (userId: string, values: ICreateUserParams) => {
+      return await UserAPI.update(userId, { ...values });
+    },
+    deleteRecord: async (id: string) => {
+      const result = await UserAPI.delete(id);
+
+      if (result.success) {
+        toast.success("Delete Successfully");
+      } else {
+        onTranslateBackendError(result.data);
+      }
+    },
+  },
+  /**
+   * Custom Service
+   * Note - write api services that are uncommon and requires customization here
+   * */
+  customMethod: {
+    getBalance: async (userId: string) => {
+      return await UserAPI.balance.view(userId);
+    },
+    addBalance: async (userId: string, wallet: number, amount: number) => {
+      return await UserAPI.balance.add(userId, wallet, amount);
+    },
+    deductBalance: async (userId: string, wallet: number, amount: number) => {
+      return await UserAPI.balance.deduct(userId, wallet, amount);
+    },
+  },
 };
 
 function DataTableHeader({ title, column }: any) {
@@ -93,7 +145,7 @@ function DataTableHeader({ title, column }: any) {
     <Button
       variant="ghost"
       size={"sm"}
-      className="p-0 h-fit text-xs font-semibold text-foreground hover:bg-transparent"
+      className="p-0 h-fit text-xs font-semibold text-foreground hover:bg-transparent capitalize"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     >
       {title}

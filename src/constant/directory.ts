@@ -29,4 +29,18 @@ export const directory: DirectoryItem[] = [
       },
     ],
   },
+  // {
+  //   title: "Admin",
+  //   icon: "eos-icons:admin-outlined",
+  //   path: "/",
+  //   isActive: false,
+  //   children: [
+  //     {
+  //       title: "List",
+  //       icon: "mdi:format-list-bulleted",
+  //       path: "/dashboard/admin/list",
+  //       children: [],
+  //     },
+  //   ],
+  // },
 ];

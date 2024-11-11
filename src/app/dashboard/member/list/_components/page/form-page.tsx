@@ -3,7 +3,6 @@
 
 import DataForm from "@/components/shared/form/data-form";
 import { TActionOptions } from "@/components/shared/table/data-actions";
-import EnumAPI from "@/lib/api/enum";
 import { onTranslateBackendError } from "@/lib/helper";
 import { TUserList, TWalletBalance } from "@/lib/types/userType";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,41 +11,36 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import {
-  createRecord,
-  getBalance,
-  getRecord,
-  updateRecord,
-} from "../../_components/config/service";
-
+import { getWalletEnum } from "@/lib/service/getEnum";
+import { pageConfig } from "../config/config";
 import CustomBalanceForm from "../custom/CustomBalanceForm";
 import { balanceFormConfig } from "../schema/balance";
-import { pageConfig } from "../config/config";
 import { userFormConfig } from "../schema/user";
-import { getWalletEnum } from "@/lib/service/getEnum";
 
 interface FormPageProps {
   slug: TActionOptions;
-  userId?: string;
+  recordId?: string;
 }
 
-export default function FormPage({ slug, userId }: FormPageProps) {
+export default function FormPage({ slug, recordId }: FormPageProps) {
   return (
     <motion.div
       initial={{ x: "-10vw", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ stiffness: 10, duration: 0.5 }}
-      className="p-3 space-y-3 w-full flex flex-col"
+      className="p-3 space-y-3 w-full flex flex-col "
     >
       {/* The default form in the page */}
-      <Form slug={slug} userId={userId} />
+      <Form slug={slug} recordId={recordId} />
       {/* Custom Form */}
-      {slug !== "create" ? <BalanceForm slug={slug} userId={userId} /> : null}
+      {slug !== "create" ? (
+        <BalanceForm slug={slug} recordId={recordId} />
+      ) : null}
     </motion.div>
   );
 }
 
-export function Form({ slug, userId }: FormPageProps) {
+export function Form({ slug, recordId }: FormPageProps) {
   type TUserFormSchema = z.infer<typeof userFormConfig.schema>;
 
   const userForm = useForm<TUserFormSchema>({
@@ -60,9 +54,9 @@ export function Form({ slug, userId }: FormPageProps) {
       let result;
 
       if (slug === "create") {
-        result = await createRecord({ ...values });
-      } else if (slug === "edit" && userId) {
-        result = await updateRecord(userId, { ...values });
+        result = await pageConfig.method.createRecord({ ...values });
+      } else if (slug === "edit" && recordId) {
+        result = await pageConfig.method.updateRecord(recordId, { ...values });
       }
 
       if (result?.success) {
@@ -90,7 +84,7 @@ export function Form({ slug, userId }: FormPageProps) {
   };
 
   const getViewFormDetails = async () => {
-    const result = await getRecord(userId!);
+    const result = await pageConfig.method.getRecord(recordId!);
     if (result.success) {
       const populatedData = Object.keys(userForm.getValues()).reduce(
         (acc, key) => {
@@ -114,14 +108,14 @@ export function Form({ slug, userId }: FormPageProps) {
   };
 
   useEffect(() => {
-    if ((slug === "view" || slug === "edit") && userId) {
+    if ((slug === "view" || slug === "edit") && recordId) {
       getViewFormDetails();
     }
-  }, [slug, userId]);
+  }, [slug, recordId]);
 
   return (
     <DataForm<TUserList["data"][0]>
-      id={userId}
+      id={recordId}
       slug={slug}
       onFormSubmit={handleFormSubmit}
       form={userForm}
@@ -144,7 +138,8 @@ export function Form({ slug, userId }: FormPageProps) {
  * Custom Form
  * You may import or write your custom form here
  * */
-export function BalanceForm({ slug, userId }: FormPageProps) {
+
+export function BalanceForm({ slug, recordId }: FormPageProps) {
   type TWalletEnumArray = Array<TWalletEnum[keyof TWalletEnum]>;
   type TBalanceFormSchema = z.infer<typeof balanceFormConfig.schema>;
 
@@ -157,9 +152,10 @@ export function BalanceForm({ slug, userId }: FormPageProps) {
   });
 
   const getViewFormDetails = async () => {
-    const result = await getBalance(userId!);
+    const result = await pageConfig.customMethod.getBalance(recordId!);
     if (result.success) {
       // Iterate over the result data and populate the form
+      // @ts-ignore
       const populatedData = result.data.reduce((acc, { code, amount }) => {
         // @ts-ignore
         acc[code as TWalletBalance["code"]] = parseFloat(
@@ -181,14 +177,14 @@ export function BalanceForm({ slug, userId }: FormPageProps) {
   };
 
   useEffect(() => {
-    if ((slug === "view" || slug === "edit") && userId) {
+    if ((slug === "view" || slug === "edit") && recordId) {
       getViewFormDetails();
       (async () => setWalletEnumList(await getWalletEnum()))();
     }
   }, [slug, update]);
   return (
     <CustomBalanceForm
-      id={userId}
+      id={recordId}
       slug={slug}
       form={balanceForm}
       field={balanceFormConfig.field}
