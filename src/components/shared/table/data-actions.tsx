@@ -20,7 +20,6 @@ export type TAction = {
   path: string;
   icon: string;
   param: string;
-  deleteFunction: (id: string) => void;
 }[];
 
 interface ActionProps<TData extends Record<string, any>> {

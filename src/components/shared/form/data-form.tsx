@@ -42,6 +42,7 @@ interface FormProps<TColumn> {
   field: TFieldConfig[];
   pageConfig: TPageConfig<TColumn>;
   onFormSubmit: (values: any) => void;
+  deleteRecord: (id: string) => void;
 }
 
 export default function DataForm<TColumn>({
@@ -52,6 +53,7 @@ export default function DataForm<TColumn>({
   field,
   pageConfig,
   onFormSubmit,
+  deleteRecord,
 }: FormProps<TColumn>) {
   const checkboxValue = form.watch("check"); // Watch the checkbox value
 
@@ -75,7 +77,11 @@ export default function DataForm<TColumn>({
             {title}
 
             {slug === "view" && id ? (
-              <DataAction actions={pageConfig.actions} data={{ id }} />
+              <DataAction
+                actions={pageConfig.actions}
+                data={{ id }}
+                deleteRecord={deleteRecord}
+              />
             ) : null}
           </div>
         </CardTitle>

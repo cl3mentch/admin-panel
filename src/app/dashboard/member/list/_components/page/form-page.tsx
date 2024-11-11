@@ -121,6 +121,7 @@ export function Form({ slug, recordId }: FormPageProps) {
       form={userForm}
       field={userFormConfig.field}
       pageConfig={pageConfig}
+      deleteRecord={pageConfig.method.deleteRecord}
       title={
         slug === "view"
           ? "View User Information"

@@ -1,3 +1,3 @@
-// Base URL and param configuration
-export const pageTitle = "Admin List";
+// Current page setting
+export const pageTitle = "Member List";
 export const param = "userid";
