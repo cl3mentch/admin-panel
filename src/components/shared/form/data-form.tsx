@@ -40,7 +40,7 @@ interface FormProps<TColumn> {
   title: string;
   form: UseFormReturn | any;
   field: TFieldConfig[];
-  pageConfig: TPageConfig<TColumn>;
+  pageConfig: TPageConfig<TColumn, any, any>;
   onFormSubmit: (values: any) => void;
   deleteRecord: (id: string) => void;
 }
@@ -161,7 +161,7 @@ function LocalInput({ config, form, slug }: LocalInputProps) {
       name={config.name}
       render={({ field: inputField }) => (
         <FormItem>
-          <FormLabel className="text-foreground">
+          <FormLabel className="text-foreground capitalize">
             {config.label}{" "}
             {slug !== "view" ? (
               config.isRequired ? (
@@ -179,7 +179,7 @@ function LocalInput({ config, form, slug }: LocalInputProps) {
               {...inputField}
               readOnly={slug === "view"}
               className="text-foreground"
-              placeholder={config.placeholder}
+              placeholder={slug !== "view" ? config.placeholder : ""}
               type={config.type}
             />
           </FormControl>
@@ -207,7 +207,7 @@ function LocalSelect({ config, form, slug }: LocalSelectProps) {
       render={({ field }) => {
         return (
           <FormItem>
-            <FormLabel className="text-foreground">
+            <FormLabel className="text-foreground capitalize">
               {config.label}{" "}
               {slug !== "view" ? (
                 config.isRequired ? (
@@ -267,7 +267,7 @@ function LocalDate({ config, form, slug }: LocalDateProps) {
       name={config.name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>
+          <FormLabel className="capitalize">
             {config.label}{" "}
             {slug !== "view" ? (
               config.isRequired ? (

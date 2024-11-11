@@ -31,13 +31,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import UserAPI from "@/lib/api/user";
 import { onTranslateBackendError } from "@/lib/helper";
 import { TPageConfig } from "@/lib/types/commonType";
 import { TFieldConfig } from "@/lib/types/formType";
 import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
+import { pageConfig } from "../config/config";
 
 interface FormProps<TColumn> {
   id?: string | undefined;
@@ -46,7 +46,7 @@ interface FormProps<TColumn> {
   form: UseFormReturn | any;
   field: TFieldConfig[];
   walletEnumList: Array<TWalletEnum[keyof TWalletEnum]> | undefined;
-  pageConfig: TPageConfig<TColumn>;
+  pageConfig: TPageConfig<TColumn, any, any>;
   setUpdate: (update: boolean) => void;
 }
 
@@ -199,13 +199,13 @@ function BalancePrompt({
   const onActionBalance = async () => {
     let result;
     if (action === "add" && id) {
-      result = await UserAPI.balance.add(
+      result = await pageConfig.customMethod!.addBalance(
         id,
         Number(inputData.selectedWallet),
         inputData.amount
       );
     } else if (action === "deduct" && id) {
-      result = await UserAPI.balance.deduct(
+      result = await pageConfig.customMethod!.deductBalance(
         id,
         Number(inputData.selectedWallet),
         inputData.amount

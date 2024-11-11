@@ -136,8 +136,12 @@ export function NonColapsibleComp({ dir, pathname }: CollapsibleProps) {
 
 export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
   const isParentActive =
-    pathname === dir.path ||
-    dir.children.some((child) => pathname === child.path);
+    pathname.split("?")[0] === dir.path ||
+    dir.children.some((child) => {
+      const cleanedPathname = pathname.replace(/\/(view|create|edit)$/, "");
+      return cleanedPathname === child.path;
+    });
+
   const { setOpenMobile } = useSidebar();
   return (
     <Collapsible
@@ -165,7 +169,11 @@ export function CollapsibleComponent({ dir, pathname }: CollapsibleProps) {
         <CollapsibleContent>
           <SidebarMenuSub>
             {dir.children?.map((child) => {
-              const isChildActive = pathname === child.path;
+              const cleanedPathname = pathname.replace(
+                /\/(view|create|edit)$/,
+                ""
+              );
+              const isChildActive = cleanedPathname === child.path;
               return (
                 <SidebarMenuSubItem key={child.title}>
                   <SidebarMenuSubButton

@@ -64,10 +64,10 @@ export default function DataAction<TData extends Record<string, any>>({
                 <>
                   <button
                     onClick={() => setShowModal(true)}
-                    className="flex items-center gap-x-2 w-full"
+                    className="flex items-center gap-x-2 w-full capitalize"
                   >
                     <Icon icon={option.icon} />
-                    {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
+                    {option.name}
                   </button>
                 </>
               )}

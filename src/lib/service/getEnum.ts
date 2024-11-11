@@ -6,7 +6,7 @@ export const getAccountStatusEnum = async () => {
   if (result.success) {
     return Object.values(result.data);
   } else {
-    toast.error("Failed to get account status enum");
+    toast.error("Failed to get enum");
   }
 };
 
@@ -16,6 +16,16 @@ export const getWalletEnum = async () => {
     // Convert into an array
     return Object.values(result.data);
   } else {
-    toast.error("Failed to get account status enum");
+    toast.error("Failed to get enum");
+  }
+};
+
+export const getAdminRoleEnum = async () => {
+  const result = await EnumAPI.listing<TWalletEnum>("admin_role");
+  if (result.success) {
+    // Convert into an array
+    return Object.values(result.data);
+  } else {
+    toast.error("Failed to get enum");
   }
 };

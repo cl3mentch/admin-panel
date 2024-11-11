@@ -41,6 +41,12 @@ export const directory: DirectoryItem[] = [
         path: "/dashboard/admin/list",
         children: [],
       },
+      {
+        title: "Permission",
+        icon: "fluent-mdl2:permissions",
+        path: "/dashboard/admin/permission",
+        children: [],
+      },
     ],
   },
 ];

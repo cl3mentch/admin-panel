@@ -4,18 +4,14 @@
 import DataForm from "@/components/shared/form/data-form";
 import { TActionOptions } from "@/components/shared/table/data-actions";
 import { onTranslateBackendError } from "@/lib/helper";
-import { TUserList, TWalletBalance } from "@/lib/types/userType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { getWalletEnum } from "@/lib/service/getEnum";
 import { pageConfig } from "../config/config";
-import CustomBalanceForm from "../custom/CustomBalanceForm";
-import { balanceFormConfig } from "../schema/balance";
-import { userFormConfig } from "../schema/user";
+import { userFormConfig } from "../schema/admin";
 
 interface FormPageProps {
   slug: TActionOptions;
@@ -33,9 +29,8 @@ export default function FormPage({ slug, recordId }: FormPageProps) {
       {/* The default form in the page */}
       <Form slug={slug} recordId={recordId} />
       {/* Custom Form */}
-      {slug !== "create" ? (
-        <BalanceForm slug={slug} recordId={recordId} />
-      ) : null}
+      {/* {slug !== "create" ? (
+      ) : null} */}
     </motion.div>
   );
 }
@@ -114,7 +109,7 @@ export function Form({ slug, recordId }: FormPageProps) {
   }, [slug, recordId]);
 
   return (
-    <DataForm<TUserList["data"][0]>
+    <DataForm<typeof pageConfig.columns | any>
       id={recordId}
       slug={slug}
       onFormSubmit={handleFormSubmit}
@@ -122,76 +117,6 @@ export function Form({ slug, recordId }: FormPageProps) {
       field={userFormConfig.field}
       pageConfig={pageConfig}
       deleteRecord={pageConfig.method.deleteRecord}
-      title={
-        slug === "view"
-          ? "View User Information"
-          : slug === "edit"
-          ? "Edit User Information"
-          : slug === "create"
-          ? "Create User"
-          : ""
-      }
-    />
-  );
-}
-
-/**
- * Custom Form
- * You may import or write your custom form here
- * */
-
-export function BalanceForm({ slug, recordId }: FormPageProps) {
-  type TWalletEnumArray = Array<TWalletEnum[keyof TWalletEnum]>;
-  type TBalanceFormSchema = z.infer<typeof balanceFormConfig.schema>;
-
-  const [walletEnumList, setWalletEnumList] = useState<TWalletEnumArray>();
-  const [update, setUpdate] = useState(false);
-
-  const balanceForm = useForm<TBalanceFormSchema>({
-    resolver: zodResolver(balanceFormConfig.schema),
-    defaultValues: balanceFormConfig.defaultValues,
-  });
-
-  const getViewFormDetails = async () => {
-    const result = await pageConfig.customMethod!.getBalance(recordId!);
-    if (result.success) {
-      // Iterate over the result data and populate the form
-      // @ts-ignore
-      const populatedData = result.data.reduce((acc, { code, amount }) => {
-        // @ts-ignore
-        acc[code as TWalletBalance["code"]] = parseFloat(
-          Number(amount).toFixed(4)
-        );
-        return acc;
-      }, {} as Partial<TBalanceFormSchema>);
-
-      // Update form values dynamically after fetching the data
-      Object.keys(populatedData).forEach((key) => {
-        balanceForm.setValue(
-          key as keyof TBalanceFormSchema,
-          populatedData[key as keyof TBalanceFormSchema]!
-        );
-      });
-    } else {
-      toast.error("Failed to get form data");
-    }
-  };
-
-  useEffect(() => {
-    if ((slug === "view" || slug === "edit") && recordId) {
-      getViewFormDetails();
-      (async () => setWalletEnumList(await getWalletEnum()))();
-    }
-  }, [slug, update]);
-  return (
-    <CustomBalanceForm
-      id={recordId}
-      slug={slug}
-      form={balanceForm}
-      field={balanceFormConfig.field}
-      walletEnumList={walletEnumList}
-      pageConfig={pageConfig}
-      setUpdate={setUpdate}
       title={
         slug === "view"
           ? "View Record"
@@ -204,3 +129,8 @@ export function BalanceForm({ slug, recordId }: FormPageProps) {
     />
   );
 }
+
+/**
+ * Custom Form
+ * You may import or write your custom form here
+ * */
