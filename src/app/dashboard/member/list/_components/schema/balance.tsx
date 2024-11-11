@@ -26,7 +26,7 @@ const balanceFormSchema = z.object({
 /**
  * Initial values of the zod input value
  * */
-const balanceDefaultValues = {
+const balanceDefaultValues: z.infer<typeof balanceFormSchema> = {
   usdt: 0,
   peic: 0,
   point: 0,

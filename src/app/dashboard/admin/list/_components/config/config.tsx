@@ -14,6 +14,8 @@ import { ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { baseUrl, param } from "./setting";
 
+type PageListingType = TAdminList["data"][0];
+
 // Action configuration
 const actions: TAction = [
   { name: "view", icon: "hugeicons:view", param },
@@ -29,7 +31,7 @@ const actions: TAction = [
  *
  * These represents the column of the table and will be pass to useReactTable in @table_page
  * */
-const columns: ColumnDef<TAdminList["data"][0]>[] = [
+const columns: ColumnDef<PageListingType>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => <DataTableHeader column={column} title={"ID"} />,
@@ -64,9 +66,7 @@ const columns: ColumnDef<TAdminList["data"][0]>[] = [
   },
   {
     accessorKey: "tag",
-    header: ({ column }) => (
-      <DataTableHeader column={column} title={"tag"} />
-    ),
+    header: ({ column }) => <DataTableHeader column={column} title={"tag"} />,
   },
   {
     accessorKey: "remark",
@@ -149,12 +149,11 @@ const method = {
  * Note - write api services that are uncommon and requires customization here
  * */
 
-
 /**** End ****/
 
 // Final config object that combines columns and actions
 export const pageConfig: TPageConfig<
-  TAdminList["data"][0],
+  PageListingType,
   typeof method,
   undefined
 > = {

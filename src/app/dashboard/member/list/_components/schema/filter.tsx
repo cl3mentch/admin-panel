@@ -23,7 +23,7 @@ const filterFormSchema = z.object({
 /**
  * Initial values of the zod input value
  * */
-const filterDefaultState = {
+const filterDefaultState: z.infer<typeof filterFormSchema> = {
   web3_address: "" as Address,
   status: "",
   upline: "" as Address,

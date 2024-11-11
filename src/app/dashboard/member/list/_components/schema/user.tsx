@@ -34,7 +34,7 @@ const userFormSchema = z.object({
 /**
  * Initial values of the zod input value
  * */
-const defaultValues = {
+const defaultValues: z.infer<typeof userFormSchema> = {
   web3_address: "" as Address,
   status: "",
   upline: "" as Address,
