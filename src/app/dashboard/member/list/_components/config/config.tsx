@@ -94,6 +94,20 @@ const columns: ColumnDef<TUserList["data"][0]>[] = [
   },
 ];
 
+function DataTableHeader({ title, column }: any) {
+  return (
+    <Button
+      variant="ghost"
+      size={"sm"}
+      className="p-0 h-fit text-xs font-semibold text-foreground hover:bg-transparent capitalize"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    >
+      {title}
+      <ArrowUpDown className="h-3 w-3" />
+    </Button>
+  );
+}
+
 // Final config object that combines columns and actions
 export const pageConfig: TPageConfig<TUserList["data"][0]> = {
   columns,
@@ -139,17 +153,3 @@ export const pageConfig: TPageConfig<TUserList["data"][0]> = {
     },
   },
 };
-
-function DataTableHeader({ title, column }: any) {
-  return (
-    <Button
-      variant="ghost"
-      size={"sm"}
-      className="p-0 h-fit text-xs font-semibold text-foreground hover:bg-transparent capitalize"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    >
-      {title}
-      <ArrowUpDown className="h-3 w-3" />
-    </Button>
-  );
-}
