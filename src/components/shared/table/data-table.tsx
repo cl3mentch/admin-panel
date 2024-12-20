@@ -87,6 +87,7 @@ export function DataTable<TData>({ isLoading, table }: DataTableProps<TData>) {
                     "to_user",
                     "from_user",
                     "user",
+                    "upline",
                   ];
                   const { column } = cell;
                   return (
@@ -103,7 +104,7 @@ export function DataTable<TData>({ isLoading, table }: DataTableProps<TData>) {
                           cell.getContext()
                         )}
                         {/* Copy Button */}
-                        {canCopyColumn.includes(column.id) ? (
+                        {canCopyColumn.includes(column.id) && cell.getValue() ? (
                           <Icon
                             onClick={() =>
                               copyToClipboard(cell.getValue() as string)
