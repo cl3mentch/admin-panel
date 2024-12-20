@@ -109,7 +109,7 @@ export default function TablePage() {
         <div className="flex flex-col items-center justify-center m-auto h-[calc(80vh-220px)] md:h-[calc(106dvh-240px)] gap-y-5">
           <Icon
             icon="eos-icons:bubble-loading"
-            className="text-[70px] m-auto text-black/50 dark:text-white/50"
+            className="text-[50px] m-auto text-black/50 dark:text-white/50"
           />
         </div>
       )}

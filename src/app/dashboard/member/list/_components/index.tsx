@@ -40,14 +40,18 @@ import { PageListingType, pageTitle } from "./setting";
 import { filterFormConfig } from "./schema/filter";
 import { userFormConfig } from "./schema/user";
 import DataForm from "@/components/shared/form/data-form";
+import { DownloadExcel } from "@/components/shared/DownloadExcel";
 
 export default function TablePage() {
   const { actions } = useActionStore();
   const [pagination, setPagination] = useState({ page: 1, size: 30 });
   const [filters, setFilters] = useState({});
-  const [pageData, setPageData] = useState<PageListingType | undefined>(undefined);
+  const [pageData, setPageData] = useState<PageListingType | undefined>(
+    undefined
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [exportLoading, setExportLoading] = useState(false);
 
   const table = useReactTable({
     data: pageData?.data || [],
@@ -77,6 +81,42 @@ export default function TablePage() {
     setIsLoading(false);
   }
 
+  async function handleExport() {
+    setExportLoading(true);
+    let currentPage = 1;
+    const pageSize = 1000; // Adjust the size if needed
+    const allData: any[] = []; // Variable to store all accumulated data
+
+    while (true) {
+      // Fetch the data for the current page
+      const result = await pageConfig.method.getRecord("", {
+        page: currentPage,
+        size: pageSize,
+        ...filters, // Apply any necessary filters
+      });
+
+      if (result.success) {
+        // Append the current page data to the accumulated array
+        allData.push(...result.data.data);
+
+        // Check if all data has been fetched
+        if (currentPage === result.data.last_page) {
+          setExportLoading(false);
+          break; // Exit the loop if we've fetched all pages
+        }
+
+        // Move to the next page
+        currentPage++;
+      } else {
+        setExportLoading(false);
+        console.error("Error fetching data:", result);
+        break; // Exit the loop in case of an error
+      }
+    }
+
+    return allData;
+  }
+
   useEffect(() => {
     getData();
   }, [pagination, actions, filters]);
@@ -97,6 +137,11 @@ export default function TablePage() {
             <EditColumn table={table as ReturnType<typeof useReactTable>} />
             <PageFilter setFilters={setFilters} setPagination={setPagination} />
             <AddRecordButton />
+            <DownloadExcel
+              loading={exportLoading}
+              fetchData={handleExport}
+              fileName="Member List"
+            />
           </div>
         </div>
       </div>
@@ -110,7 +155,7 @@ export default function TablePage() {
         <div className="flex flex-col items-center justify-center m-auto h-[calc(80vh-220px)] md:h-[calc(106dvh-240px)] gap-y-5">
           <Icon
             icon="eos-icons:bubble-loading"
-            className="text-[70px] m-auto text-black/50 dark:text-white/50"
+            className="text-[50px] m-auto text-black/50 dark:text-white/50"
           />
         </div>
       )}
