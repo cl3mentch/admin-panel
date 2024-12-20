@@ -50,8 +50,8 @@ nextjs-portal {
   }
 
   .dark {
-    --background: 220, 13.04%, 9.02%;
-    --foreground: 0, 0%, 100%;
+    --background: 220 13.04% 9.02%;
+    --foreground: 0 0% 100%;
     --card: 222.86, 11.11%, 12.35%;
     --card-foreground: 220 13% 9%;
     --popover: 220, 13%, 9%;

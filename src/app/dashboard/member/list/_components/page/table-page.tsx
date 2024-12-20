@@ -91,11 +91,20 @@ export default function TablePage() {
           </div>
         </div>
       </div>
-      <DataTable
-        table={table as ReturnType<typeof useReactTable>}
-        data={pageData?.data || []} // Ensure you are passing valid data
-        isLoading={pageData ? false : true || isLoading}
-      />
+      {pageData ? (
+        <DataTable
+          table={table as ReturnType<typeof useReactTable>}
+          data={pageData?.data || []} // Ensure you are passing valid data
+          isLoading={isLoading}
+        />
+      ) : (
+        <div className="flex flex-col items-center justify-center m-auto h-[calc(80vh-220px)] md:h-[calc(106dvh-240px)] gap-y-5">
+          <Icon
+            icon="eos-icons:bubble-loading"
+            className="text-[50px] m-auto text-black/50 dark:text-white/50"
+          />
+        </div>
+      )}
 
       <DataPagination
         pageData={pageData}

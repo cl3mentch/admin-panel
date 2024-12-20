@@ -23,14 +23,18 @@ const actions: TAction = [
   { name: "edit", icon: "basil:edit-outline", param },
   { name: "delete", icon: "material-symbols:delete-outline", param },
 ].map((action) => {
-  const cleanedPathname = window.location.pathname.replace(
-    /\/(view|create|edit)$/,
-    ""
-  );
-  return {
-    ...action,
-    path: `${cleanedPathname}/${action.name}`,
-  };
+  // Ensure this logic runs only on the client-side
+  if (typeof window !== undefined) {
+    const cleanedPathname = window.location.pathname.replace(
+      /\/(view|create|edit)$/,
+      ""
+    );
+    return {
+      ...action,
+      path: `${cleanedPathname}/${action.name}`,
+    };
+  }
+  return action;
 }) as TAction;
 
 /**

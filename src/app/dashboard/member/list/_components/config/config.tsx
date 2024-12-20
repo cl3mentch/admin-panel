@@ -22,7 +22,7 @@ const actions: TAction = [
   { name: "view", icon: "hugeicons:view", param },
   { name: "edit", icon: "basil:edit-outline", param },
   { name: "delete", icon: "material-symbols:delete-outline", param },
-].map((action) => ({
+].map(action => ({
   ...action,
   path: `${window.location.pathname}/${action.name}`,
 })) as TAction;
@@ -89,10 +89,10 @@ const columns: ColumnDef<PageColumnType>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const user = row.original;
+      const data = row.original;
       return (
         <DataAction
-          data={user}
+          data={data}
           actions={actions}
           deleteRecord={pageConfig.method.deleteRecord}
         />
