@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { userFormConfig } from "./schema/user";
+import { pageFormConfig } from "./schema/user";
 import { pageConfig } from "./config";
 import { DeletePromp } from "@/components/shared/table/DeletePromp";
 import { useActionStore } from "@/store/actionStore";
@@ -123,11 +123,11 @@ interface IEditModalProps {
 export function EditModal({ showModal, data, setShowModal }: IEditModalProps) {
   const { setAction } = useActionStore();
 
-  type TUserFormSchema = z.infer<typeof userFormConfig.schema>;
+  type TUserFormSchema = z.infer<typeof pageFormConfig.schema>;
 
   const userForm = useForm<TUserFormSchema>({
-    resolver: zodResolver(userFormConfig.schema),
-    defaultValues: userFormConfig.defaultValues,
+    resolver: zodResolver(pageFormConfig.schema),
+    defaultValues: pageFormConfig.defaultValues,
     mode: "onChange",
   });
 
@@ -186,7 +186,7 @@ export function EditModal({ showModal, data, setShowModal }: IEditModalProps) {
           <DataForm<TUserList["data"][0]>
             onFormSubmit={handleFormSubmit}
             form={userForm}
-            field={userFormConfig.field}
+            field={pageFormConfig.field}
             pageConfig={pageConfig}
             deleteRecord={pageConfig.method.deleteRecord}
           />

@@ -38,7 +38,7 @@ import { z } from "zod";
 import { pageConfig } from "./config";
 import { PageListingType, pageTitle } from "./setting";
 import { filterFormConfig } from "./schema/filter";
-import { userFormConfig } from "./schema/user";
+import { pageFormConfig } from "./schema/user";
 import DataForm from "@/components/shared/form/data-form";
 import { DownloadExcel } from "@/components/shared/DownloadExcel";
 
@@ -206,11 +206,11 @@ export function CreateRecordModal({
 }: CreateRecordModalProps) {
   const { setAction } = useActionStore();
 
-  type TUserFormSchema = z.infer<typeof userFormConfig.schema>;
+  type TUserFormSchema = z.infer<typeof pageFormConfig.schema>;
 
   const userForm = useForm<TUserFormSchema>({
-    resolver: zodResolver(userFormConfig.schema),
-    defaultValues: userFormConfig.defaultValues,
+    resolver: zodResolver(pageFormConfig.schema),
+    defaultValues: pageFormConfig.defaultValues,
     mode: "onChange",
   });
 
@@ -246,7 +246,7 @@ export function CreateRecordModal({
           <DataForm<PageListingType["data"][0]>
             onFormSubmit={handleFormSubmit}
             form={userForm}
-            field={userFormConfig.field}
+            field={pageFormConfig.field}
             pageConfig={pageConfig}
             deleteRecord={pageConfig.method.deleteRecord}
           />

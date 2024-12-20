@@ -25,9 +25,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { PageListingType } from "../../transactionDetails/_components/setting";
 import { pageConfig } from "./config";
-import { pageFormConfig } from "./schema/adminPermission";
-import { PageListingType } from "./setting";
+import { pageFormConfig } from "./schema/transaction";
 
 export type TActionOptions = "edit" | "delete" | "create" | any;
 
@@ -97,6 +97,7 @@ export default function DataAction<TData extends Record<string, any>>({
         showModal={showEditModal}
         setShowModal={setShowEditModal}
       />
+
     </>
   );
 }
@@ -113,7 +114,7 @@ export function EditModal({ showModal, data, setShowModal }: IEditModalProps) {
 
   type TPageFormSchema = z.infer<typeof pageFormConfig.schema>;
 
-  const pageForm = useForm<TPageFormSchema>({
+  const userForm = useForm<TPageFormSchema>({
     resolver: zodResolver(pageFormConfig.schema),
     defaultValues: pageFormConfig.defaultValues,
     mode: "onChange",
@@ -143,7 +144,7 @@ export function EditModal({ showModal, data, setShowModal }: IEditModalProps) {
 
   useEffect(() => {
     if (showModal) {
-      const populatedData = Object.keys(pageForm.getValues()).reduce(
+      const populatedData = Object.keys(userForm.getValues()).reduce(
         (acc, key) => {
           // @ts-ignore
           acc[key] = data[key] ?? "";
@@ -154,7 +155,7 @@ export function EditModal({ showModal, data, setShowModal }: IEditModalProps) {
 
       // Update form values dynamically
       Object.keys(populatedData).forEach((key) => {
-        pageForm.setValue(
+        userForm.setValue(
           key as keyof TPageFormSchema,
           populatedData[key as keyof TPageFormSchema]
         );
@@ -173,7 +174,7 @@ export function EditModal({ showModal, data, setShowModal }: IEditModalProps) {
         <div className="overflow-y-auto">
           <DataForm<PageListingType["data"][0]>
             onFormSubmit={handleFormSubmit}
-            form={pageForm}
+            form={userForm}
             field={pageFormConfig.field}
             pageConfig={pageConfig}
             deleteRecord={pageConfig.method.deleteRecord}

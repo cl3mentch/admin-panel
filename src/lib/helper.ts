@@ -56,3 +56,30 @@ export const onTranslateBackendError = async (e: unknown | any) => {
     toast.error(e);
   }
 };
+
+export function copyToClipboard(text: string) {
+	// Check if the Clipboard API is available
+	if (navigator.clipboard) {
+		navigator.clipboard
+			.writeText(text)
+			.then(() => {
+				toast.success('Copied !');
+			})
+			.catch((error) => {
+				console.error('Unable to copy text to clipboard', error);
+			});
+	} else {
+		try {
+			const storage = document.createElement('textarea');
+			storage.value = text;
+			document.body.appendChild(storage);
+			storage.select();
+			storage.setSelectionRange(0, 99999);
+			document.execCommand('copy');
+			document.body.removeChild(storage);
+			toast.success('Copied !');
+		} catch (err) {
+			console.error('Unable to copy text to clipboard', err);
+		}
+	}
+}

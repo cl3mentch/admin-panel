@@ -49,4 +49,24 @@ export const directory: DirectoryItem[] = [
       },
     ],
   },
+  {
+    title: "Wallet",
+    icon: "lucide:wallet",
+    path: "/",
+    isActive: false,
+    children: [
+      {
+        title: "Transaction",
+        icon: "tabler:list-details",
+        path: "/dashboard/wallet/transaction",
+        children: [],
+      },
+      {
+        title: "Transaction Detail",
+        icon: "tabler:list-details",
+        path: "/dashboard/wallet/transactionDetails",
+        children: [],
+      },
+    ],
+  },
 ];

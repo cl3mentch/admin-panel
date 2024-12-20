@@ -1,6 +1,6 @@
 import { getAccountStatusEnum } from "@/lib/service/getEnum";
 import { TFieldConfig } from "@/lib/types/formType";
-import { Address, isAddress } from "viem";
+import { Address } from "viem";
 import * as z from "zod";
 
 /**
@@ -10,60 +10,48 @@ import * as z from "zod";
  *  the @userDetailFieldConfig name key's value needs to be the same as the @userFormSchema keys or else it wont work
  *  Eg : @userDetailFieldConfig @name  == @userFormSchema @key
  */
-const pageFormSchema = z.object({
-  web3_address: z
-    .string()
-    .min(1, { message: "Wallet Address is required" })
-    .refine((value) => isAddress(value), {
-      message: "Wallet Address Wrong Format",
-    }),
-  status: z.string().min(1, { message: "Status is required" }),
-  upline: z
-    .string()
-    .optional()
-    .refine((value) => !value || isAddress(value), {
-      message: "Wallet Address Wrong Format",
-    }),
+const filterFormSchema = z.object({
+  web3_address: z.string().optional(),
+  status: z.string().optional(),
+  upline: z.string().optional(),
   tag: z.string().optional(),
   nickname: z.string().optional(),
   telegram: z.string().optional(),
-  remark: z.string().optional(),
-  check: z.boolean().default(false),
+  created_at_start: z.any().optional(),
 });
 
 /**
  * Initial values of the zod input value
  * */
-const defaultValues: z.infer<typeof pageFormSchema> = {
+const filterDefaultState: z.infer<typeof filterFormSchema> = {
   web3_address: "" as Address,
   status: "",
   upline: "" as Address,
   tag: "",
   nickname: "",
   telegram: "",
-  remark: "",
-  check: false,
+  created_at_start: "",
 };
 
 /**
  * This is to setup ui input field
  * */
-let userDetailFieldConfig: TFieldConfig[] = [
+let filterFieldConfig: TFieldConfig[] = [
   {
     name: "web3_address",
     label: "Wallet Address",
     component: "input",
     type: "text",
     placeholder: "Enter your wallet address",
-    isRequired: true,
+    isRequired: false,
   },
   {
     name: "status",
     label: "Status",
     component: "select",
     placeholder: "Select account status",
-    options: (await getAccountStatusEnum()) as any,
-    isRequired: true,
+    options: (await getAccountStatusEnum()) as string[],
+    isRequired: false,
   },
   {
     name: "upline",
@@ -98,23 +86,16 @@ let userDetailFieldConfig: TFieldConfig[] = [
     isRequired: false,
   },
   {
-    name: "remark",
-    label: "Remark",
-    component: "input",
-    type: "text",
-    placeholder: "Enter your remark",
+    name: "created_at_start",
+    label: "Created Date",
+    component: "date",
+    placeholder: "Enter your date",
     isRequired: false,
-  },
-  {
-    name: "check",
-    label: "I agree that the information above is correct",
-    component: "checkbox",
-    isRequired: true,
   },
 ];
 
-export let pageFormConfig = {
-  schema: pageFormSchema,
-  defaultValues,
-  field: userDetailFieldConfig,
+export let filterFormConfig = {
+  schema: filterFormSchema,
+  defaultValues: filterDefaultState,
+  field: filterFieldConfig,
 };

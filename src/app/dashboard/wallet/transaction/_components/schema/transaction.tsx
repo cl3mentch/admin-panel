@@ -10,7 +10,7 @@ import * as z from "zod";
  *  the @userDetailFieldConfig name key's value needs to be the same as the @userFormSchema keys or else it wont work
  *  Eg : @userDetailFieldConfig @name  == @userFormSchema @key
  */
-const pageFormSchema = z.object({
+const schema = z.object({
   web3_address: z
     .string()
     .min(1, { message: "Wallet Address is required" })
@@ -34,7 +34,7 @@ const pageFormSchema = z.object({
 /**
  * Initial values of the zod input value
  * */
-const defaultValues: z.infer<typeof pageFormSchema> = {
+const defaultValues: z.infer<typeof schema> = {
   web3_address: "" as Address,
   status: "",
   upline: "" as Address,
@@ -48,7 +48,7 @@ const defaultValues: z.infer<typeof pageFormSchema> = {
 /**
  * This is to setup ui input field
  * */
-let userDetailFieldConfig: TFieldConfig[] = [
+let fieldConfig: TFieldConfig[] = [
   {
     name: "web3_address",
     label: "Wallet Address",
@@ -114,7 +114,7 @@ let userDetailFieldConfig: TFieldConfig[] = [
 ];
 
 export let pageFormConfig = {
-  schema: pageFormSchema,
+  schema,
   defaultValues,
-  field: userDetailFieldConfig,
+  field: fieldConfig,
 };

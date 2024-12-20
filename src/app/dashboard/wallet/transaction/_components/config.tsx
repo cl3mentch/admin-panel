@@ -27,29 +27,49 @@ const columns: ColumnDef<PageColumnType>[] = [
     header: ({ column }) => <DataTableHeader column={column} title={"ID"} />,
   },
   {
-    accessorKey: "admin",
-    header: ({ column }) => <DataTableHeader column={column} title={"admin"} />,
-  },
-  {
-    accessorKey: "role",
-    header: ({ column }) => <DataTableHeader column={column} title={"role"} />,
-  },
-  {
-    accessorKey: "remark",
+    accessorKey: "sn",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"remark"} />
+      <DataTableHeader column={column} title={"Serial Number"} />
+    ),
+  },
+  {
+    accessorKey: "user",
+    header: ({ column }) => <DataTableHeader column={column} title={"User"} />,
+  },
+  {
+    accessorKey: "from_user",
+    header: ({ column }) => <DataTableHeader column={column} title={"From"} />,
+  },
+  {
+    accessorKey: "to_user",
+    header: ({ column }) => <DataTableHeader column={column} title={"To"} />,
+  },
+  {
+    accessorKey: "transaction_type",
+    header: ({ column }) => <DataTableHeader column={column} title={"Type"} />,
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Amount"} />
+    ),
+  },
+  {
+    accessorKey: "used_at",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Used At"} />
     ),
   },
   {
     accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"created_at"} />
+      <DataTableHeader column={column} title={"Created At"} />
     ),
   },
   {
     accessorKey: "updated_at",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"updated_at"} />
+      <DataTableHeader column={column} title={"Updated At"} />
     ),
   },
   {

@@ -27,29 +27,49 @@ const columns: ColumnDef<PageColumnType>[] = [
     header: ({ column }) => <DataTableHeader column={column} title={"ID"} />,
   },
   {
-    accessorKey: "admin",
-    header: ({ column }) => <DataTableHeader column={column} title={"admin"} />,
+    accessorKey: "user",
+    header: ({ column }) => <DataTableHeader column={column} title={"User"} />,
   },
   {
-    accessorKey: "role",
-    header: ({ column }) => <DataTableHeader column={column} title={"role"} />,
-  },
-  {
-    accessorKey: "remark",
+    accessorKey: "wallet_transaction",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"remark"} />
+      <DataTableHeader column={column} title={"Wallet Transaction"} />
+    ),
+  },
+  {
+    accessorKey: "wallet",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Wallet"} />
+    ),
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Amount"} />
+    ),
+  },
+  {
+    accessorKey: "before_amount",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Before Amount"} />
+    ),
+  },
+  {
+    accessorKey: "after_amount",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"After Amount"} />
     ),
   },
   {
     accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"created_at"} />
+      <DataTableHeader column={column} title={"Created At"} />
     ),
   },
   {
-    accessorKey: "updated_at",
+    accessorKey: "remark",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"updated_at"} />
+      <DataTableHeader column={column} title={"Remark"} />
     ),
   },
   {

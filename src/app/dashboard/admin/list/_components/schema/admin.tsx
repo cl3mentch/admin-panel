@@ -129,7 +129,7 @@ let fieldConfig: TFieldConfig[] = [
   },
 ];
 
-export let userFormConfig = {
+export let pageFormConfig = {
   schema,
   defaultValues,
   field: fieldConfig,

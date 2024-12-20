@@ -27,21 +27,9 @@ const columns: ColumnDef<PageColumnType>[] = [
     header: ({ column }) => <DataTableHeader column={column} title={"ID"} />,
   },
   {
-    accessorKey: "user_id",
+    accessorKey: "admin_id",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"User_id"} />
-    ),
-  },
-  {
-    accessorKey: "upline",
-    header: ({ column }) => (
-      <DataTableHeader column={column} title={"Upline"} />
-    ),
-  },
-  {
-    accessorKey: "authenticator",
-    header: ({ column }) => (
-      <DataTableHeader column={column} title={"Authenticator"} />
+      <DataTableHeader column={column} title={"Admin ID"} />
     ),
   },
   {
@@ -51,27 +39,31 @@ const columns: ColumnDef<PageColumnType>[] = [
     ),
   },
   {
+    accessorKey: "email",
+    header: ({ column }) => <DataTableHeader column={column} title={"Email"} />,
+  },
+  {
+    accessorKey: "authenticator",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Authenticator"} />
+    ),
+  },
+  {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableHeader column={column} title={"status"} />
     ),
   },
   {
-    accessorKey: "game_participation",
-    header: ({ column }) => (
-      <DataTableHeader column={column} title={"Game_participation"} />
-    ),
-  },
-  {
-    accessorKey: "telegram",
-    header: ({ column }) => (
-      <DataTableHeader column={column} title={"telegram"} />
-    ),
-  },
-  {
     accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"Created_at"} />
+      <DataTableHeader column={column} title={"Created At"} />
+    ),
+  },
+  {
+    accessorKey: "updated_at",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Updated At"} />
     ),
   },
   {

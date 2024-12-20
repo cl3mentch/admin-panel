@@ -8,13 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { copyToClipboard } from "@/lib/helper";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import {
-  Column,
-  ColumnDef,
-  flexRender,
-  useReactTable,
-} from "@tanstack/react-table";
+import { Column, flexRender, useReactTable } from "@tanstack/react-table";
 import { CSSProperties } from "react";
 
 interface DataTableProps<TData> {
@@ -85,17 +81,40 @@ export function DataTable<TData>({ isLoading, table }: DataTableProps<TData>) {
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => {
+                  const canCopyColumn = [
+                    "web3_address",
+                    "email",
+                    "to_user",
+                    "from_user",
+                    "user",
+                  ];
                   const { column } = cell;
                   return (
                     <TableCell
-                      className="text-nowrap text-center"
+                      className={`text-nowrap text-center ${
+                        canCopyColumn.includes(column.id) ? "" : ""
+                      }`}
                       key={cell.id}
                       style={{ ...getCommonPinningStyles(column) }}
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      <div className="flex items-center justify-center gap-x-2">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                        {/* Copy Button */}
+                        {canCopyColumn.includes(column.id) ? (
+                          <Icon
+                            onClick={() =>
+                              copyToClipboard(cell.getValue() as string)
+                            }
+                            icon="si:copy-alt-duotone"
+                            width="13"
+                            height="13"
+                            className="cursor-pointer"
+                          />
+                        ) : null}
+                      </div>
                     </TableCell>
                   );
                 })}
