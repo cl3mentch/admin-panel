@@ -1,31 +1,20 @@
 "use client";
-import DataAction, { TAction } from "@/components/shared/table/data-actions";
 import { Button } from "@/components/ui/button";
 import { onTranslateBackendError } from "@/lib/helper";
-import { apiRequest } from "@/utils/http/https";
-import {
-  ICreateAdminParam,
-  IReadAdminParams,
-  TAdminList,
-} from "@/lib/types/adminType";
 import { APIResponse, TPageConfig } from "@/lib/types/commonType";
+import { ICreateUserParams, IReadUserParams } from "@/lib/types/userType";
+import { apiRequest } from "@/utils/http/https";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
-import { baseUrl, param } from "./setting";
-
-type PageColumnType = TAdminList["data"][0];
-type PageListingType = TAdminList;
+import DataAction, { TAction } from "./data-action";
+import { baseUrl, PageColumnType, PageListingType } from "./setting";
 
 // Action configuration
 const actions: TAction = [
-  { name: "view", icon: "hugeicons:view", param },
-  { name: "edit", icon: "basil:edit-outline", param },
-  { name: "delete", icon: "material-symbols:delete-outline", param },
-].map((action) => ({
-  ...action,
-  path: `${window.location.pathname}/${action.name}`,
-})) as TAction;
+  { name: "edit", icon: "basil:edit-outline" },
+  { name: "delete", icon: "material-symbols:delete-outline" },
+] as TAction;
 
 /**
  * Columns configuration
@@ -38,9 +27,21 @@ const columns: ColumnDef<PageColumnType>[] = [
     header: ({ column }) => <DataTableHeader column={column} title={"ID"} />,
   },
   {
-    accessorKey: "admin_id",
+    accessorKey: "user_id",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"admin_id"} />
+      <DataTableHeader column={column} title={"User_id"} />
+    ),
+  },
+  {
+    accessorKey: "upline",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Upline"} />
+    ),
+  },
+  {
+    accessorKey: "authenticator",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Authenticator"} />
     ),
   },
   {
@@ -50,51 +51,37 @@ const columns: ColumnDef<PageColumnType>[] = [
     ),
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => <DataTableHeader column={column} title={"email"} />,
-  },
-  {
-    accessorKey: "authenticator",
-    header: ({ column }) => (
-      <DataTableHeader column={column} title={"Authenticator"} />
-    ),
-  },
-  {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableHeader column={column} title={"status"} />
     ),
   },
   {
-    accessorKey: "tag",
-    header: ({ column }) => <DataTableHeader column={column} title={"tag"} />,
+    accessorKey: "game_participation",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"Game_participation"} />
+    ),
   },
   {
-    accessorKey: "remark",
+    accessorKey: "telegram",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"remark"} />
+      <DataTableHeader column={column} title={"telegram"} />
     ),
   },
   {
     accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableHeader column={column} title={"created_at"} />
-    ),
-  },
-  {
-    accessorKey: "updated_at",
-    header: ({ column }) => (
-      <DataTableHeader column={column} title={"updated_at"} />
+      <DataTableHeader column={column} title={"Created_at"} />
     ),
   },
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const user = row.original;
+      const data = row.original;
       return (
         <DataAction
-          data={user}
+          data={data}
           actions={actions}
           deleteRecord={pageConfig.method.deleteRecord}
         />
@@ -121,17 +108,19 @@ function DataTableHeader({ title, column }: any) {
  * Just adjust the api that is scoped inside of the crud method, it will auto fill up the rest of the function
  * */
 const method = {
-  getRecord: async (id?: string, param?: IReadAdminParams) => {
+  getRecord: async (id?: string, param?: IReadUserParams) => {
     return await apiRequest<PageListingType>(
       "get",
       `${baseUrl}${id ? `/${id}` : ""}`,
       { ...param }
     );
   },
-  createRecord: async (param: ICreateAdminParam): Promise<APIResponse<any>> => {
-    return await apiRequest("post", baseUrl, param);
+  createRecord: async (
+    values: ICreateUserParams
+  ): Promise<APIResponse<any>> => {
+    return await apiRequest("post", baseUrl, values);
   },
-  updateRecord: async (id: string, param: ICreateAdminParam) => {
+  updateRecord: async (id: string, param: ICreateUserParams) => {
     return await apiRequest("put", `${baseUrl}/${id}`, param);
   },
   deleteRecord: async (id: string) => {
@@ -149,13 +138,32 @@ const method = {
  * Custom Service
  * Note - write api services that are uncommon and requires customization here
  * */
-
-/**** End ****/
+const customMethod = {
+  getBalance: async (id: string) => {
+    return await apiRequest("get", `${baseUrl}/balance/view/${id}`);
+  },
+  addBalance: async (id: string, wallet: number, amount: number) => {
+    return await apiRequest("put", `${baseUrl}/balance/add/${id}`, {
+      wallet,
+      amount,
+    });
+  },
+  deductBalance: async (id: string, wallet: number, amount: number) => {
+    return await apiRequest("put", `${baseUrl}/balance/deduct/${id}`, {
+      wallet,
+      amount,
+    });
+  },
+};
 
 // Final config object that combines columns and actions
-export const pageConfig: TPageConfig<PageColumnType, typeof method, undefined> =
-  {
-    columns,
-    actions,
-    method,
-  };
+export const pageConfig: TPageConfig<
+  PageColumnType,
+  typeof method,
+  typeof customMethod
+> = {
+  columns,
+  actions,
+  method,
+  customMethod,
+};

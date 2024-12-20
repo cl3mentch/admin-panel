@@ -1,10 +1,10 @@
-import { pageTitle } from "./_components/config/setting";
-import TablePage from "./_components/page/table-page";
+import { pageTitle } from "./_components/setting";
+import IndexPage from "./_components";
 
 export const metadata = {
   title: `Dashboard: ${pageTitle}`,
 };
 
-export default function Userlist() {
-  return <TablePage />;
+export default function Page() {
+  return <IndexPage />;
 }

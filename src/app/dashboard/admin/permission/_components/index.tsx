@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
+import DataForm from "@/components/shared/form/data-form";
 import { Filter } from "@/components/shared/table/data-filter";
 import { DataPagination } from "@/components/shared/table/data-pagination";
 import { DataTable } from "@/components/shared/table/data-table";
@@ -19,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { onTranslateBackendError } from "@/lib/helper";
-import { TUserList } from "@/lib/types/userType";
+import { TAdminList, TAdminPermissionList } from "@/lib/types/adminType";
 import { useActionStore } from "@/store/actionStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -35,17 +36,16 @@ import { useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "sonner";
 import { z } from "zod";
-import { pageConfig } from "../config/config";
-import DataForm from "../config/data-form";
-import { pageTitle } from "../config/setting";
-import { filterFormConfig } from "../schema/filter";
-import { userFormConfig } from "../schema/user";
+import { pageConfig } from "./config";
+import { pageFormConfig } from "./schema/adminPermission";
+import { filterFormConfig } from "./schema/filter";
+import { PageListingType, pageTitle } from "./setting";
 
 export default function TablePage() {
   const { actions } = useActionStore();
   const [pagination, setPagination] = useState({ page: 1, size: 30 });
   const [filters, setFilters] = useState({});
-  const [pageData, setPageData] = useState<TUserList | undefined>(undefined);
+  const [pageData, setPageData] = useState<PageListingType | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -161,11 +161,11 @@ export function CreateRecordModal({
 }: CreateRecordModalProps) {
   const { setAction } = useActionStore();
 
-  type TUserFormSchema = z.infer<typeof userFormConfig.schema>;
+  type TPageFormSchema = z.infer<typeof pageFormConfig.schema>;
 
-  const userForm = useForm<TUserFormSchema>({
-    resolver: zodResolver(userFormConfig.schema),
-    defaultValues: userFormConfig.defaultValues,
+  const pageForm = useForm<TPageFormSchema>({
+    resolver: zodResolver(pageFormConfig.schema),
+    defaultValues: pageFormConfig.defaultValues,
     mode: "onChange",
   });
 
@@ -198,10 +198,10 @@ export function CreateRecordModal({
           <DialogDescription className="text-black/50 dark:text-white/50"></DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto">
-          <DataForm<TUserList["data"][0]>
+          <DataForm<PageListingType["data"][0]>
             onFormSubmit={handleFormSubmit}
-            form={userForm}
-            field={userFormConfig.field}
+            form={pageForm}
+            field={pageFormConfig.field}
             pageConfig={pageConfig}
             deleteRecord={pageConfig.method.deleteRecord}
           />

@@ -1,3 +1,5 @@
+import DataForm from "@/components/shared/form/data-form";
+import { DeletePromp } from "@/components/shared/table/DeletePromp";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,7 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { onTranslateBackendError } from "@/lib/helper";
-import { TUserList } from "@/lib/types/userType";
+import { TAdminList } from "@/lib/types/adminType";
+import { useActionStore } from "@/store/actionStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { MoreHorizontal } from "lucide-react";
@@ -23,21 +26,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { userFormConfig } from "../schema/user";
 import { pageConfig } from "./config";
-import DataForm from "./data-form";
-import { DeletePromp } from "@/components/shared/table/DeletePromp";
-import { useActionStore } from "@/store/actionStore";
-import { balanceFormConfig } from "../schema/balance";
-import { getWalletEnum } from "@/lib/service/getEnum";
-import CustomBalanceForm from "../custom/CustomBalanceForm";
+import { userFormConfig } from "./schema/admin";
 
 export type TActionOptions = "edit" | "delete" | "create" | any;
 
 export type TAction = {
   name: TActionOptions;
   icon: string;
-  param: string;
 }[];
 
 interface ActionProps<TData extends Record<string, any>> {
@@ -53,7 +49,6 @@ export default function DataAction<TData extends Record<string, any>>({
 }: ActionProps<TData>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showViewBalance, setShowViewBalanceModal] = useState(false);
 
   return (
     <>
@@ -76,8 +71,6 @@ export default function DataAction<TData extends Record<string, any>>({
                 onClick={() =>
                   option.name === "edit"
                     ? setShowEditModal(true)
-                    : option.name === "View Balance"
-                    ? setShowViewBalanceModal(true)
                     : setShowDeleteModal(true)
                 }
                 className="flex items-center gap-x-2 w-full capitalize"
@@ -98,16 +91,11 @@ export default function DataAction<TData extends Record<string, any>>({
         setShowModal={setShowDeleteModal}
         deleteRecord={deleteRecord}
       />
+
       <EditModal
         data={data}
         showModal={showEditModal}
         setShowModal={setShowEditModal}
-      />
-
-      <ViewBalanceModal
-        data={data}
-        showModal={showViewBalance}
-        setShowModal={setShowViewBalanceModal}
       />
     </>
   );
@@ -183,92 +171,12 @@ export function EditModal({ showModal, data, setShowModal }: IEditModalProps) {
           <DialogDescription className="text-black/50 dark:text-white/50"></DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto">
-          <DataForm<TUserList["data"][0]>
+          <DataForm<TAdminList["data"][0]>
             onFormSubmit={handleFormSubmit}
             form={userForm}
             field={userFormConfig.field}
             pageConfig={pageConfig}
             deleteRecord={pageConfig.method.deleteRecord}
-          />
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-// Custom  Modal
-interface IViewBalanceModalProps {
-  data: any;
-  showModal: boolean;
-  setShowModal: (showModal: boolean) => void;
-}
-
-export function ViewBalanceModal({
-  showModal,
-  data,
-  setShowModal,
-}: IViewBalanceModalProps) {
-  type TWalletEnumArray = Array<TWalletEnum[keyof TWalletEnum]>;
-  type TBalanceFormSchema = z.infer<typeof balanceFormConfig.schema>;
-
-  const [walletEnumList, setWalletEnumList] = useState<TWalletEnumArray>();
-  const [update, setUpdate] = useState(false);
-
-  const balanceForm = useForm<TBalanceFormSchema>({
-    resolver: zodResolver(balanceFormConfig.schema),
-    defaultValues: balanceFormConfig.defaultValues,
-  });
-
-  const onFetchBalance = async () => {
-    const result = await pageConfig.customMethod?.getBalance(data.id);
-
-    if (result?.success) {
-      // Iterate over the result data and populate the form
-      // @ts-ignore
-      const populatedData = result.data.reduce((acc, { code, amount }) => {
-        // @ts-ignore
-        acc[code as TWalletBalance["code"]] = parseFloat(
-          Number(amount).toFixed(4)
-        );
-        return acc;
-      }, {} as Partial<TBalanceFormSchema>);
-
-      // Update form values dynamically after fetching the data
-      Object.keys(populatedData).forEach((key) => {
-        balanceForm.setValue(
-          key as keyof TBalanceFormSchema,
-          populatedData[key as keyof TBalanceFormSchema]!
-        );
-      });
-    } else {
-      onTranslateBackendError(result!.data);
-    }
-  };
-
-  useEffect(() => {
-    if (showModal || update) {
-      onFetchBalance();
-    }
-
-    if (showModal) {
-      (async () => setWalletEnumList(await getWalletEnum()))();
-    }
-  }, [showModal, update]);
-
-  return (
-    <Dialog open={showModal} onOpenChange={() => setShowModal(false)}>
-      <DialogContent className="sm:max-w-[800px]">
-        <DialogHeader className="space-y-3">
-          <DialogTitle>View Balance Record ({data.id})</DialogTitle>
-          <DialogDescription className="text-black/50 dark:text-white/50"></DialogDescription>
-        </DialogHeader>
-        <div className="overflow-y-auto">
-          <CustomBalanceForm
-            id={data.id}
-            form={balanceForm}
-            field={balanceFormConfig.field}
-            walletEnumList={walletEnumList}
-            setUpdate={setUpdate}
           />
         </div>
       </DialogContent>

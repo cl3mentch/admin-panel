@@ -1,41 +1,20 @@
 "use client";
-import DataAction, { TAction } from "@/components/shared/table/data-actions";
 import { Button } from "@/components/ui/button";
 import { onTranslateBackendError } from "@/lib/helper";
-import {
-  ICreateAdminParam,
-  IReadAdminParams,
-  TAdminPermissionList,
-} from "@/lib/types/adminType";
 import { APIResponse, TPageConfig } from "@/lib/types/commonType";
+import { ICreateUserParams, IReadUserParams } from "@/lib/types/userType";
 import { apiRequest } from "@/utils/http/https";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
-import { baseUrl, param } from "./setting";
-
-type PageColumnType = TAdminPermissionList["data"][0];
-type PageListingType = TAdminPermissionList;
+import DataAction, { TAction } from "./data-action";
+import { baseUrl, PageColumnType, PageListingType } from "./setting";
 
 // Action configuration
 const actions: TAction = [
-  { name: "view", icon: "hugeicons:view", param },
-  { name: "edit", icon: "basil:edit-outline", param },
-  { name: "delete", icon: "material-symbols:delete-outline", param },
-].map((action) => {
-  // Ensure this logic runs only on the client-side
-  if (typeof window !== undefined) {
-    const cleanedPathname = window.location.pathname.replace(
-      /\/(view|create|edit)$/,
-      ""
-    );
-    return {
-      ...action,
-      path: `${cleanedPathname}/${action.name}`,
-    };
-  }
-  return action;
-}) as TAction;
+  { name: "edit", icon: "basil:edit-outline" },
+  { name: "delete", icon: "material-symbols:delete-outline" },
+] as TAction;
 
 /**
  * Columns configuration
@@ -107,17 +86,19 @@ function DataTableHeader({ title, column }: any) {
  * Just adjust the api that is scoped inside of the crud method, it will auto fill up the rest of the function
  * */
 const method = {
-  getRecord: async (id?: string, param?: IReadAdminParams) => {
+  getRecord: async (id?: string, param?: IReadUserParams) => {
     return await apiRequest<PageListingType>(
       "get",
       `${baseUrl}${id ? `/${id}` : ""}`,
       { ...param }
     );
   },
-  createRecord: async (param: ICreateAdminParam): Promise<APIResponse<any>> => {
-    return await apiRequest("post", baseUrl, param);
+  createRecord: async (
+    values: ICreateUserParams
+  ): Promise<APIResponse<any>> => {
+    return await apiRequest("post", baseUrl, values);
   },
-  updateRecord: async (id: string, param: ICreateAdminParam) => {
+  updateRecord: async (id: string, param: ICreateUserParams) => {
     return await apiRequest("put", `${baseUrl}/${id}`, param);
   },
   deleteRecord: async (id: string) => {
@@ -135,13 +116,32 @@ const method = {
  * Custom Service
  * Note - write api services that are uncommon and requires customization here
  * */
-
-/**** End ****/
+const customMethod = {
+  getBalance: async (id: string) => {
+    return await apiRequest("get", `${baseUrl}/balance/view/${id}`);
+  },
+  addBalance: async (id: string, wallet: number, amount: number) => {
+    return await apiRequest("put", `${baseUrl}/balance/add/${id}`, {
+      wallet,
+      amount,
+    });
+  },
+  deductBalance: async (id: string, wallet: number, amount: number) => {
+    return await apiRequest("put", `${baseUrl}/balance/deduct/${id}`, {
+      wallet,
+      amount,
+    });
+  },
+};
 
 // Final config object that combines columns and actions
-export const pageConfig: TPageConfig<PageColumnType, typeof method, undefined> =
-  {
-    columns,
-    actions,
-    method,
-  };
+export const pageConfig: TPageConfig<
+  PageColumnType,
+  typeof method,
+  typeof customMethod
+> = {
+  columns,
+  actions,
+  method,
+  customMethod,
+};

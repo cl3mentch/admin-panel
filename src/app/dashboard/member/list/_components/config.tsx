@@ -4,18 +4,14 @@ import { onTranslateBackendError } from "@/lib/helper";
 import { APIResponse, TPageConfig } from "@/lib/types/commonType";
 import {
   ICreateUserParams,
-  IReadUserParams,
-  TUserList,
+  IReadUserParams
 } from "@/lib/types/userType";
 import { apiRequest } from "@/utils/http/https";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import DataAction, { TAction } from "./data-action";
-import { baseUrl } from "./setting";
-
-type PageColumnType = TUserList["data"][0];
-type PageListingType = TUserList;
+import { baseUrl, PageColumnType, PageListingType } from "./setting";
 
 // Action configuration
 const actions: TAction = [

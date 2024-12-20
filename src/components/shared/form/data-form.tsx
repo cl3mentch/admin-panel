@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -25,19 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TPageConfig } from "@/lib/types/commonType";
 import { TFieldConfig } from "@/lib/types/formType";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { UseFormReturn } from "react-hook-form";
-import DataAction, { TActionOptions } from "../table/data-actions";
 import React from "react";
-import { TPageConfig } from "@/lib/types/commonType";
+import { UseFormReturn } from "react-hook-form";
 
 interface FormProps<TColumn> {
-  id?: string | undefined;
-  slug: TActionOptions;
-  title: string;
   form: UseFormReturn | any;
   field: TFieldConfig[];
   pageConfig: TPageConfig<TColumn, any, any>;
@@ -46,14 +41,9 @@ interface FormProps<TColumn> {
 }
 
 export default function DataForm<TColumn>({
-  id,
-  slug,
-  title,
   form,
   field,
-  pageConfig,
   onFormSubmit,
-  deleteRecord,
 }: FormProps<TColumn>) {
   const checkboxValue = form.watch("check"); // Watch the checkbox value
 
@@ -70,79 +60,52 @@ export default function DataForm<TColumn>({
   }
 
   return (
-    <Card className="mx-auto h-full w-full">
-      <CardHeader className="p-3 xl:p-6 xl:pb-4">
-        <CardTitle className="text-left text-2xl font-bold text-foreground">
-          <div className="flex justify-between items-center">
-            {title}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {field.map((config, i) => {
+            switch (config.component) {
+              case "input":
+                return (
+                  <React.Fragment key={i}>
+                    <LocalInput config={config} form={form} />
+                  </React.Fragment>
+                );
+              case "select":
+                return (
+                  <React.Fragment key={i}>
+                    <LocalSelect config={config} form={form} />
+                  </React.Fragment>
+                );
 
-            {slug === "view" && id ? (
-              <DataAction
-                actions={pageConfig.actions}
-                data={{ id }}
-                deleteRecord={deleteRecord}
-              />
-            ) : null}
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-3 xl:p-6 xl:pt-0">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              {field.map((config, i) => {
-                switch (config.component) {
-                  case "input":
-                    return (
-                      <React.Fragment key={i}>
-                        <LocalInput config={config} slug={slug} form={form} />
-                      </React.Fragment>
-                    );
-                  case "select":
-                    return (
-                      <React.Fragment key={i}>
-                        <LocalSelect config={config} slug={slug} form={form} />
-                      </React.Fragment>
-                    );
-
-                  case "date":
-                    return (
-                      <React.Fragment key={i}>
-                        <LocalDate config={config} slug={slug} form={form} />
-                      </React.Fragment>
-                    );
-                  default:
-                    return null;
-                }
-              })}
-            </div>
-            {slug !== "view" ? (
-              <>
-                {field.map((config, i) => {
-                  switch (config.component) {
-                    case "checkbox":
-                      return (
-                        <React.Fragment key={i}>
-                          <LocalCheckBox field={field} form={form} />
-                        </React.Fragment>
-                      );
-                    default:
-                      return null;
-                  }
-                })}
-                <Button
-                  disabled={!checkboxValue}
-                  type="submit"
-                  className="w-full xl:w-fit"
-                >
-                  Submit
-                </Button>
-              </>
-            ) : null}
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              case "date":
+                return (
+                  <React.Fragment key={i}>
+                    <LocalDate config={config} form={form} />
+                  </React.Fragment>
+                );
+              default:
+                return null;
+            }
+          })}
+        </div>
+        {field.map((config, i) => {
+          switch (config.component) {
+            case "checkbox":
+              return (
+                <React.Fragment key={i}>
+                  <LocalCheckBox field={field} form={form} />
+                </React.Fragment>
+              );
+            default:
+              return null;
+          }
+        })}
+        <Button disabled={!checkboxValue} type="submit" className="w-full">
+          Submit
+        </Button>
+      </form>
+    </Form>
   );
 }
 
@@ -154,7 +117,7 @@ interface LocalInputProps extends Partial<FormProps<any>> {
   config: InputFieldConfig;
 }
 
-function LocalInput({ config, form, slug }: LocalInputProps) {
+function LocalInput({ config, form }: LocalInputProps) {
   return (
     <FormField
       control={form.control}
@@ -163,23 +126,20 @@ function LocalInput({ config, form, slug }: LocalInputProps) {
         <FormItem>
           <FormLabel className="text-foreground capitalize">
             {config.label}{" "}
-            {slug !== "view" ? (
-              config.isRequired ? (
-                <span className="text-red-500">*</span>
-              ) : (
-                <span className="text-black/50 dark:text-white/50 text-xs">
-                  (Optional)
-                </span>
-              )
-            ) : null}
+            {config.isRequired ? (
+              <span className="text-red-500">*</span>
+            ) : (
+              <span className="text-black/50 dark:text-white/50 text-xs">
+                (Optional)
+              </span>
+            )}
           </FormLabel>
 
           <FormControl>
             <Input
               {...inputField}
-              readOnly={slug === "view"}
               className="text-foreground"
-              placeholder={slug !== "view" ? config.placeholder : ""}
+              placeholder={config.placeholder}
               type={config.type}
             />
           </FormControl>
@@ -198,7 +158,7 @@ interface LocalSelectProps extends Partial<FormProps<any>> {
   config: SelectFieldConfig;
 }
 
-function LocalSelect({ config, form, slug }: LocalSelectProps) {
+function LocalSelect({ config, form }: LocalSelectProps) {
   return (
     <FormField
       key={config.name}
@@ -209,15 +169,13 @@ function LocalSelect({ config, form, slug }: LocalSelectProps) {
           <FormItem>
             <FormLabel className="text-foreground capitalize">
               {config.label}{" "}
-              {slug !== "view" ? (
-                config.isRequired ? (
-                  <span className="text-red-500">*</span>
-                ) : (
-                  <span className="text-black/50 dark:text-white/50 text-xs">
-                    (Optional)
-                  </span>
-                )
-              ) : null}
+              {config.isRequired ? (
+                <span className="text-red-500">*</span>
+              ) : (
+                <span className="text-black/50 dark:text-white/50 text-xs">
+                  (Optional)
+                </span>
+              )}
             </FormLabel>
             <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
@@ -225,7 +183,7 @@ function LocalSelect({ config, form, slug }: LocalSelectProps) {
                   className={`text-foreground  ${
                     !field.value && "text-black/50 dark:text-white/50"
                   }`}
-                  disabled={config.options.length === 0 || slug === "view"}
+                  disabled={config.options.length === 0}
                 >
                   <SelectValue placeholder={config.placeholder} />
                 </SelectTrigger>
@@ -259,7 +217,7 @@ interface LocalDateProps extends Partial<FormProps<any>> {
   config: DateFieldConfig;
 }
 
-function LocalDate({ config, form, slug }: LocalDateProps) {
+function LocalDate({ config, form }: LocalDateProps) {
   return (
     <FormField
       key={config.name}
@@ -269,15 +227,13 @@ function LocalDate({ config, form, slug }: LocalDateProps) {
         <FormItem className="flex flex-col">
           <FormLabel className="capitalize">
             {config.label}{" "}
-            {slug !== "view" ? (
-              config.isRequired ? (
-                <span className="text-red-500">*</span>
-              ) : (
-                <span className="text-black/50 dark:text-white/50 text-xs">
-                  (Optional)
-                </span>
-              )
-            ) : null}
+            {config.isRequired ? (
+              <span className="text-red-500">*</span>
+            ) : (
+              <span className="text-black/50 dark:text-white/50 text-xs">
+                (Optional)
+              </span>
+            )}
           </FormLabel>
           <Popover>
             <PopoverTrigger asChild>

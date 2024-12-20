@@ -32,7 +32,7 @@ import { TFieldConfig } from "@/lib/types/formType";
 import React, { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
-import { pageConfig } from "../config/config";
+import { pageConfig } from "../config";
 
 interface FormProps<TColumn> {
   id?: string | undefined;
@@ -83,10 +83,12 @@ export default function CustomBalanceForm<TColumn>({
         </form>
       </Form>
       <div className="flex items-center gap-x-2 mt-5">
-        <Button onClick={() => onSelectAction("add")}>Add</Button>
+        <Button className="w-full" onClick={() => onSelectAction("add")}>
+          Add
+        </Button>
         <Button
           onClick={() => onSelectAction("deduct")}
-          className="bg-red-500 hover:bg-red-500/90"
+          className="bg-red-500 hover:bg-red-500/90 w-full"
         >
           Deduct
         </Button>

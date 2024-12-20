@@ -6,14 +6,21 @@ import { DataPagination } from "@/components/shared/table/data-pagination";
 import { DataTable } from "@/components/shared/table/data-table";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { onTranslateBackendError } from "@/lib/helper";
-import { useActionStore } from "@/store/actionStore";
 import { TUserList } from "@/lib/types/userType";
+import { useActionStore } from "@/store/actionStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
@@ -23,28 +30,28 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
-import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
+import { toast } from "sonner";
 import { z } from "zod";
-import { pageConfig } from "../config/config";
-import { filterFormConfig } from "../schema/filter";
-import { pageTitle } from "../config/setting";
-import { TAdminList } from "@/lib/types/adminType";
+import { pageConfig } from "./config";
+import { PageListingType, pageTitle } from "./setting";
+import { filterFormConfig } from "./schema/filter";
+import { userFormConfig } from "./schema/user";
+import DataForm from "@/components/shared/form/data-form";
 
 export default function TablePage() {
   const { actions } = useActionStore();
   const [pagination, setPagination] = useState({ page: 1, size: 30 });
   const [filters, setFilters] = useState({});
-  const [pageData, setPageData] = useState<TAdminList | undefined>(undefined);
+  const [pageData, setPageData] = useState<PageListingType | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: pageData?.data || [],
-    columns: pageConfig.columns,
+    columns: pageConfig?.columns,
     enableColumnPinning: true,
     initialState: { columnPinning: { right: ["actions"] } },
     onSortingChange: setSorting,
@@ -57,6 +64,7 @@ export default function TablePage() {
 
   async function getData() {
     setIsLoading(true);
+
     const result = await pageConfig.method.getRecord("", {
       ...pagination,
       ...filters,
@@ -78,7 +86,7 @@ export default function TablePage() {
       initial={{ x: "-10vw", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ stiffness: 10, duration: 0.5 }}
-      className="w-full  px-3 xl:px-5 mx-auto flex flex-col h-full justify-between space-y-4 xl:space-y-0"
+      className="w-full relative  px-3 xl:px-5 mx-auto flex flex-col h-full justify-between space-y-4 xl:space-y-0"
     >
       <div className="space-y-2">
         <div className="w-full pt-5 flex items-center justify-between">
@@ -102,7 +110,7 @@ export default function TablePage() {
         <div className="flex flex-col items-center justify-center m-auto h-[calc(80vh-220px)] md:h-[calc(106dvh-240px)] gap-y-5">
           <Icon
             icon="eos-icons:bubble-loading"
-            className="text-[50px] m-auto text-black/50 dark:text-white/50"
+            className="text-[70px] m-auto text-black/50 dark:text-white/50"
           />
         </div>
       )}
@@ -120,19 +128,86 @@ export default function TablePage() {
  * CREATE RECORD BUTTON
  */
 export function AddRecordButton() {
-  const router = useRouter();
   const isXl = useMediaQuery({ query: "(min-width: 1280px)" });
-  const pathname = usePathname();
+  const [showModal, setShowModal] = useState(false);
 
   return (
-    <Button
-      size="xs"
-      onClick={() => router.push(pathname + "/create")}
-      className="text-xs xl:text-xs flex gap-x-0 items-center"
-    >
-      <Icon icon="ic:round-plus" className="mb-[2px]" />
-      {isXl ? "Add Record" : null}
-    </Button>
+    <>
+      <Button
+        size="xs"
+        onClick={() => setShowModal(true)}
+        className="text-xs xl:text-xs flex gap-x-0 items-center"
+      >
+        <Icon icon="ic:round-plus" className="mb-[2px]" />
+        {isXl ? "Add Record" : null}
+      </Button>
+
+      <CreateRecordModal showModal={showModal} setShowModal={setShowModal} />
+    </>
+  );
+}
+
+/**
+ * CREATE RECORD MODAL
+ */
+interface CreateRecordModalProps {
+  showModal: boolean;
+  setShowModal: (showModal: boolean) => void;
+}
+
+export function CreateRecordModal({
+  showModal,
+  setShowModal,
+}: CreateRecordModalProps) {
+  const { setAction } = useActionStore();
+
+  type TUserFormSchema = z.infer<typeof userFormConfig.schema>;
+
+  const userForm = useForm<TUserFormSchema>({
+    resolver: zodResolver(userFormConfig.schema),
+    defaultValues: userFormConfig.defaultValues,
+    mode: "onChange",
+  });
+
+  const handleFormSubmit = async (values: any) => {
+    try {
+      let result;
+
+      result = await pageConfig.method.createRecord({ ...values });
+
+      if (result.success) {
+        setTimeout(() => {
+          // updates the action state to inform other component it has been updated
+          setAction({ delete: true });
+          setShowModal(false);
+          toast.success(`Record has been created.`);
+        }, 1000);
+      } else {
+        onTranslateBackendError(result.data);
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      toast.error("An error occurred, please try again.");
+    }
+  };
+  return (
+    <Dialog open={showModal} onOpenChange={() => setShowModal(false)}>
+      <DialogContent className="w-full h-full sm:h-fit sm:max-w-[800px]">
+        <DialogHeader className="space-y-3">
+          <DialogTitle>Create Record</DialogTitle>
+          <DialogDescription className="text-black/50 dark:text-white/50"></DialogDescription>
+        </DialogHeader>
+        <div className="overflow-y-auto">
+          <DataForm<PageListingType["data"][0]>
+            onFormSubmit={handleFormSubmit}
+            form={userForm}
+            field={userFormConfig.field}
+            pageConfig={pageConfig}
+            deleteRecord={pageConfig.method.deleteRecord}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -199,7 +274,7 @@ export function PageFilter({ setFilters, setPagination }: FilterDataProps) {
 
   const onFormSubmit = (value: TFilterFormSchema) => {
     setPagination((prev) => ({ ...prev, page: 1 }));
-
+    console.log(value);
     // Iterate over each value to check if it's a Date and format it
     const formattedValue = Object.entries(value).reduce((acc, [key, val]) => {
       if (val instanceof Date) {
@@ -213,7 +288,6 @@ export function PageFilter({ setFilters, setPagination }: FilterDataProps) {
         // @ts-ignore
         acc[key as keyof TFilterFormSchema] = val;
       }
-
       return acc;
     }, {} as TFilterFormSchema); // Use the same type for the resulting object
 
