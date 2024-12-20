@@ -176,7 +176,7 @@ function AvatarDropdown() {
 function AvatarComponent() {
   return (
     <Avatar className="w-8 h-8">
-      <AvatarImage src="/img/profile.avif" alt="@shadcn" />
+      <AvatarImage src="/img/profile.gif" alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>
   );

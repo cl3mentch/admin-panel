@@ -35,12 +35,6 @@ const columns: ColumnDef<PageColumnType>[] = [
     header: ({ column }) => <DataTableHeader column={column} title={"role"} />,
   },
   {
-    accessorKey: "remark",
-    header: ({ column }) => (
-      <DataTableHeader column={column} title={"remark"} />
-    ),
-  },
-  {
     accessorKey: "created_at",
     header: ({ column }) => (
       <DataTableHeader column={column} title={"created_at"} />
@@ -50,6 +44,12 @@ const columns: ColumnDef<PageColumnType>[] = [
     accessorKey: "updated_at",
     header: ({ column }) => (
       <DataTableHeader column={column} title={"updated_at"} />
+    ),
+  },
+  {
+    accessorKey: "remark",
+    header: ({ column }) => (
+      <DataTableHeader column={column} title={"remark"} />
     ),
   },
   {
