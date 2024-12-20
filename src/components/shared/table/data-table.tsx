@@ -44,14 +44,14 @@ export function DataTable<TData>({ isLoading, table }: DataTableProps<TData>) {
   return (
     <div className="h-[calc(100vh-200px)] overflow-x-auto rounded-md border w-full md:h-[calc(100dvh-230px)]">
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0 z-50">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 const { column } = header;
                 return (
                   <TableHead
-                    className="text-nowrap text-center bg-sidebar-accent "
+                    className="text-nowrap text-center bg-sidebar-accent"
                     key={header.id}
                     style={{ ...getCommonPinningStyles(column) }}
                   >
