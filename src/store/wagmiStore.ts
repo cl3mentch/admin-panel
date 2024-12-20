@@ -1,6 +1,6 @@
 import { getAccount, type GetAccountReturnType } from "@wagmi/core";
 import { create } from "zustand";
-import { config } from "../web3/wagmi/config";
+import { config } from "../lib/web3/wagmi/config";
 
 export type WagmiState = {
   account: GetAccountReturnType | undefined;

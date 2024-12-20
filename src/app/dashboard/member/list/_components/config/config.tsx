@@ -2,7 +2,7 @@
 import DataAction, { TAction } from "@/components/shared/table/data-actions";
 import { Button } from "@/components/ui/button";
 import { onTranslateBackendError } from "@/lib/helper";
-import { apiRequest } from "@/lib/http/https";
+import { apiRequest } from "@/utils/http/https";
 import { APIResponse, TPageConfig } from "@/lib/types/commonType";
 import {
   ICreateUserParams,

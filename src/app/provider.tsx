@@ -1,6 +1,6 @@
 "use client";
 
-import ContextProvider from "@/lib/provider/reown";
+import WagmiContextProvider from "@/lib/provider/reown";
 import { ThemeProvider } from "@/lib/provider/theme";
 import { wagmiAdapter } from "@/lib/web3/wagmi/config";
 import { Config, cookieToInitialState } from "wagmi";
@@ -43,7 +43,7 @@ const AllProviders = ({ children }: { children: React.ReactNode }) => {
             disableTransitionOnChange: true,
           },
         ],
-        [ContextProvider, { initialState: initialState }],
+        [WagmiContextProvider, { initialState: initialState }],
       ]}
     >
       {children}

@@ -3,9 +3,9 @@ import { disconnect } from "@wagmi/core";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { zeroAddress } from "viem";
-import { useUserStore } from "../store/userDataStore";
-import { APIMethod, APIOptions, APIResponse } from "../types/commonType";
-import { config } from "../web3/wagmi/config";
+import { useUserStore } from "../../store/userDataStore";
+import { APIMethod, APIOptions, APIResponse } from "../../lib/types/commonType";
+import { config } from "../../lib/web3/wagmi/config";
 import { urls } from "./settings";
 
 class API {

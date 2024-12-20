@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import AuthAPI from "@/lib/api/auth";
-import { useUserStore } from "@/lib/store/userDataStore";
+import { useUserStore } from "@/store/userDataStore";
 import { config } from "@/lib/web3/wagmi/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useAppKit } from "@reown/appkit/react";
@@ -12,6 +11,7 @@ import { toast } from "sonner";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 import { Button } from "../ui/button";
+import AuthAPI from "@/api/auth";
 
 export function ConnectWallet() {
   const account = useAccount();

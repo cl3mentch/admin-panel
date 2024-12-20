@@ -1,5 +1,6 @@
-import { apiRequest } from "../http/https";
-import { APIResponse } from "../types/commonType";
+import { APIResponse } from "@/lib/types/commonType";
+import { apiRequest } from "@/utils/http/https";
+
 
 const EnumAPI = {
   listing: async <TEnum>(type: string): Promise<APIResponse<TEnum>> => {

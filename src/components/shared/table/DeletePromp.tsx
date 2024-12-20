@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { TAction } from "./data-actions";
-import { useActionStore } from "@/lib/store/actionStore";
+import { useActionStore } from "@/store/actionStore";
 import { useRouter } from "nextjs-toploader/app";
 import { usePathname } from "next/navigation";
 

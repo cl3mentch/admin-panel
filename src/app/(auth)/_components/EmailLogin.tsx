@@ -1,14 +1,13 @@
-import { useForm, SubmitHandler } from "react-hook-form";
+import AuthAPI from "@/api/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useState, useEffect } from "react";
-import AuthAPI from "@/lib/api/auth";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useUserStore } from "@/lib/store/userDataStore";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useUserStore } from "@/store/userDataStore";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 // Define form fields with types
 interface FormData {

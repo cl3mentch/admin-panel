@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { truncateString } from "@/lib/helper";
-import { useUserStore } from "@/lib/store/userDataStore";
+import { useUserStore } from "@/store/userDataStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";

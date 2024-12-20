@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useUserStore } from "@/lib/store/userDataStore";
+import { useUserStore } from "@/store/userDataStore";
 import { config } from "@/lib/web3/wagmi/config";
 import { disconnect } from "@wagmi/core";
 import Cookies from "js-cookie";

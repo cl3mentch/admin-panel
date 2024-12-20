@@ -1,5 +1,5 @@
+import EnumAPI from "@/api/enum";
 import { toast } from "sonner";
-import EnumAPI from "../api/enum";
 
 export const getAccountStatusEnum = async () => {
   const result = await EnumAPI.listing<TAccountStatusEnum>("account_status");

@@ -36,7 +36,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { truncateString } from "@/lib/helper";
-import { useUserStore } from "@/lib/store/userDataStore";
+import { useUserStore } from "@/store/userDataStore";
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
