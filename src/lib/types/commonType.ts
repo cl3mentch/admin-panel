@@ -27,7 +27,7 @@ export interface IGetErrorType {
 
 export type TPageConfig<TColumn, TMethod, TCustomMethod> = {
   columns: ColumnDef<TColumn>[];
-  actions: TAction;
+  actions: TAction | any;
   method: TMethod;
   customMethod?: TCustomMethod | undefined;
 };

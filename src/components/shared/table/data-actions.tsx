@@ -9,9 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { MoreHorizontal } from "lucide-react";
-import Link from "next/link";
-import { DeletePromp } from "./DeletePromp";
 import { useState } from "react";
+import { DeletePromp } from "./DeletePromp";
 
 export type TActionOptions = "edit" | "delete" | "view" | "create";
 
@@ -53,13 +52,13 @@ export default function DataAction<TData extends Record<string, any>>({
           {actions.map((option, i) => (
             <DropdownMenuItem key={i} className=" py-[2px]">
               {option.name !== "delete" ? (
-                <Link
-                  href={option.path + `?${option.param}=${data.id}`}
+                <button
+                  onClick={() => setShowModal(true)}
                   className="flex items-center gap-x-2 w-full capitalize"
                 >
                   <Icon icon={option.icon} />
                   {option.name}
-                </Link>
+                </button>
               ) : (
                 <>
                   <button

@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
 
@@ -49,7 +50,7 @@ interface FilterProps {
 
 export function Filter({ form, field, onFormSubmit }: FilterProps) {
   const isXl = useMediaQuery({ query: "(min-width: 1280px)" });
-
+  const [openDrawer, setOpenDrawer] = useState(false);
   function onSubmit(values: any) {
     onFormSubmit(values);
   }
@@ -186,7 +187,6 @@ export function Filter({ form, field, onFormSubmit }: FilterProps) {
                                   mode="single"
                                   selected={field.value}
                                   onSelect={field.onChange}
-                                  className=""
                                   disabled={(date) =>
                                     date < new Date("1900-01-01")
                                   }

@@ -20,7 +20,6 @@ interface IDeletePrompProps {
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
   deleteRecord: (id: string) => void;
-  actions: Partial<TAction>;
 }
 
 export function DeletePromp({

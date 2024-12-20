@@ -1,31 +1,28 @@
 "use client";
-import DataAction, { TAction } from "@/components/shared/table/data-actions";
 import { Button } from "@/components/ui/button";
 import { onTranslateBackendError } from "@/lib/helper";
-import { apiRequest } from "@/utils/http/https";
 import { APIResponse, TPageConfig } from "@/lib/types/commonType";
 import {
   ICreateUserParams,
   IReadUserParams,
   TUserList,
 } from "@/lib/types/userType";
+import { apiRequest } from "@/utils/http/https";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
-import { baseUrl, param } from "./setting";
+import DataAction, { TAction } from "./data-action";
+import { baseUrl } from "./setting";
 
 type PageColumnType = TUserList["data"][0];
 type PageListingType = TUserList;
 
 // Action configuration
 const actions: TAction = [
-  { name: "view", icon: "hugeicons:view", param },
-  { name: "edit", icon: "basil:edit-outline", param },
-  { name: "delete", icon: "material-symbols:delete-outline", param },
-].map(action => ({
-  ...action,
-  path: `${window.location.pathname}/${action.name}`,
-})) as TAction;
+  { name: "View Balance", icon: "hugeicons:view" },
+  { name: "edit", icon: "basil:edit-outline" },
+  { name: "delete", icon: "material-symbols:delete-outline" },
+] as TAction;
 
 /**
  * Columns configuration

@@ -17,7 +17,7 @@ const filterFormSchema = z.object({
   tag: z.string().optional(),
   nickname: z.string().optional(),
   telegram: z.string().optional(),
-  created_at_start: z.date().optional(),
+  created_at_start: z.any().optional(),
 });
 
 /**
@@ -30,6 +30,7 @@ const filterDefaultState: z.infer<typeof filterFormSchema> = {
   tag: "",
   nickname: "",
   telegram: "",
+  created_at_start: "",
 };
 
 /**

@@ -1,9 +1,5 @@
 "use client";
-import DataAction, {
-  TActionOptions,
-} from "@/components/shared/table/data-actions";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -32,32 +28,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { onTranslateBackendError } from "@/lib/helper";
-import { TPageConfig } from "@/lib/types/commonType";
 import { TFieldConfig } from "@/lib/types/formType";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { pageConfig } from "../config/config";
 
 interface FormProps<TColumn> {
   id?: string | undefined;
-  slug: TActionOptions;
-  title: string;
   form: UseFormReturn | any;
   field: TFieldConfig[];
   walletEnumList: Array<TWalletEnum[keyof TWalletEnum]> | undefined;
-  pageConfig: TPageConfig<TColumn, any, any>;
   setUpdate: (update: boolean) => void;
 }
 
 export default function CustomBalanceForm<TColumn>({
   id,
-  slug,
-  title,
   form,
   field,
   walletEnumList,
-  pageConfig,
   setUpdate,
 }: FormProps<TColumn>) {
   const [showModal, setShowModal] = useState(false);
@@ -75,62 +64,41 @@ export default function CustomBalanceForm<TColumn>({
 
   return (
     <>
-      <Card className="mx-auto h-full w-full ">
-        <CardHeader className="p-3 xl:p-6 xl:pb-4">
-          <CardTitle className="text-left text-2xl font-bold text-foreground">
-            <div className="flex justify-between items-center">
-              {title}
-
-              {slug === "view" && id ? (
-                <DataAction
-                  actions={pageConfig.actions}
-                  data={{ id }}
-                  deleteRecord={pageConfig.method.deleteRecord}
-                />
-              ) : null}
-            </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-3 xl:p-6 xl:pt-0">
-          <Form {...form}>
-            <form className="space-y-8">
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-                {field.map((config, i) => {
-                  switch (config.component) {
-                    case "input":
-                      return (
-                        <React.Fragment key={i}>
-                          <LocalInput config={config} form={form} slug={slug} />
-                        </React.Fragment>
-                      );
-                    default:
-                      return null;
-                  }
-                })}
-              </div>
-            </form>
-          </Form>
-          {slug !== "view" ? (
-            <div className="flex items-center gap-x-2 mt-5">
-              <Button onClick={() => onSelectAction("add")}>Add</Button>
-              <Button
-                onClick={() => onSelectAction("deduct")}
-                className="bg-red-500 hover:bg-red-500/90"
-              >
-                Deduct
-              </Button>
-            </div>
-          ) : null}
-          <BalancePrompt
-            id={id}
-            showModal={showModal}
-            setShowModal={setShowModal}
-            walletEnumList={walletEnumList}
-            action={action}
-            setUpdate={setUpdate}
-          />
-        </CardContent>
-      </Card>
+      <Form {...form}>
+        <form className="space-y-8">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {field.map((config, i) => {
+              switch (config.component) {
+                case "input":
+                  return (
+                    <React.Fragment key={i}>
+                      <LocalInput config={config} form={form} />
+                    </React.Fragment>
+                  );
+                default:
+                  return null;
+              }
+            })}
+          </div>
+        </form>
+      </Form>
+      <div className="flex items-center gap-x-2 mt-5">
+        <Button onClick={() => onSelectAction("add")}>Add</Button>
+        <Button
+          onClick={() => onSelectAction("deduct")}
+          className="bg-red-500 hover:bg-red-500/90"
+        >
+          Deduct
+        </Button>
+      </div>
+      <BalancePrompt
+        id={id}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        walletEnumList={walletEnumList}
+        action={action}
+        setUpdate={setUpdate}
+      />
     </>
   );
 }
@@ -188,6 +156,8 @@ function BalancePrompt({
     amount: 0,
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleWalletChange = (value: string) => {
     setInputData((prev) => ({ ...prev, selectedWallet: value }));
   };
@@ -197,6 +167,7 @@ function BalancePrompt({
   };
 
   const onActionBalance = async () => {
+    setLoading(true);
     let result;
     if (action === "add" && id) {
       result = await pageConfig.customMethod!.addBalance(
@@ -214,6 +185,12 @@ function BalancePrompt({
     if (result?.success) {
       setTimeout(() => {
         setUpdate!(true);
+        setInputData({
+          selectedWallet: "",
+          amount: 0,
+        });
+        setShowModal(false);
+        setLoading(false);
         toast.success(
           action === "add" ? "Added Successfully" : "Deducted Successfully"
         );
@@ -221,12 +198,16 @@ function BalancePrompt({
     } else {
       onTranslateBackendError(result?.data);
     }
-    setInputData({
-      selectedWallet: "",
-      amount: 0,
-    });
-    setShowModal(false);
   };
+
+  useEffect(() => {
+    if (showModal) {
+      setInputData({
+        selectedWallet: "",
+        amount: 0,
+      });
+    }
+  }, [showModal]);
 
   return (
     <Dialog open={showModal} onOpenChange={setShowModal}>
@@ -286,6 +267,7 @@ function BalancePrompt({
         </div>
         <DialogFooter>
           <Button
+            disabled={loading}
             type="submit"
             className="capitalize"
             onClick={onActionBalance}
