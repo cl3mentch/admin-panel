@@ -30,6 +30,7 @@ const filterDefaultState = {
   tag: "",
   nickname: "",
   telegram: "",
+  created_at_start: undefined,
 };
 
 /**

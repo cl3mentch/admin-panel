@@ -12,8 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { onTranslateBackendError } from "@/lib/helper";
+import { TAdminPermissionList } from "@/lib/types/adminType";
 import { useActionStore } from "@/store/actionStore";
-import { TUserList } from "@/lib/types/userType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
@@ -30,15 +30,16 @@ import { useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
 import { pageConfig } from "../config/config";
-import { filterFormConfig } from "../schema/filter";
 import { pageTitle } from "../config/setting";
-import { TAdminList } from "@/lib/types/adminType";
+import { filterFormConfig } from "../schema/filter";
 
 export default function TablePage() {
   const { actions } = useActionStore();
   const [pagination, setPagination] = useState({ page: 1, size: 30 });
   const [filters, setFilters] = useState({});
-  const [pageData, setPageData] = useState<TAdminList | undefined>(undefined);
+  const [pageData, setPageData] = useState<TAdminPermissionList | undefined>(
+    undefined
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -82,7 +83,7 @@ export default function TablePage() {
     >
       <div className="space-y-2">
         <div className="w-full pt-5 flex items-center justify-between">
-          <p className="text-lg xl:text-2xl font-bold">
+          <p className="text-lg xl:text-xl font-bold">
             {pageTitle} ({pageData?.count || 0})
           </p>
           <div className="flex items-center gap-x-2">
@@ -92,20 +93,11 @@ export default function TablePage() {
           </div>
         </div>
       </div>
-      {pageData ? (
-        <DataTable
-          table={table as ReturnType<typeof useReactTable>}
-          data={pageData?.data || []} // Ensure you are passing valid data
-          isLoading={isLoading}
-        />
-      ) : (
-        <div className="flex flex-col items-center justify-center m-auto h-[calc(80vh-220px)] md:h-[calc(106dvh-240px)] gap-y-5">
-          <Icon
-            icon="eos-icons:bubble-loading"
-            className="text-[70px] m-auto text-black/50 dark:text-white/50"
-          />
-        </div>
-      )}
+      <DataTable
+        table={table as ReturnType<typeof useReactTable>}
+        data={pageData?.data || []} // Ensure you are passing valid data
+        isLoading={pageData ? false : true || isLoading}
+      />
       <DataPagination
         pageData={pageData}
         pagination={pagination}
@@ -125,9 +117,9 @@ export function AddRecordButton() {
 
   return (
     <Button
-      size="sm"
+      size="xs"
       onClick={() => router.push(pathname + "/create")}
-      className="text-xs xl:text-sm flex gap-x-0 items-center"
+      className="text-xs xl:text-xs flex gap-x-0 items-center"
     >
       <Icon icon="ic:round-plus" className="mb-[2px]" />
       {isXl ? "Add Record" : null}
@@ -146,9 +138,9 @@ export function EditColumn({ table }: EditColumnProps) {
     <DropdownMenu open={isOpen}>
       <DropdownMenuTrigger asChild>
         <Button
-          size="sm"
+          size="xs"
           onClick={() => setIsOpen(true)}
-          className="ml-auto text-sm"
+          className="ml-auto text-xs"
         >
           <Icon icon="tabler:columns" className="-mt-[1px]" />
           <p className="hidden xl:block">Edit Column</p>

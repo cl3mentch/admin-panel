@@ -75,7 +75,7 @@ export function DataTable<TData>({ isLoading, table }: DataTableProps<TData>) {
         {isLoading ? (
           <Icon
             icon="eos-icons:bubble-loading"
-            className="text-[30px] xl:text-[70px] m-auto text-black/50 dark:text-white/50 absolute left-[50%] translate-x-[-50%]  translate-y-[calc(50dvh-170px)]"
+            className="text-[30px] xl:text-[50px] m-auto text-black/50 dark:text-white/50 absolute left-[50%] translate-x-[-50%]  translate-y-[calc(50dvh-170px)]"
           />
         ) : table.getRowModel().rows?.length ? (
           <TableBody>

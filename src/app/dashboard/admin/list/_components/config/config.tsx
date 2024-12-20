@@ -14,7 +14,8 @@ import { ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { baseUrl, param } from "./setting";
 
-type PageListingType = TAdminList["data"][0];
+type PageColumnType = TAdminList["data"][0];
+type PageListingType = TAdminList;
 
 // Action configuration
 const actions: TAction = [
@@ -31,7 +32,7 @@ const actions: TAction = [
  *
  * These represents the column of the table and will be pass to useReactTable in @table_page
  * */
-const columns: ColumnDef<PageListingType>[] = [
+const columns: ColumnDef<PageColumnType>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => <DataTableHeader column={column} title={"ID"} />,
@@ -121,7 +122,7 @@ function DataTableHeader({ title, column }: any) {
  * */
 const method = {
   getRecord: async (id?: string, param?: IReadAdminParams) => {
-    return await apiRequest<TAdminList>(
+    return await apiRequest<PageListingType>(
       "get",
       `${baseUrl}${id ? `/${id}` : ""}`,
       { ...param }
@@ -152,12 +153,9 @@ const method = {
 /**** End ****/
 
 // Final config object that combines columns and actions
-export const pageConfig: TPageConfig<
-  PageListingType,
-  typeof method,
-  undefined
-> = {
-  columns,
-  actions,
-  method,
-};
+export const pageConfig: TPageConfig<PageColumnType, typeof method, undefined> =
+  {
+    columns,
+    actions,
+    method,
+  };

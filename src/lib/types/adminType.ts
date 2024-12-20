@@ -41,10 +41,17 @@ export interface IReadAdminParams
 }
 
 export type TAdminPermissionList = {
-  id: 3;
-  admin: "thisisatestuser2";
-  role: "tester";
-} & Partial<TAdminList>;
+  data: {
+    id: number;
+    admin: string;
+    role: string;
+    created_at: string;
+    updated_at: string;
+    remark: string;
+  }[];
+  count: number;
+  last_page: number;
+};
 
 export interface ICreateAdminPermission {
   admin: string;

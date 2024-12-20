@@ -2,19 +2,19 @@
 import DataAction, { TAction } from "@/components/shared/table/data-actions";
 import { Button } from "@/components/ui/button";
 import { onTranslateBackendError } from "@/lib/helper";
-import { apiRequest } from "@/utils/http/https";
 import {
   ICreateAdminParam,
   IReadAdminParams,
-  TAdminList,
   TAdminPermissionList,
 } from "@/lib/types/adminType";
 import { APIResponse, TPageConfig } from "@/lib/types/commonType";
+import { apiRequest } from "@/utils/http/https";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { baseUrl, param } from "./setting";
 
+type PageColumnType = TAdminPermissionList["data"][0];
 type PageListingType = TAdminPermissionList;
 
 // Action configuration
@@ -38,7 +38,7 @@ const actions: TAction = [
  *
  * These represents the column of the table and will be pass to useReactTable in @table_page
  * */
-const columns: ColumnDef<PageListingType>[] = [
+const columns: ColumnDef<PageColumnType>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => <DataTableHeader column={column} title={"ID"} />,
@@ -104,7 +104,7 @@ function DataTableHeader({ title, column }: any) {
  * */
 const method = {
   getRecord: async (id?: string, param?: IReadAdminParams) => {
-    return await apiRequest<TAdminList>(
+    return await apiRequest<PageListingType>(
       "get",
       `${baseUrl}${id ? `/${id}` : ""}`,
       { ...param }
@@ -135,12 +135,9 @@ const method = {
 /**** End ****/
 
 // Final config object that combines columns and actions
-export const pageConfig: TPageConfig<
-  PageListingType,
-  typeof method,
-  undefined
-> = {
-  columns,
-  actions,
-  method,
-};
+export const pageConfig: TPageConfig<PageColumnType, typeof method, undefined> =
+  {
+    columns,
+    actions,
+    method,
+  };

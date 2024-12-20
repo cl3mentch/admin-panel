@@ -58,8 +58,8 @@ export function Filter({ form, field, onFormSubmit }: FilterProps) {
     <Sheet>
       <SheetTrigger asChild>
         <Button
-          size={"sm"}
-          className="text-xs xl:text-sm flex gap-x-0 items-center"
+          size={"xs"}
+          className="text-xs xl:text-xs flex gap-x-0 items-center"
         >
           <Icon icon="mdi:filter-outline" />
           {isXl ? "Add Filter" : null}
