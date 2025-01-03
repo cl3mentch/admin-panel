@@ -25,9 +25,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { PageListingType } from "../../transactionDetails/_components/setting";
 import { pageConfig } from "./config";
 import { pageFormConfig } from "./schema/transaction";
+import { PageListingType } from "./setting";
 
 export type TActionOptions = "edit" | "delete" | "create" | any;
 
@@ -97,7 +97,6 @@ export default function DataAction<TData extends Record<string, any>>({
         showModal={showEditModal}
         setShowModal={setShowEditModal}
       />
-
     </>
   );
 }

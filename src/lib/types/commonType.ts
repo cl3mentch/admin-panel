@@ -1,4 +1,3 @@
-import { TAction } from "@/components/shared/table/data-actions";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type APIResponse<T = any> = {
@@ -31,3 +30,10 @@ export type TPageConfig<TColumn, TMethod, TCustomMethod> = {
   method: TMethod;
   customMethod?: TCustomMethod | undefined;
 };
+
+export type TActionOptions = "edit" | "delete" | "create" | any;
+
+export type TAction = {
+  name: TActionOptions;
+  icon: string;
+}[];

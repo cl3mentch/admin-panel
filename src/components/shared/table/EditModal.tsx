@@ -10,10 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { TAction } from "./data-actions";
 import { useActionStore } from "@/store/actionStore";
 import { useRouter } from "nextjs-toploader/app";
 import { usePathname } from "next/navigation";
+import { TAction } from "@/lib/types/commonType";
 
 interface IDeletePrompProps {
   id: string;
