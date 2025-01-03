@@ -2,6 +2,7 @@ import AuthAPI from "@/api/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { onTranslateBackendError } from "@/lib/helper";
 import { useUserStore } from "@/store/userDataStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
@@ -68,6 +69,7 @@ export function EmailLogin() {
         }
       } else {
         setLoading(false);
+        toast.error("Login Failed !");
       }
     } catch (error) {
       toast.error("Something went wrong!");
