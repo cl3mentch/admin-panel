@@ -27,6 +27,7 @@ const AuthAPI = {
             return false;
           }
         } else {
+          console.log(result);
           toast.error(result.data);
         }
       } catch (error) {
